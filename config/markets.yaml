@@ -1,0 +1,9 @@
+exchange: kraken
+symbols: [BTC/USDT, ETH/USDT]
+timeframes: [1h, 4h]
+triggers:
+  range_periods: 20
+  volume_zscore: 2.0
+  atr_expansion_ratio: 1.5
+  funding_extreme: 0.001
+schedule_hours: 4

@@ -1,0 +1,74 @@
+retry:
+  max_attempts: 3
+  base_delay_s: 0.5
+gateway:
+  cache_ttl_s: 300
+  daily_budget_usd: 10.0
+tiers:
+  tier1_fast:
+    model_id: combo-mix
+    provider: gpt
+    enabled: true
+    reasoning_effort: low
+    max_tokens: 800
+    max_tokens_ceiling: 1600
+    temperature: 0.0
+    timeout_s: 30
+    max_concurrency: 4
+    est_price_per_1m_in: 1.0
+    est_price_per_1m_out: 2.0
+    model_aliases: ["gpt-5.6-luna", "cx/gpt-5.6-luna", "gemini-3.6-flash", "gemini/gemini-3.6-flash", "qwen3-235b-a22b-instruct", "if/qwen3-235b-a22b-instruct"]
+    quota: {max_calls_per_5h: 100, max_calls_per_7d: 500}
+  tier2_analyst:
+    model_id: cx/gpt-5.6-terra
+    provider: gpt
+    enabled: true
+    reasoning_effort: medium
+    max_tokens: 1200
+    max_tokens_ceiling: 2400
+    temperature: 0.1
+    timeout_s: 60
+    max_concurrency: 3
+    est_price_per_1m_in: 2.0
+    est_price_per_1m_out: 4.0
+    model_aliases: ["gpt-5.6-terra"]
+    quota: {max_calls_per_5h: 50, max_calls_per_7d: 250}
+  tier3_strategist:
+    model_id: cx/gpt-5.5
+    provider: gpt
+    enabled: true
+    reasoning_effort: high
+    max_tokens: 768
+    temperature: 0.1
+    timeout_s: 90
+    max_concurrency: 2
+    est_price_per_1m_in: 1.0
+    est_price_per_1m_out: 3.0
+    model_aliases: ["gpt-5.5"]
+    quota: {max_calls_per_5h: 30, max_calls_per_7d: 120}
+  tier4_cio:
+    model_id: cc/claude-opus-5
+    provider: claude
+    enabled: true
+    reasoning_effort: high
+    max_tokens: 512
+    temperature: 0.0
+    timeout_s: 120
+    max_concurrency: 1
+    est_price_per_1m_in: 5.0
+    est_price_per_1m_out: 15.0
+    model_aliases: []
+    quota: {max_calls_per_5h: 10, max_calls_per_7d: 30}
+  optional_second_opinion:
+    model_id: if/deepseek-v3.2
+    provider: deepseek
+    enabled: false
+    reasoning_effort: medium
+    max_tokens: 512
+    temperature: 0.1
+    timeout_s: 60
+    max_concurrency: 1
+    est_price_per_1m_in: 1.0
+    est_price_per_1m_out: 2.0
+    model_aliases: []
+    quota: {max_calls_per_5h: 20, max_calls_per_7d: 80}
