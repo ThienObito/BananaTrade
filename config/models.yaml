@@ -34,7 +34,7 @@ tiers:
     model_aliases: ["gpt-5.6-terra"]
     quota: {max_calls_per_5h: 50, max_calls_per_7d: 250}
   tier3_strategist:
-    model_id: cx/gpt-5.5
+    model_id: cx/gpt-5.6-luna
     provider: gpt
     enabled: true
     reasoning_effort: high
@@ -44,7 +44,7 @@ tiers:
     max_concurrency: 2
     est_price_per_1m_in: 1.0
     est_price_per_1m_out: 3.0
-    model_aliases: ["gpt-5.5"]
+    model_aliases: ["gpt-5.6-luna"]
     quota: {max_calls_per_5h: 30, max_calls_per_7d: 120}
   tier4_cio:
     model_id: cc/claude-opus-5
