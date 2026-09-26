@@ -5,12 +5,17 @@ from pathlib import Path
 import pandas as pd
 import pytest
 
-from bananatrade.data.snapshot import build_snapshot
+from bananatrade.data.snapshot import build_snapshot, closed_candles
 
 
 def bars() -> pd.DataFrame:
     path = Path(__file__).parent / "fixtures" / "synthetic_btc_usdt_1h.csv"
     return pd.read_csv(path)
+
+
+def test_closed_candles_rejects_unknown_timeframe() -> None:
+    with pytest.raises(ValueError, match="Unsupported timeframe"):
+        closed_candles(bars(), "2h", datetime.now(UTC))
 
 
 def test_snapshot_excludes_forming_candle() -> None:

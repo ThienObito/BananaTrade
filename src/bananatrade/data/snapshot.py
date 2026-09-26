@@ -37,6 +37,9 @@ class MarketSnapshot(BaseModel):
 
 def closed_candles(frame: pd.DataFrame, timeframe: str, as_of: datetime) -> pd.DataFrame:
     durations = {"15m": timedelta(minutes=15), "1h": timedelta(hours=1), "4h": timedelta(hours=4), "1d": timedelta(days=1)}
+    if timeframe not in durations:
+        supported = ", ".join(durations)
+        raise ValueError(f"Unsupported timeframe {timeframe!r}; expected one of: {supported}")
     if as_of.tzinfo is None:
         as_of = as_of.replace(tzinfo=UTC)
     opened = pd.to_datetime(frame["timestamp_ms"], unit="ms", utc=True)
