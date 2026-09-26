@@ -795,6 +795,21 @@
 - Rui ro con lai: Submit-order path gửi raw `#order-side` value, không đảm bảo LONG/SHORT contract như các paper handlers.
 - Viec tiep theo de xuat: Normalize submit side trước request.
 
+## Chu ky 187 — bo qua Phase A bi chan, normalize submit-order notification side doc lap
+- Trang thai: FAILED
+- File da sua: BLOCKED.md; PROGRESS.md
+- Kiem chung blocker: Interpreter bat buoc `E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe` van `MISSING`; khong the chay pytest/mypy/ruff.
+- Nguyen nhan viec truoc: Phase A van bi chan boi moi truong Python thieu.
+- Rui ro con lai: Submit-order notification chỉ hiển thị order id, không cho biết canonical LONG/SHORT side vừa gửi.
+- Viec tiep theo de xuat: Hiển thị normalizedSide cùng order id.
+
+## Chu ky 188 — normalize submit-order notification side
+- Trang thai: DONE
+- File da sua: web/app.js; PROGRESS.md
+- Kiem chung: `node --check web/app.js` — pass; quet tĩnh xác nhận submit toast hiển thị normalizedSide và order id — pass.
+- Rui ro con lai: Full pytest/mypy/ruff chưa chạy vì interpreter bắt buộc thiếu.
+- Viec tiep theo de xuat: Khi interpreter tồn tại, chạy A1; không lặp lại submit notification side guard.
+
 ## Chu ky 186 — normalize submit-order side
 - Trang thai: DONE
 - File da sua: web/app.js; PROGRESS.md

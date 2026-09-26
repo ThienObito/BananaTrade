@@ -567,7 +567,7 @@ function bind() {
       const data = await readJson(response);
       if (!response.ok) throw new Error(backendError(data, 'risk rejected'));
       const orderId = requireOrderId(data);
-      notify('Paper order filled · ' + orderId);
+      notify('Paper ' + normalizedSide + ' order filled · ' + orderId);
     } catch (error) {
       notify('Order rejected: ' + errorMessage(error, 'order rejected'));
     }

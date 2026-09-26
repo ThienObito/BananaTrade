@@ -1158,3 +1158,16 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Unknown select value fallback về LONG/buy; không đổi quantity, price hoặc risk fields.
+
+## Chu kỳ 187 — chuẩn hóa submit-order notification side [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): Submit-order notification chỉ hiển thị order id, không thể hiện canonical side đã gửi.
+- Requirement -> test:
+  - Notification dùng `normalizedSide` cùng order id: kiểm tra tĩnh xác nhận — pass.
+  - Không còn side-less submit notification: quét tĩnh xác nhận — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Chỉ cải thiện toast traceability; request và backend order semantics không đổi.
