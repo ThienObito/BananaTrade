@@ -46,3 +46,11 @@
 - Kết quả thực tế: `MISSING`.
 - Không chạy pytest/mypy/ruff và không dùng Python thay thế; không sửa code/test vì sẽ vi phạm hard rule.
 - Hành động: dừng round này và chờ interpreter đúng đường dẫn được khôi phục.
+
+## Goal round 2 — kiểm tra lại môi trường [BLOCKED]
+- Đã đọc lại `PROGRESS.md` trước khi thực hiện bước.
+- Đã xác nhận thư mục đúng: `E:\\Trade-AI\\BananaTrade`.
+- Đã kiểm tra `E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe`; kết quả thực tế: `MISSING`.
+- Không chạy pytest/mypy/ruff, không dùng interpreter thay thế và không sửa code/test.
+- Hạng mục tài liệu API đã hoàn tất ở commit `3c868c0`; không có công việc độc lập mới phù hợp với hard rule hiện tại.
+- Hành động: dừng round này; blocker chưa được khắc phục.

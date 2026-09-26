@@ -30,3 +30,9 @@
 - Kết quả thực tế: `MISSING E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe`.
 - Không chạy pytest, mypy, ruff hoặc Python thay thế; hard rule yêu cầu dừng khi interpreter này thiếu.
 - Hạng mục tài liệu API độc lập trước đó đã hoàn tất; không có hạng mục code/test nào hợp lệ để làm tiếp khi môi trường bắt buộc chưa tồn tại.
+
+## Goal round 2 — blocker vẫn tồn tại
+- Đã kiểm tra lại thư mục `E:\\Trade-AI\\BananaTrade` và interpreter bắt buộc `E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe`.
+- Kết quả thực tế: `MISSING`.
+- Không chạy full pytest, mypy, ruff hoặc interpreter khác; không sửa code/test.
+- Không thể chẩn đoán Phase A hay tiếp tục Phase B/C cho tới khi interpreter chính xác này tồn tại.
