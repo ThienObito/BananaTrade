@@ -1209,3 +1209,16 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Giữ nguyên side inference từ quantity trong normalizePosition; chỉ canonicalize paper-state payload.
+
+## Chu kỳ 195 — harden paper-state positions container [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): positions normalized object có thể kế thừa prototype hoặc nhận symbol key trống, làm tăng rủi ro khi Object.values/render.
+- Requirement -> test:
+  - Positions dùng null-prototype record: kiểm tra tĩnh xác nhận — pass.
+  - Symbol key trống bị loại bỏ trước state: quét tĩnh xác nhận — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Không đổi API; chỉ harden boundary container trước render.

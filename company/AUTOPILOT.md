@@ -827,6 +827,21 @@
 - Rui ro con lai: normalizePaperState chỉ lọc record là object nhưng vẫn giữ numeric/string leaf malformed, render có thể nhận quantity/average_price không hợp lệ.
 - Viec tiep theo de xuat: Normalize position quantity và average_price trước khi đưa vào state.
 
+## Chu ky 195 — bo qua Phase A bi chan, harden paper-state positions container doc lap
+- Trang thai: FAILED
+- File da sua: BLOCKED.md; PROGRESS.md
+- Kiem chung blocker: Interpreter bat buoc `E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe` van `MISSING`; khong the chay pytest/mypy/ruff.
+- Nguyen nhan viec truoc: Phase A van bi chan boi moi truong Python thieu.
+- Rui ro con lai: positions normalized object kế thừa prototype keys hoặc symbol key đặc biệt, có thể ảnh hưởng Object.values/render.
+- Viec tiep theo de xuat: Dùng plain null-prototype record và chỉ nhận symbol key dạng string hợp lệ.
+
+## Chu ky 196 — harden paper-state positions container
+- Trang thai: DONE
+- File da sua: web/app.js; PROGRESS.md
+- Kiem chung: `node --check web/app.js` — pass; quet tĩnh xác nhận positions dùng null-prototype record và bỏ symbol key trống — pass.
+- Rui ro con lai: Full pytest/mypy/ruff chưa chạy vì interpreter bắt buộc thiếu.
+- Viec tiep theo de xuat: Khi interpreter tồn tại, chạy A1; không lặp lại paper-state container guard.
+
 ## Chu ky 194 — normalize paper-state position leaves
 - Trang thai: DONE
 - File da sua: web/app.js; PROGRESS.md
