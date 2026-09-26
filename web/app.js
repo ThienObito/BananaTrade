@@ -327,13 +327,22 @@ function bind() {
   });
   $('#submit-order')?.addEventListener('click', async () => {
     const side = $('#order-side').value;
+    const quantity = Number($('#order-qty').value);
+    const price = Number($('#order-price').value);
+    const stopLoss = Number($('#order-stop').value);
+    const takeProfit = Number($('#order-target').value);
+    const values = [quantity, price, stopLoss, takeProfit];
+    if (values.some((value) => !Number.isFinite(value) || value <= 0)) {
+      notify('Nhập quantity, entry, stop và target hợp lệ');
+      return;
+    }
     const body = {
-      symbol: 'BTC/USDT',
+      symbol: SNAPSHOT_SYMBOL,
       side,
-      quantity: Number($('#order-qty').value),
-      price: Number($('#order-price').value),
-      stop_loss: Number($('#order-stop').value),
-      take_profit: Number($('#order-target').value),
+      quantity,
+      price,
+      stop_loss: stopLoss,
+      take_profit: takeProfit,
     };
     try {
       const response = await fetch('/api/paper/order', {

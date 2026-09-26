@@ -163,6 +163,21 @@
 - Rui ro con lai: Frontend goi `/api/paper/close` nhung backend hien tai chi co POST `/api/paper/order`; nut dong position se nhan 404.
 - Viec tiep theo de xuat: Dung cung endpoint paper order voi side nguoc de dong position, sau do chay node check.
 
+## Chu ky 27 — bo qua Phase A bi chan, chan order khi thieu risk fields
+- Trang thai: FAILED
+- File da sua: BLOCKED.md; PROGRESS.md
+- Kiem chung blocker: Interpreter bat buoc `E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe` van `MISSING`; khong the chay pytest/mypy/ruff.
+- Nguyen nhan viec truoc: Phase A van bi chan boi moi truong Python thieu.
+- Rui ro con lai: Submit order dang gui `NaN` khi input rong; backend se reject nhung UI khong chan som va co the gui du lieu khong hop le.
+- Viec tiep theo de xuat: Them validation frontend cho cac truong quantity/price/stop/target truoc khi gui paper order.
+
+## Chu ky 28 — validation input order frontend
+- Trang thai: DONE
+- File da sua: web/app.js; PROGRESS.md
+- Kiem chung: `node --check web/app.js` — pass; quet tĩnh xác nhận guard cho quantity/entry/stop/target và symbol canonical — pass.
+- Rui ro con lai: Full pytest/mypy/ruff chưa chạy vì interpreter bắt buộc thiếu; HTTP handler vẫn cần integration test sau khi khôi phục môi trường.
+- Viec tiep theo de xuat: Khi interpreter tồn tại, chạy A1; không lặp lại validation client.
+
 ## Chu ky 26 — sua luong dong paper position
 - Trang thai: DONE
 - File da sua: web/app.js; PROGRESS.md

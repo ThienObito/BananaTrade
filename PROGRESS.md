@@ -99,3 +99,16 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Đây là thay đổi frontend độc lập, vẫn paper-only và không thêm endpoint/backend giả. Full HTTP integration test cần chạy sau khi interpreter được khôi phục.
+
+## Chu kỳ 27 — validation input order frontend [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): Phase A bị chặn bởi interpreter bắt buộc; submit order có thể gửi số không hợp lệ/`NaN` khi input rỗng.
+- Requirement -> test:
+  - Từ chối quantity, entry, stop hoặc target không phải số dương trước HTTP request: kiểm tra tĩnh xác nhận guard `Number.isFinite` và `> 0` — pass.
+  - Dùng symbol snapshot canonical: kiểm tra tĩnh xác nhận `symbol: SNAPSHOT_SYMBOL` — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Guard chỉ bổ sung client-side; backend vẫn là nguồn kiểm soát cuối và không có thay đổi paper broker.
