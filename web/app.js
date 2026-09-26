@@ -207,6 +207,8 @@ function snapshotPrice(snapshot) {
   const source = snapshotSource(snapshot);
   const summary = snapshotSummary(snapshot);
   const value = source.last_price ?? summary.last_price;
+  if (typeof value === 'boolean' || (value && typeof value === 'object')) return null;
+  if (typeof value === 'string' && !value.trim()) return null;
   const price = Number(value);
   return Number.isFinite(price) && price > 0 ? price : null;
 }

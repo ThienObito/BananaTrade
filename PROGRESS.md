@@ -659,3 +659,17 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Không tạo indicator kỹ thuật mặc định; leaf sai type hiển thị placeholder qua `formatMetric`.
+
+## Chu kỳ 111 — validate snapshot price leaf [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): Snapshot price dùng `Number(value)` trực tiếp, nên boolean/null/object/array có thể bị coercion thành giá trị dương ngoài contract.
+- Requirement -> test:
+  - Boolean/object/array price bị reject trước coercion: quét tĩnh xác nhận — pass.
+  - Chuỗi whitespace bị reject: quét tĩnh xác nhận — pass.
+  - Price chỉ hợp lệ khi finite và dương sau numeric conversion: kiểm tra tĩnh xác nhận — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Không tạo giá thị trường thay thế; giá snapshot sai shape tiếp tục fail-closed.
