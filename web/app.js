@@ -610,7 +610,7 @@ async function openPaper(side) {
     requireOrderId(data);
     state.position = { side: normalizedSide, entry: price, qty: quantity, opened: new Date().toISOString() };
     save();
-    notify('Backend paper ' + side + ' opened');
+    notify('Backend paper ' + normalizedSide + ' opened');
     $('.content').innerHTML = views.positions;
     bind();
     renderState();

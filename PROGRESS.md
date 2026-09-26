@@ -1094,3 +1094,16 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Click handlers hiện truyền side hợp lệ; fallback LONG bảo vệ cả caller malformed.
+
+## Chu kỳ 177 — chuẩn hóa openPaper notification side [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): openPaper notification dùng raw `side` thay vì `normalizedSide`, không nhất quán với position đã lưu.
+- Requirement -> test:
+  - Notification dùng normalizedSide: kiểm tra tĩnh xác nhận — pass.
+  - Không còn raw side trong open notification: quét tĩnh xác nhận — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Chỉ thay label notification; request và state mutation đã normalize từ chu kỳ trước.
