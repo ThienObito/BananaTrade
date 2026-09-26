@@ -13,6 +13,20 @@ def bars() -> pd.DataFrame:
     return pd.read_csv(path)
 
 
+def test_closed_candles_rejects_inconsistent_ohlcv_bounds() -> None:
+    frame = bars().copy()
+    frame.loc[0, "high"] = frame.loc[0, "close"] - 1
+    with pytest.raises(ValueError, match="inconsistent high/low bounds"):
+        closed_candles(frame, "1h", datetime.now(UTC))
+
+
+def test_closed_candles_rejects_negative_volume() -> None:
+    frame = bars().copy()
+    frame.loc[0, "volume"] = -1
+    with pytest.raises(ValueError, match="negative volume"):
+        closed_candles(frame, "1h", datetime.now(UTC))
+
+
 def test_closed_candles_rejects_invalid_ohlcv_values() -> None:
     frame = bars().copy()
     frame.loc[0, "close"] = float("nan")

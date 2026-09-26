@@ -32,3 +32,10 @@
 - Kiem chung: `E:\Trade-AI\BananaTrade\.venv\Scripts\python.exe -m pytest -q -p no:cacheprovider --basetemp=.pytest-tmp` — 154 passed; `python -m ruff check src tests` — All checks passed.
 - Rui ro con lai: Chua kiem tra quan he logic high/low va volume am.
 - Viec tiep theo de xuat: Validate rang buoc OHLCV (high >= low, volume khong am).
+
+## Chu ky 6 — validate rang buoc high low va volume
+- Trang thai: DONE
+- File da sua: src/bananatrade/data/snapshot.py; tests/test_phase1_snapshot.py
+- Kiem chung: `E:\Trade-AI\BananaTrade\.venv\Scripts\python.exe -m pytest -q -p no:cacheprovider --basetemp=.pytest-tmp` — 156 passed; `python -m ruff check src tests` — All checks passed.
+- Rui ro con lai: Chua xu ly timestamp khong hop le hoac khong tang dan.
+- Viec tiep theo de xuat: Them validation timestamp ms hop le va thu tu thoi gian.

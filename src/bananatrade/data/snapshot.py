@@ -48,6 +48,10 @@ def closed_candles(frame: pd.DataFrame, timeframe: str, as_of: datetime) -> pd.D
     invalid = sorted(numeric.columns[numeric.isna().any()].tolist())
     if invalid:
         raise ValueError(f"OHLCV frame contains invalid values in: {', '.join(invalid)}")
+    if (numeric["high"] < numeric[["open", "low", "close"]].max(axis=1)).any() or (numeric["low"] > numeric[["open", "high", "close"]].min(axis=1)).any():
+        raise ValueError("OHLCV frame contains inconsistent high/low bounds")
+    if (numeric["volume"] < 0).any():
+        raise ValueError("OHLCV frame contains negative volume")
     if as_of.tzinfo is None:
         as_of = as_of.replace(tzinfo=UTC)
     opened = pd.to_datetime(frame["timestamp_ms"], unit="ms", utc=True)
