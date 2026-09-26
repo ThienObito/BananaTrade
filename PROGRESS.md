@@ -1196,3 +1196,16 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Giữ nguyên symbol key và các leaf backend; chỉ loại bỏ record malformed ở boundary.
+
+## Chu kỳ 193 — normalize paper-state position leaves [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): normalizePaperState lọc object nhưng chưa kiểm tra quantity, average_price và opened trước render.
+- Requirement -> test:
+  - Quantity khác zero, average price dương và timestamp normalized trước state: kiểm tra tĩnh xác nhận — pass.
+  - Record có leaf malformed bị loại bỏ: quét tĩnh xác nhận — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Giữ nguyên side inference từ quantity trong normalizePosition; chỉ canonicalize paper-state payload.
