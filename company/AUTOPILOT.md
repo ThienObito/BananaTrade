@@ -1700,10 +1700,21 @@
 - Viec tiep theo de xuat: Khi interpreter tồn tại, chạy A1; giữ regression test cho transient backend failure.
 
 ## TONG KET PHIEN
-- Da lam duoc: Hoan tat 18 chu ky hardening; sua breakout theo prior range, RSI flat market, validation OHLCV (cot, so, bounds, timestamp), orderbook (cau truc, price/size, am), va quota ledger/check inputs.
-- So lieu that: Test cuoi `E:\Trade-AI\BananaTrade\.venv\Scripts\python.exe -m pytest -q -p no:cacheprovider --basetemp=.pytest-tmp` — 175 passed in 4.81s.
-- Con do: Chua co integration test voi exchange live; chua kiem tra day du timestamp/quota malformed trong cac du lieu production.
+- Da lam duoc:
+  - Hoàn tất các hardening frontend paper/snapshot trong các commit `7b22a44`, `2a81747` và `4bf8501`: giữ paper state khi backend lỗi tạm thời; giữ snapshot cuối, đánh dấu `stale` cho payload phẳng và payload lồng nhau.
+  - Ghi nhận blocker qua các round 100–105 và không dùng interpreter thay thế.
+  - Kiểm chứng cuối: `node --check web/app.js` — pass; `git diff --check` — pass.
+  - Số liệu test Python gần nhất đã được ghi nhận trước phiên wrap: `175 passed in 4.81s`; không phải kết quả chạy lại ở phiên này.
+- Con do:
+  - Kiểm tra cuối `Test-Path -LiteralPath 'E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe'` vẫn trả `MISSING`; vì vậy ruff, mypy và pytest cuối phiên không chạy được.
+  - Chưa có số test hiện tại đáng tin cậy; Phase A–C, runtime dashboard, council endpoint và browser smoke chưa được xác minh đầy đủ trong phiên wrap.
+  - Các thay đổi backend/dashboard dở dang chỉ được đóng gói khi wrap, chưa có Python-suite evidence do blocker môi trường.
 - De xuat 3 viec tiep theo:
-  1. Them integration tests cho CCXT adapter voi fixture exchange responses.
-  2. Bo sung property-based tests cho OHLCV va orderbook edge cases.
-  3. Chay mypy va kiem tra migration schema SQLite tren database cu.
+  1. Khôi phục đúng `E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe`, sau đó chạy ruff, mypy, pytest đầy đủ và forbidden-pattern scan.
+  2. Hoàn tất và kiểm thử `/api/council?run_id=...`, latest-run behavior, rejected/DEFERRED/404/debate-order/zero-turn và CIO `bear_case_addressed`.
+  3. Chạy offline dashboard smoke end-to-end cho snapshot, paper state, risk, quota, order prefill, council; đối chiếu lại `docs/DASHBOARD_API.md`.
+
+
+
+
+
