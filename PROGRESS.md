@@ -898,3 +898,16 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Backend equity đã normalize vẫn hiển thị như trước; leaf sai type hiển thị `—` thay vì coercion.
+
+## Chu kỳ 147 — chuẩn hóa position display boundary [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): Positions view gọi `.toFixed()` trực tiếp trên `state.position.entry/qty`, dù state có thể đến từ storage/mock boundary.
+- Requirement -> test:
+  - Entry và quantity hiển thị qua `formatMetric`: kiểm tra tĩnh xác nhận — pass.
+  - Không còn position `.toFixed()` trực tiếp: quét tĩnh xác nhận — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Position backend đã normalize giữ nguyên hiển thị; dữ liệu sai shape hiển thị placeholder thay vì throw.
