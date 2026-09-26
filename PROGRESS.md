@@ -1120,3 +1120,16 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Unknown side fallback LONG, đồng nhất với các boundary side khác.
+
+## Chu kỳ 181 — chuẩn hóa closePaper notification side [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): closePaper notification không hiển thị side dù side đã normalize cho request và trade history.
+- Requirement -> test:
+  - Close notification dùng side normalized: kiểm tra tĩnh xác nhận — pass.
+  - Notification vẫn dùng signed PnL formatter: kiểm tra tĩnh xác nhận — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Chỉ bổ sung LONG/SHORT vào notification; không đổi execution hoặc PnL.
