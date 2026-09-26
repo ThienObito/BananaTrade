@@ -867,6 +867,21 @@
 - Rui ro con lai: snapshotIndicators dùng Object.entries().map nhưng vẫn tạo key nguy hiểm hoặc giữ symbol key whitespace, gây render không nhất quán.
 - Viec tiep theo de xuat: Lọc key indicator hợp lệ và bỏ key trống trước render.
 
+## Chu ky 205 — bo qua Phase A bi chan, harden duplicate snapshot indicators doc lap
+- Trang thai: FAILED
+- File da sua: BLOCKED.md; PROGRESS.md
+- Kiem chung blocker: Interpreter bat buoc `E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe` van `MISSING`; khong the chay pytest/mypy/ruff.
+- Nguyen nhan viec truoc: Phase A van bi chan boi moi truong Python thieu.
+- Rui ro con lai: Indicator key khác casing/whitespace có thể ghi đè giá trị sau canonicalization mà không có quy tắc rõ ràng.
+- Viec tiep theo de xuat: Giữ indicator value đầu tiên cho mỗi canonical key.
+
+## Chu ky 206 — harden duplicate snapshot indicators
+- Trang thai: DONE
+- File da sua: web/app.js; PROGRESS.md
+- Kiem chung: `node --check web/app.js` — pass; quet tĩnh xác nhận duplicate canonical indicator giữ value đầu tiên và normalized map dùng null-prototype — pass.
+- Rui ro con lai: Full pytest/mypy/ruff chưa chạy vì interpreter bắt buộc thiếu.
+- Viec tiep theo de xuat: Khi interpreter tồn tại, chạy A1; không lặp lại duplicate indicator guard.
+
 ## Chu ky 204 — harden snapshot indicator primitive boundary
 - Trang thai: DONE
 - File da sua: web/app.js; PROGRESS.md

@@ -1272,3 +1272,16 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Không đổi giá trị indicator; chỉ canonicalize key tại UI boundary.
+
+## Chu kỳ 205 — harden duplicate snapshot indicators [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): Indicator key khác casing/whitespace có thể ghi đè giá trị sau canonicalization mà không có quy tắc rõ ràng.
+- Requirement -> test:
+  - Indicator value đầu tiên thắng cho mỗi canonical key: kiểm tra tĩnh xác nhận — pass.
+  - Normalized map dùng null-prototype record: quét tĩnh xác nhận — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Duy trì thứ tự Object.entries; không thay đổi snapshot payload.

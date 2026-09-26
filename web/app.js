@@ -237,9 +237,12 @@ function snapshotIndicators(snapshot) {
   const summary = snapshotSummary(snapshot);
   const indicators = source.indicators || summary.indicators;
   if (!indicators || typeof indicators !== 'object' || Array.isArray(indicators)) return {};
-  return Object.fromEntries(Object.entries(indicators)
-    .map(([key, value]) => [key.trim().toLowerCase(), safeNumber(value)])
-    .filter(([key]) => key));
+  const normalized = Object.create(null);
+  Object.entries(indicators).forEach(([key, value]) => {
+    const normalizedKey = key.trim().toLowerCase();
+    if (normalizedKey && !(normalizedKey in normalized)) normalized[normalizedKey] = safeNumber(value);
+  });
+  return normalized;
 }
 
 function snapshotMetadata(snapshot) {
