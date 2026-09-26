@@ -179,6 +179,10 @@ function snapshotRegime(snapshot) {
   return typeof regime === 'string' && regime.trim() ? regime.trim().toUpperCase() : '—';
 }
 
+function snapshotIsStale(snapshot) {
+  return snapshotSource(snapshot).stale === true;
+}
+
 function formatMetric(value, digits = 2) {
   const number = Number(value);
   return Number.isFinite(number) ? number.toLocaleString(undefined, { maximumFractionDigits: digits }) : '—';
@@ -190,7 +194,7 @@ function renderSnapshotMetrics(snapshot) {
   const confidence = $('#market-confidence');
   const chartFooter = document.querySelector('.chart-footer');
   if (marketBias) marketBias.textContent = snapshotRegime(snapshot);
-  if (confidence) confidence.textContent = snapshotSource(snapshot).stale ? 'stale snapshot' : 'snapshot source';
+  if (confidence) confidence.textContent = snapshotIsStale(snapshot) ? 'stale snapshot' : 'snapshot source';
   if (chartFooter) {
     chartFooter.innerHTML = [
       ['EMA', indicators.ema],
@@ -360,7 +364,7 @@ function renderSnapshotViews() {
   }
   if (priceElement) priceElement.textContent = '$' + price.toFixed(2);
   if (orderPrice) orderPrice.value = price.toFixed(2);
-  setStaleBadge(Boolean(snapshotSource(state.snapshot).stale ?? state.snapshot.stale));
+  setStaleBadge(snapshotIsStale(state.snapshot));
   renderSnapshotMetrics(state.snapshot);
   renderCandles(state.snapshot);
 }

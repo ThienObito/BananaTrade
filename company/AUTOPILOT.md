@@ -323,6 +323,21 @@
 - Rui ro con lai: snapshot response co `regime` khong phai string van co the lam `renderSnapshotMetrics` goi `.toUpperCase()` tren gia tri sai kieu.
 - Viec tiep theo de xuat: Them helper chuan hoa regime, chi render text uppercase khi payload la string non-empty.
 
+## Chu ky 67 — bo qua Phase A bi chan, chuan hoa stale flag snapshot doc lap
+- Trang thai: FAILED
+- File da sua: BLOCKED.md; PROGRESS.md
+- Kiem chung blocker: Interpreter bat buoc `E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe` van `MISSING`; khong the chay pytest/mypy/ruff.
+- Nguyen nhan viec truoc: Phase A van bi chan boi moi truong Python thieu.
+- Rui ro con lai: `stale` la string `"false"` van truthy, lam UI hien STALE sai; gia tri khac boolean cung co the bi dien giai sai.
+- Viec tiep theo de xuat: Them helper chi chap nhan boolean stale va dung chung cho confidence/badge.
+
+## Chu ky 68 — chuan hoa snapshot stale flag
+- Trang thai: DONE
+- File da sua: web/app.js; PROGRESS.md
+- Kiem chung: `node --check web/app.js` — pass; quet tĩnh xác nhận stale flag chỉ nhận boolean true và được dùng thống nhất ở confidence/badge — pass.
+- Rui ro con lai: Full pytest/mypy/ruff chưa chạy vì interpreter bắt buộc thiếu.
+- Viec tiep theo de xuat: Khi interpreter tồn tại, chạy A1; không lặp lại stale flag guard.
+
 ## Chu ky 66 — chuan hoa snapshot regime
 - Trang thai: DONE
 - File da sua: web/app.js; PROGRESS.md

@@ -364,3 +364,16 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Regime không hợp lệ hiển thị `—`; không tạo bias mặc định.
+
+## Chu kỳ 67 — chuẩn hóa snapshot stale flag [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): `stale` dạng string `"false"` bị coi là truthy, làm UI hiển thị cờ STALE sai.
+- Requirement -> test:
+  - Chỉ boolean `true` được coi là stale: kiểm tra tĩnh xác nhận `snapshotIsStale` — pass.
+  - Confidence text và badge dùng cùng helper: quét tĩnh xác nhận hai call site — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Không diễn giải chuỗi hoặc số thành boolean; payload sai kiểu được coi là không stale.
