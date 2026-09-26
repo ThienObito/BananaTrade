@@ -143,14 +143,24 @@ function normalizePosition(payload) {
 function normalizeAnalysis(payload) {
   if (!payload || typeof payload !== 'object' || Array.isArray(payload) || !Array.isArray(payload.reports)) return null;
   const reports = payload.reports
-    .filter((report) => report && typeof report === 'object' && !Array.isArray(report) && typeof report.agent === 'string')
-    .map((report) => ({
-      agent: report.agent,
-      bias: typeof report.bias === 'string' ? report.bias : null,
-      confidence: typeof report.confidence === 'string' || Number.isFinite(Number(report.confidence))
+    .filter((report) => report && typeof report === 'object' && !Array.isArray(report))
+    .map((report) => {
+      const agent = typeof report.agent === 'string' ? report.agent.trim() : '';
+      const biasText = typeof report.bias === 'string' ? report.bias.trim() : '';
+      const confidenceText = typeof report.confidence === 'string' ? report.confidence.trim() : '';
+      const confidenceNumber = confidenceText ? Number(confidenceText) : null;
+      const confidence = typeof report.confidence === 'number' && Number.isFinite(report.confidence)
         ? report.confidence
-        : null,
-    }));
+        : confidenceText
+          ? Number.isFinite(confidenceNumber) ? confidenceNumber : confidenceText
+          : null;
+      return {
+        agent,
+        bias: biasText || null,
+        confidence,
+      };
+    })
+    .filter((report) => report.agent);
   return { reports };
 }
 

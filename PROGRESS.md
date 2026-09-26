@@ -617,3 +617,17 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Error payload sai type dùng fallback thao tác; không biến response lỗi thành thành công.
+
+## Chu kỳ 105 — chuẩn hóa analysis report leaf [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): Analysis report chấp nhận leaf string whitespace và giữ confidence numeric string, làm notification/UI nhận nhãn rỗng hoặc kiểu không nhất quán.
+- Requirement -> test:
+  - Agent được trim và report thiếu agent sau trim bị loại: kiểm tra tĩnh xác nhận — pass.
+  - Bias string được trim, rỗng thành `null`: quét tĩnh xác nhận — pass.
+  - Confidence number finite giữ dạng number; numeric string được chuyển number; string không numeric giữ trimmed string: quét tĩnh xác nhận — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Không suy đoán confidence/bias; chỉ chuẩn hóa whitespace và kiểu dữ liệu đã có.
