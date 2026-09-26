@@ -577,3 +577,16 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Không tạo order id thay thế; id sai shape tiếp tục bị reject bởi `requireOrderId`.
+
+## Chu kỳ 99 — validate order payload shape [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): `readOrderId` chưa có contract rõ cho order envelope; payload order primitive/array vẫn được optional-chain xử lý như object.
+- Requirement -> test:
+  - Order envelope phải là object không phải array: kiểm tra tĩnh xác nhận — pass.
+  - Chỉ đọc `order_id` sau shape guard: quét tĩnh xác nhận — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Envelope sai shape bị reject; không thay đổi order ID normalization đã có.

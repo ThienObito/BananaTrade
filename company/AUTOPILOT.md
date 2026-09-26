@@ -451,6 +451,21 @@
 - Rui ro con lai: `readOrderId` chap nhan chuoi chi co whitespace va tra ve order id chua trim; notification/state mutation co the danh dau response khong hop le la thanh cong.
 - Viec tiep theo de xuat: Chi chap nhan order id string trim khong rong va tra ve gia tri da trim.
 
+## Chu ky 99 — bo qua Phase A bi chan, validate order payload shape doc lap
+- Trang thai: FAILED
+- File da sua: BLOCKED.md; PROGRESS.md
+- Kiem chung blocker: Interpreter bat buoc `E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe` van `MISSING`; khong the chay pytest/mypy/ruff.
+- Nguyen nhan viec truoc: Phase A van bi chan boi moi truong Python thieu.
+- Rui ro con lai: `readOrderId` truy cap `payload.order.order_id` qua optional chaining nhung khong kiem tra order la plain object; payload array/primitive co the tao edge case kho doan va giu contract khong ro rang.
+- Viec tiep theo de xuat: Chi chap nhan order envelope va order id tu object khong phai array.
+
+## Chu ky 100 — validate order payload shape
+- Trang thai: DONE
+- File da sua: web/app.js; PROGRESS.md
+- Kiem chung: `node --check web/app.js` — pass; quet tĩnh xác nhận order envelope primitive/array bị reject trước order_id access — pass.
+- Rui ro con lai: Full pytest/mypy/ruff chưa chạy vì interpreter bắt buộc thiếu.
+- Viec tiep theo de xuat: Khi interpreter tồn tại, chạy A1; không lặp lại order envelope guard.
+
 ## Chu ky 98 — validate order id shape
 - Trang thai: DONE
 - File da sua: web/app.js; PROGRESS.md

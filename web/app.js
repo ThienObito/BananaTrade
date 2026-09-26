@@ -144,7 +144,9 @@ function normalizeAnalysis(payload) {
 }
 
 function readOrderId(payload) {
-  const orderId = payload?.order?.order_id;
+  const order = payload?.order;
+  if (!order || typeof order !== 'object' || Array.isArray(order)) return null;
+  const orderId = order.order_id;
   if (typeof orderId !== 'string') return null;
   const normalized = orderId.trim();
   return normalized || null;
