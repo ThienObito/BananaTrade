@@ -1259,3 +1259,16 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Giữ fallback position đầu tiên nếu snapshot symbol không có position; không đổi backend payload.
+
+## Chu kỳ 203 — harden snapshot indicator primitive boundary [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): snapshotIndicators giữ raw indicator key, có thể tạo label whitespace/casing không ổn định trong render.
+- Requirement -> test:
+  - Indicator key được trim và lowercase trước render: kiểm tra tĩnh xác nhận — pass.
+  - Indicator key rỗng bị loại bỏ: quét tĩnh xác nhận — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Không đổi giá trị indicator; chỉ canonicalize key tại UI boundary.

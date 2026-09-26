@@ -237,7 +237,9 @@ function snapshotIndicators(snapshot) {
   const summary = snapshotSummary(snapshot);
   const indicators = source.indicators || summary.indicators;
   if (!indicators || typeof indicators !== 'object' || Array.isArray(indicators)) return {};
-  return Object.fromEntries(Object.entries(indicators).map(([key, value]) => [key, safeNumber(value)]));
+  return Object.fromEntries(Object.entries(indicators)
+    .map(([key, value]) => [key.trim().toLowerCase(), safeNumber(value)])
+    .filter(([key]) => key));
 }
 
 function snapshotMetadata(snapshot) {
