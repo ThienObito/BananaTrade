@@ -389,20 +389,19 @@ async function renderState() {
   let backendState = null;
   try {
     const response = await fetch('/api/paper/state');
-    if (response.ok) {
-      backendState = normalizePaperState(await readJson(response));
-      if (!backendState) throw new Error('paper state has invalid shape');
-      const positions = Object.values(backendState.positions)
-        .map((position) => normalizePosition(position))
-        .filter((position) => position !== null);
-      state.position = positions[0] || null;
-      // The backend currently exposes fills, not closed-trade PnL. Do not
-      // manufacture performance numbers from fills; an empty history is honest.
-      state.trades = [];
-      state.cash = Number.isFinite(Number(backendState.cash)) ? Number(backendState.cash) : null;
-      state.equity = Number.isFinite(Number(backendState.equity)) ? Number(backendState.equity) : null;
-      save();
-    }
+    if (!response.ok) throw new Error('paper state unavailable');
+    backendState = normalizePaperState(await readJson(response));
+    if (!backendState) throw new Error('paper state has invalid shape');
+    const positions = Object.values(backendState.positions)
+      .map((position) => normalizePosition(position))
+      .filter((position) => position !== null);
+    state.position = positions[0] || null;
+    // The backend currently exposes fills, not closed-trade PnL. Do not
+    // manufacture performance numbers from fills; an empty history is honest.
+    state.trades = [];
+    state.cash = Number.isFinite(Number(backendState.cash)) ? Number(backendState.cash) : null;
+    state.equity = Number.isFinite(Number(backendState.equity)) ? Number(backendState.equity) : null;
+    save();
   } catch (error) {
     backendState = null;
     state.position = null;

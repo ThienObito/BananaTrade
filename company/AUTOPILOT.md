@@ -299,6 +299,21 @@
 - Rui ro con lai: khi `/api/paper/state` tra HTTP loi hoac payload khong hop le, UI giu state cu trong memory va van co the hien thi position/equity stale.
 - Viec tiep theo de xuat: Xoa paper state local khi backend state khong kha dung, hien thi waiting thay vi du lieu cu.
 
+## Chu ky 61 — bo qua Phase A bi chan, fail-closed HTTP paper state doc lap
+- Trang thai: FAILED
+- File da sua: BLOCKED.md; PROGRESS.md
+- Kiem chung blocker: Interpreter bat buoc `E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe` van `MISSING`; khong the chay pytest/mypy/ruff.
+- Nguyen nhan viec truoc: Phase A van bi chan boi moi truong Python thieu.
+- Rui ro con lai: `renderState` chi normalize khi `response.ok`, nhung HTTP 4xx/5xx khong throw va co the giu state cu thay vi fail-closed.
+- Viec tiep theo de xuat: Throw khi `/api/paper/state` tra non-2xx de di qua catch reset state.
+
+## Chu ky 62 — fail-closed HTTP paper state
+- Trang thai: DONE
+- File da sua: web/app.js; PROGRESS.md
+- Kiem chung: `node --check web/app.js` — pass; quet tĩnh xác nhận HTTP non-2xx throw trước normalization và đi vào reset state — pass.
+- Rui ro con lai: Full pytest/mypy/ruff chưa chạy vì interpreter bắt buộc thiếu.
+- Viec tiep theo de xuat: Khi interpreter tồn tại, chạy A1; không lặp lại HTTP paper-state guard.
+
 ## Chu ky 60 — fail-closed paper state
 - Trang thai: DONE
 - File da sua: web/app.js; PROGRESS.md

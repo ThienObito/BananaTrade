@@ -325,3 +325,16 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Backend vẫn là nguồn authoritative; lỗi state không được che bằng dữ liệu local cũ.
+
+## Chu kỳ 61 — fail-closed HTTP paper state [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): `renderState` không throw khi `/api/paper/state` trả HTTP non-2xx, nên catch reset state không được kích hoạt.
+- Requirement -> test:
+  - HTTP 4xx/5xx phải đi vào fail-closed catch: kiểm tra tĩnh xác nhận `if (!response.ok) throw` — pass.
+  - Không còn nhánh `if (response.ok)` bao quanh toàn bộ state sync: quét tĩnh — pass.
+  - Payload/reset behavior giữ nguyên và JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: HTTP error không được coi là trạng thái paper hợp lệ; UI chuyển waiting và xóa cache như payload/network error.
