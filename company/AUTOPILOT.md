@@ -347,6 +347,21 @@
 - Rui ro con lai: candle input khong phai array (hoac timeframe value khong phai array) co the bi `.map` truc tiep va throw truoc khi filter.
 - Viec tiep theo de xuat: Chuan hoa candle input thanh array rong truoc khi map.
 
+## Chu ky 73 — bo qua Phase A bi chan, validate candle item shape doc lap
+- Trang thai: FAILED
+- File da sua: BLOCKED.md; PROGRESS.md
+- Kiem chung blocker: Interpreter bat buoc `E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe` van `MISSING`; khong the chay pytest/mypy/ruff.
+- Nguyen nhan viec truoc: Phase A van bi chan boi moi truong Python thieu.
+- Rui ro con lai: candle item la null/number/string van bi doc `candle.open` truc tiep trong callback `.map`, co the throw.
+- Viec tiep theo de xuat: Loc candle item object truoc khi doc leaf fields, khong de item sai shape pha chart render.
+
+## Chu ky 74 — validate snapshot candle item
+- Trang thai: DONE
+- File da sua: web/app.js; PROGRESS.md
+- Kiem chung: `node --check web/app.js` — pass; quet tĩnh xác nhận filter candle item object chạy trước `.map`, null/primitive bị loại — pass.
+- Rui ro con lai: Full pytest/mypy/ruff chưa chạy vì interpreter bắt buộc thiếu.
+- Viec tiep theo de xuat: Khi interpreter tồn tại, chạy A1; không lặp lại candle item guard.
+
 ## Chu ky 72 — validate snapshot candle input
 - Trang thai: DONE
 - File da sua: web/app.js; PROGRESS.md

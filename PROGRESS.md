@@ -403,3 +403,16 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Không tạo candle lịch sử giả; input rỗng dùng fallback chart đã có với canonical snapshot price.
+
+## Chu kỳ 73 — validate snapshot candle item [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): candle item null/primitive có thể làm callback đọc `open/high/low/close` trên giá trị sai shape.
+- Requirement -> test:
+  - Chỉ map candle item là object không phải array: kiểm tra tĩnh xác nhận filter trước map — pass.
+  - Item sai shape bị loại trước khi đọc leaf fields: quét tĩnh — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Candle hợp lệ vẫn phải qua finite numeric filter; item lỗi không tạo nến giả.

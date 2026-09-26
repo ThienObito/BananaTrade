@@ -214,6 +214,7 @@ function snapshotCandles(snapshot, price) {
     : configured?.[SNAPSHOT_TIMEFRAME];
   const input = Array.isArray(configuredInput) ? configuredInput : [];
   const candles = input
+    .filter((candle) => candle && typeof candle === 'object' && !Array.isArray(candle))
     .map((candle) => ({
       open: Number(candle.open),
       high: Number(candle.high),
