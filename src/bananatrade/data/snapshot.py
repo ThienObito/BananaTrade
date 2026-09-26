@@ -44,6 +44,10 @@ def closed_candles(frame: pd.DataFrame, timeframe: str, as_of: datetime) -> pd.D
     missing = sorted(required.difference(frame.columns))
     if missing:
         raise ValueError(f"OHLCV frame missing columns: {', '.join(missing)}")
+    numeric = frame[list(required)].apply(pd.to_numeric, errors="coerce")
+    invalid = sorted(numeric.columns[numeric.isna().any()].tolist())
+    if invalid:
+        raise ValueError(f"OHLCV frame contains invalid values in: {', '.join(invalid)}")
     if as_of.tzinfo is None:
         as_of = as_of.replace(tzinfo=UTC)
     opened = pd.to_datetime(frame["timestamp_ms"], unit="ms", utc=True)

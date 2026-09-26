@@ -13,6 +13,13 @@ def bars() -> pd.DataFrame:
     return pd.read_csv(path)
 
 
+def test_closed_candles_rejects_invalid_ohlcv_values() -> None:
+    frame = bars().copy()
+    frame.loc[0, "close"] = float("nan")
+    with pytest.raises(ValueError, match="invalid values in: close"):
+        closed_candles(frame, "1h", datetime.now(UTC))
+
+
 def test_closed_candles_rejects_missing_ohlcv_columns() -> None:
     frame = bars().drop(columns=["volume", "low"])
     with pytest.raises(ValueError, match="OHLCV frame missing columns: low, volume"):
