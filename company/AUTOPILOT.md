@@ -124,6 +124,21 @@
 - Rui ro con lai: Chua kiem tra gioi han quota qua lon va timestamp ledger malformed.
 - Viec tiep theo de xuat: Kiem tra timestamp va tinh nhat quan du lieu quota SQLite.
 
+## Chu ky 19 — bo qua chuan doan merge fallout bi chan
+- Trang thai: FAILED
+- File da sua: BLOCKED.md; PROGRESS.md
+- Kiem chung: Da xac nhan thu muc `E:\\Trade-AI\\BananaTrade`; kiem tra `E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe` cho ket qua `MISSING`. Khong the chay full pytest/mypy theo hard rule.
+- Nguyen nhan: Interpreter Python bat buoc cua project khong ton tai; quy trinh cam dung interpreter thay the.
+- Rui ro con lai: Merge fallout (pytest failures va mypy errors) chua duoc phan nhom hoac sua.
+- Viec tiep theo de xuat: Bo qua viec chan va hoan thanh tai lieu API doc lap, khong phu thuoc Python.
+
+## Chu ky 20 — tai lieu hoa Dashboard API
+- Trang thai: DONE
+- File da sua: docs/DASHBOARD_API.md; PROGRESS.md
+- Kiem chung: Da doc truc tiep `web_server.py`, `snapshot_api.py`, `risk_state_api.py`, `risk_check_api.py`, `quota_api.py` va `order_ticket_api.py`; tao tai lieu cho 8 route va error shape. Khong chay pytest/ruff/mypy vi interpreter bat buoc `E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe` van `MISSING`.
+- Rui ro con lai: Response runtime cua `/api/analysis/run` va server tich hop can duoc xac minh khi moi truong Python duoc khoi phuc; tai lieu khong thay the integration test.
+- Viec tiep theo de xuat: Khoi phuc interpreter bat buoc roi chay lai A1; khong lap lai tai lieu nay.
+
 ## TONG KET PHIEN
 - Da lam duoc: Hoan tat 18 chu ky hardening; sua breakout theo prior range, RSI flat market, validation OHLCV (cot, so, bounds, timestamp), orderbook (cau truc, price/size, am), va quota ledger/check inputs.
 - So lieu that: Test cuoi `E:\Trade-AI\BananaTrade\.venv\Scripts\python.exe -m pytest -q -p no:cacheprovider --basetemp=.pytest-tmp` — 175 passed in 4.81s.

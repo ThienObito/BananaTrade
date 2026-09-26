@@ -1,0 +1,25 @@
+# BLOCKED
+
+## Chu kỳ 1 — thiếu Python interpreter bắt buộc
+- Thời điểm: 2025-02-01 (ghi nhận khi khởi động phiên tự hành)
+- Lệnh kiểm tra: `Test-Path -LiteralPath 'E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe'`
+- Kết quả thực tế: `MISSING E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe`
+- Lỗi chính xác: Python interpreter bắt buộc không tồn tại tại đường dẫn `E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe`.
+- Hành động: DỪNG phiên theo hard rule; không dùng `python`, `py`, `.venv` hoặc interpreter khác để thay thế.
+- Kiểm chứng chưa chạy: `ruff`, `mypy`, `pytest` và `node --check` không thể chạy vì interpreter bắt buộc bị thiếu.
+
+## Step A1 — không thể chẩn đoán merge fallout
+- Đã xác nhận lại thư mục hiện tại: `E:\\Trade-AI\\BananaTrade`.
+- Lệnh kiểm tra interpreter bắt buộc: `Test-Path -LiteralPath 'E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe'`.
+- Kết quả thực tế: `MISSING E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe`.
+- Vì hard rule cấm dùng `python`, `py`, `.venv` hoặc interpreter khác, chưa được phép chạy full `pytest` hay `mypy src`.
+- Do đó chưa thể tạo danh sách failure/traceback đầy đủ hoặc nhóm root cause; không được suy đoán và không được sửa code.
+- Trạng thái: BLOCKED trước khi bắt đầu A1.
+
+## Yêu cầu mới — tiếp tục A1 đến C2 và tài liệu API
+- Đã xác nhận lại thư mục làm việc: `E:\\Trade-AI\\BananaTrade`.
+- Đã kiểm tra lại interpreter bắt buộc bằng `Test-Path -LiteralPath 'E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe'`.
+- Kết quả thực tế: `MISSING E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe`.
+- Theo hard rule, không được chạy full pytest/mypy, không được dùng interpreter khác và phải dừng ngay.
+- Vì chưa thể chẩn đoán A1 hoặc hoàn thành Phase A, chưa thể thực hiện Phase B/C hay tạo `docs/DASHBOARD_API.md` dựa trên endpoint đã kiểm chứng.
+- Không sửa code/test và không suy đoán endpoint, response shape hoặc số liệu kiểm thử.
