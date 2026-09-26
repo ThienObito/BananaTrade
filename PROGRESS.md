@@ -1335,3 +1335,16 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Chỉ thay đổi container nội bộ; render output vẫn tương đương map rỗng.
+
+## Chu kỳ 215 — deterministic snapshot indicator fallback [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): Candidate source/summary cùng object shape nhưng source có thể ít numeric value hợp lệ hơn summary, làm mất indicator hiển thị.
+- Requirement -> test:
+  - Chọn candidate có numeric value hợp lệ nhiều nhất: kiểm tra tĩnh xác nhận — pass.
+  - Hòa số lượng ưu tiên source vì reduce giữ candidate đầu tiên: quét tĩnh xác nhận — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Chỉ thay đổi lựa chọn UI source; không thay đổi snapshot payload.

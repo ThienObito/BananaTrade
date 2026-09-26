@@ -907,6 +907,21 @@
 - Rui ro con lai: Empty/all-malformed indicator path trả plain object có prototype, không nhất quán với normalized path.
 - Viec tiep theo de xuat: Trả null-prototype map an toàn cho mọi empty path.
 
+## Chu ky 215 — bo qua Phase A bi chan, harden snapshot indicator fallback deterministic doc lap
+- Trang thai: FAILED
+- File da sua: BLOCKED.md; PROGRESS.md
+- Kiem chung blocker: Interpreter bat buoc `E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe` van `MISSING`; khong the chay pytest/mypy/ruff.
+- Nguyen nhan viec truoc: Empty source và summary indicator cùng shape hợp lệ nhưng Object.values chọn source theo thứ tự mà không nêu rõ ưu tiên numeric richness.
+- Rui ro con lai: Source có ít value hợp lệ hơn summary nhưng vẫn được chọn, làm mất indicator hiển thị.
+- Viec tiep theo de xuat: Chọn candidate có số lượng numeric value hợp lệ cao nhất, ưu tiên source khi bằng nhau.
+
+## Chu ky 216 — deterministic snapshot indicator fallback
+- Trang thai: DONE
+- File da sua: web/app.js; PROGRESS.md
+- Kiem chung: `node --check web/app.js` — pass; quet tĩnh xác nhận chọn candidate numeric richness cao nhất và giữ source khi hòa — pass.
+- Rui ro con lai: Full pytest/mypy/ruff chưa chạy vì interpreter bắt buộc thiếu.
+- Viec tiep theo de xuat: Khi interpreter tồn tại, chạy A1; không lặp lại deterministic indicator fallback guard.
+
 ## Chu ky 214 — harden empty snapshot indicator map
 - Trang thai: DONE
 - File da sua: web/app.js; PROGRESS.md
