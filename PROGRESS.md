@@ -244,3 +244,16 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Validator không tạo report hoặc bias giả; response hợp lệ nhưng không có technical report chỉ hiển thị completed.
+
+## Chu kỳ 49 — strict analysis payload [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): `normalizeAnalysis` trước đó biến payload thiếu `reports` thành array rỗng, che giấu response malformed như thành công.
+- Requirement -> test:
+  - Payload thiếu hoặc reports không phải array phải bị từ chối: kiểm tra tĩnh xác nhận guard `!Array.isArray(payload.reports)` — pass.
+  - Payload hợp lệ nhưng reports rỗng vẫn được xử lý như không có report: flow giữ `data.reports.find` sau null guard — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Không tạo dữ liệu mặc định; phân biệt rõ malformed response và empty analysis result.

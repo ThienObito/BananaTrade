@@ -112,10 +112,10 @@ function normalizePaperState(payload) {
 }
 
 function normalizeAnalysis(payload) {
-  if (!payload || typeof payload !== 'object' || Array.isArray(payload)) return null;
-  const reports = Array.isArray(payload.reports) ? payload.reports.filter((report) => (
+  if (!payload || typeof payload !== 'object' || Array.isArray(payload) || !Array.isArray(payload.reports)) return null;
+  const reports = payload.reports.filter((report) => (
     report && typeof report === 'object' && typeof report.agent === 'string'
-  )) : [];
+  ));
   return { reports };
 }
 
