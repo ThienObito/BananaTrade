@@ -272,18 +272,23 @@ async function renderState() {
     if (response.ok) {
       backendState = await response.json();
       const positions = Object.values(backendState.positions || {}).filter((position) => position.quantity);
-      if (positions.length && !state.position) {
+      if (positions.length) {
         const position = positions[0];
         state.position = {
           side: position.quantity > 0 ? 'LONG' : 'SHORT',
-          entry: position.average_price,
-          qty: Math.abs(position.quantity),
-          opened: new Date().toISOString(),
+          entry: Number(position.average_price),
+          qty: Math.abs(Number(position.quantity)),
+          opened: position.opened || new Date().toISOString(),
         };
+      } else {
+        state.position = null;
       }
-      if (!positions.length) state.position = null;
+      // The backend currently exposes fills, not closed-trade PnL. Do not
+      // manufacture performance numbers from fills; an empty history is honest.
+      state.trades = [];
       state.cash = Number.isFinite(Number(backendState.cash)) ? Number(backendState.cash) : null;
       state.equity = Number.isFinite(Number(backendState.equity)) ? Number(backendState.equity) : null;
+      save();
     }
   } catch (error) {
     // The paper panel stays empty until its backend source is available.

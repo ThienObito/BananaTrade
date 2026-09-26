@@ -112,3 +112,16 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Guard chỉ bổ sung client-side; backend vẫn là nguồn kiểm soát cuối và không có thay đổi paper broker.
+
+## Chu kỳ 29 — đồng bộ paper state từ backend [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): localStorage có thể giữ position/trades cũ trong khi `/api/paper/state` là nguồn trạng thái backend thực tế.
+- Requirement -> test:
+  - Reload phải phản ánh positions backend kể cả khi local state cũ: kiểm tra tĩnh xác nhận backend luôn ghi đè hoặc xóa `state.position` — pass.
+  - Không tự chế PnL từ fills: kiểm tra tĩnh xác nhận không map fills thành performance trades — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Backend chưa cung cấp closed-trade PnL; frontend giữ lịch sử performance rỗng thay vì hiển thị số liệu giả. Full integration test cần chạy sau khi khôi phục Python.
