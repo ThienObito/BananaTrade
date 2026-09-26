@@ -36,3 +36,10 @@
 - Kết quả thực tế: `MISSING`.
 - Không chạy full pytest, mypy, ruff hoặc interpreter khác; không sửa code/test.
 - Không thể chẩn đoán Phase A hay tiếp tục Phase B/C cho tới khi interpreter chính xác này tồn tại.
+
+## Goal round 3 — blocker kéo dài ba round
+- Đã xác nhận lại thư mục `E:\\Trade-AI\\BananaTrade`.
+- Đã kiểm tra `E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe`; kết quả thực tế vẫn là `MISSING`.
+- Đây là lần thứ ba liên tiếp interpreter bắt buộc không tồn tại.
+- Không chạy pytest/mypy/ruff và không dùng interpreter thay thế theo hard rule.
+- Không thể tiếp tục Phase A hoặc kiểm chứng các bước sau.

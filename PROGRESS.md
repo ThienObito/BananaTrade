@@ -54,3 +54,11 @@
 - Không chạy pytest/mypy/ruff, không dùng interpreter thay thế và không sửa code/test.
 - Hạng mục tài liệu API đã hoàn tất ở commit `3c868c0`; không có công việc độc lập mới phù hợp với hard rule hiện tại.
 - Hành động: dừng round này; blocker chưa được khắc phục.
+
+## Goal round 3 — kiểm tra lại môi trường [BLOCKED]
+- Đã đọc lại `PROGRESS.md` trước khi thực hiện bước.
+- Đã xác nhận thư mục đúng: `E:\\Trade-AI\\BananaTrade`.
+- Đã kiểm tra interpreter bắt buộc `E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe`; kết quả thực tế: `MISSING`.
+- Đây là lần thứ ba liên tiếp cùng một blocker; không chạy pytest/mypy/ruff, không dùng interpreter thay thế, không sửa code/test.
+- Hạng mục tài liệu API đã hoàn tất; không còn hạng mục độc lập hợp lệ để thực hiện mà không vi phạm hard rule.
+- Hành động: đánh dấu goal bị chặn theo chính sách sau khi ghi nhận đủ ba round liên tiếp.
