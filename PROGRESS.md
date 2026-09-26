@@ -284,3 +284,17 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Giữ nguyên paper-only; helper chỉ chuẩn hóa lỗi client.
+
+## Chu kỳ 55 — validate backend position [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): position từ paper-state có thể chứa quantity/average_price sai kiểu hoặc không hữu hạn, nhưng frontend vẫn map trực tiếp.
+- Requirement -> test:
+  - Chỉ nhận quantity finite, khác 0 và average_price finite dương: kiểm tra tĩnh xác nhận `normalizePosition` — pass.
+  - State dùng position sau normalization, không map trực tiếp payload: quét tĩnh xác nhận `.map(normalizePosition)` — pass.
+  - Position invalid bị loại và không tạo side/entry/qty giả: kiểm tra tĩnh xác nhận `filter(position !== null)` — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Không thay đổi backend; position hợp lệ vẫn hiển thị side LONG/SHORT và entry/qty đã chuẩn hóa.

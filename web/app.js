@@ -111,6 +111,19 @@ function normalizePaperState(payload) {
   };
 }
 
+function normalizePosition(payload) {
+  if (!payload || typeof payload !== 'object') return null;
+  const quantity = Number(payload.quantity);
+  const averagePrice = Number(payload.average_price);
+  if (!Number.isFinite(quantity) || quantity === 0 || !Number.isFinite(averagePrice) || averagePrice <= 0) return null;
+  return {
+    side: quantity > 0 ? 'LONG' : 'SHORT',
+    entry: averagePrice,
+    qty: Math.abs(quantity),
+    opened: typeof payload.opened === 'string' ? payload.opened : new Date().toISOString(),
+  };
+}
+
 function normalizeAnalysis(payload) {
   if (!payload || typeof payload !== 'object' || Array.isArray(payload) || !Array.isArray(payload.reports)) return null;
   const reports = payload.reports.filter((report) => (
@@ -373,18 +386,10 @@ async function renderState() {
     if (response.ok) {
       backendState = normalizePaperState(await readJson(response));
       if (!backendState) throw new Error('paper state has invalid shape');
-      const positions = Object.values(backendState.positions).filter((position) => position && position.quantity);
-      if (positions.length) {
-        const position = positions[0];
-        state.position = {
-          side: position.quantity > 0 ? 'LONG' : 'SHORT',
-          entry: Number(position.average_price),
-          qty: Math.abs(Number(position.quantity)),
-          opened: position.opened || new Date().toISOString(),
-        };
-      } else {
-        state.position = null;
-      }
+      const positions = Object.values(backendState.positions)
+        .map((position) => normalizePosition(position))
+        .filter((position) => position !== null);
+      state.position = positions[0] || null;
       // The backend currently exposes fills, not closed-trade PnL. Do not
       // manufacture performance numbers from fills; an empty history is honest.
       state.trades = [];

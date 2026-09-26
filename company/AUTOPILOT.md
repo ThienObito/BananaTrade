@@ -275,6 +275,21 @@
 - Rui ro con lai: submit/open/close lap lai xu ly `readOrderId` va typed error; helper moi chi tach doc order ID, chua bao dam xu ly dong nhat.
 - Viec tiep theo de xuat: Tao helper `requireOrderId` tra order ID hoac throw typed Error, dung cung mot loi cho ba flow.
 
+## Chu ky 55 — bo qua Phase A bi chan, validate backend position doc lap
+- Trang thai: FAILED
+- File da sua: BLOCKED.md; PROGRESS.md
+- Kiem chung blocker: Interpreter bat buoc `E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe` van `MISSING`; khong the chay pytest/mypy/ruff.
+- Nguyen nhan viec truoc: Phase A van bi chan boi moi truong Python thieu.
+- Rui ro con lai: position payload co `quantity` string/NaN hoac `average_price` sai kieu van duoc map thanh state, dan toi side/qty/entry khong tin cay.
+- Viec tiep theo de xuat: Them helper chuan hoa mot position hop le, chi cho phep quantity va average_price finite, quantity khac 0.
+
+## Chu ky 56 — validate backend position
+- Trang thai: DONE
+- File da sua: web/app.js; PROGRESS.md
+- Kiem chung: `node --check web/app.js` — pass; quet tĩnh xác nhận position đi qua `normalizePosition`, loại payload sai kiểu trước render — pass.
+- Rui ro con lai: Full pytest/mypy/ruff chưa chạy vì interpreter bắt buộc thiếu.
+- Viec tiep theo de xuat: Khi interpreter tồn tại, chạy A1; không lặp lại position validation.
+
 ## Chu ky 54 — strict shared order guard
 - Trang thai: DONE
 - File da sua: web/app.js; PROGRESS.md
