@@ -267,6 +267,21 @@
 - Rui ro con lai: submit/open/close lap lai guard order shape, de thong bao loi khong dong nhat va kho kiem soat khi backend doi schema.
 - Viec tiep theo de xuat: Tao helper `readOrderId` duy nhat, tra null cho payload malformed va dung truoc moi state mutation.
 
+## Chu ky 53 — bo qua Phase A bi chan, tinh gon order response helper doc lap
+- Trang thai: FAILED
+- File da sua: BLOCKED.md; PROGRESS.md
+- Kiem chung blocker: Interpreter bat buoc `E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe` van `MISSING`; khong the chay pytest/mypy/ruff.
+- Nguyen nhan viec truoc: Phase A van bi chan boi moi truong Python thieu.
+- Rui ro con lai: submit/open/close lap lai xu ly `readOrderId` va typed error; helper moi chi tach doc order ID, chua bao dam xu ly dong nhat.
+- Viec tiep theo de xuat: Tao helper `requireOrderId` tra order ID hoac throw typed Error, dung cung mot loi cho ba flow.
+
+## Chu ky 54 — strict shared order guard
+- Trang thai: DONE
+- File da sua: web/app.js; PROGRESS.md
+- Kiem chung: `node --check web/app.js` — pass; quet tĩnh xác nhận `requireOrderId` là điểm kiểm tra duy nhất cho ba order flow — pass.
+- Rui ro con lai: Full pytest/mypy/ruff chưa chạy vì interpreter bắt buộc thiếu.
+- Viec tiep theo de xuat: Khi interpreter tồn tại, chạy A1; không lặp lại strict order guard.
+
 ## Chu ky 52 — shared order response helper
 - Trang thai: DONE
 - File da sua: web/app.js; PROGRESS.md

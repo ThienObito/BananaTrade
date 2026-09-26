@@ -270,3 +270,17 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Helper chỉ chấp nhận non-empty string và không thay đổi API/backend.
+
+## Chu kỳ 53 — strict shared order guard [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): ba flow vẫn tự xử lý null/error sau `readOrderId`, dễ tạo thông báo không đồng nhất.
+- Requirement -> test:
+  - Một helper `requireOrderId` throw typed Error cho order thường/close: kiểm tra tĩnh xác nhận — pass.
+  - Submit/open/close dùng helper trước success/state mutation: quét tĩnh xác nhận ba call site — pass.
+  - Không còn gọi `readOrderId(data)` trực tiếp ở flow: quét tĩnh — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Giữ nguyên paper-only; helper chỉ chuẩn hóa lỗi client.

@@ -124,6 +124,12 @@ function readOrderId(payload) {
   return typeof orderId === 'string' && orderId ? orderId : null;
 }
 
+function requireOrderId(payload, close = false) {
+  const orderId = readOrderId(payload);
+  if (!orderId) throw new Error(close ? 'Backend returned invalid close order' : 'Backend returned invalid order');
+  return orderId;
+}
+
 function save() {
   persistState({
     cash: state.cash,
@@ -453,8 +459,7 @@ function bind() {
       });
       const data = await readJson(response);
       if (!response.ok) throw new Error(data.error || 'risk rejected');
-      const orderId = readOrderId(data);
-      if (!orderId) throw new Error('Backend returned invalid order');
+      const orderId = requireOrderId(data);
       notify('Paper order filled · ' + orderId);
     } catch (error) {
       notify('Order rejected: ' + error.message);
@@ -495,8 +500,7 @@ async function openPaper(side) {
     });
     const data = await readJson(response);
     if (!response.ok) throw new Error(data.error || 'order rejected');
-    const orderId = readOrderId(data);
-    if (!orderId) throw new Error('Backend returned invalid order');
+    requireOrderId(data);
     state.position = { side, entry: state.price, qty: quantity, opened: new Date().toISOString() };
     save();
     notify('Backend paper ' + side + ' opened');
@@ -524,8 +528,7 @@ async function closePaper() {
     });
     const data = await readJson(response);
     if (!response.ok) throw new Error(data.error || 'close rejected');
-    const orderId = readOrderId(data);
-    if (!orderId) throw new Error('Backend returned invalid close order');
+    requireOrderId(data, true);
     const pnl = state.position.side === 'LONG'
       ? (state.price - state.position.entry) * state.position.qty
       : (state.position.entry - state.price) * state.position.qty;
