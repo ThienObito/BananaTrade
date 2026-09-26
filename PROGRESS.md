@@ -1420,3 +1420,16 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Không sửa payload backend; snapshot thành công tiếp theo thay thế stale snapshot.
+
+## Chu kỳ 228 — giữ stale flag đúng lớp snapshot lồng nhau [DONE]
+- Commit: chờ commit sau khi hoàn tất journal refinement.
+- Tests: không chạy; interpreter bắt buộc không tồn tại.
+- Checks: ruff=na mypy=na pytest=na; `node --check web/app.js` — pass.
+- Root cause (Phase A only): Snapshot response có thể dùng wrapper `{snapshot: ...}`; đặt stale ở wrapper không làm `snapshotIsStale()` đọc được vì hàm đọc metadata từ inner snapshot.
+- Requirement -> test:
+  - Wrapper snapshot đặt `stale: true` trên inner payload: static scan xác nhận — pass.
+  - Payload flat vẫn giữ stale fallback: static scan xác nhận — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Chỉ sửa vị trí stale flag nội bộ; không thay đổi backend response.

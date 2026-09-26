@@ -1669,6 +1669,13 @@
 - Rui ro con lai: Full pytest/mypy/ruff chưa chạy vì interpreter bắt buộc thiếu.
 - Viec tiep theo de xuat: Khi interpreter tồn tại, chạy A1; giữ regression test cho snapshot stale fallback.
 
+## Chu ky 228 — giu stale flag dung lop snapshot long nhau
+- Trang thai: DONE
+- File da sua: web/app.js; PROGRESS.md; company/AUTOPILOT.md
+- Kiem chung: `node --check web/app.js` — pass; static scan xác nhận wrapper đặt stale trên inner snapshot và flat payload vẫn được hỗ trợ — pass.
+- Rui ro con lai: Full pytest/mypy/ruff chưa chạy vì interpreter bắt buộc thiếu.
+- Viec tiep theo de xuat: Khi interpreter tồn tại, chạy A1; không lặp lại nested stale fallback guard.
+
 ## Chu ky 223 — dung vi interpreter bat buoc thieu
 - Trang thai: BLOCKED
 - File da sua: BLOCKED.md; PROGRESS.md; company/AUTOPILOT.md

@@ -501,7 +501,9 @@ async function updateSnapshot() {
     notify('Market snapshot refreshed');
   } catch (error) {
     if (state.snapshot && snapshotPrice(state.snapshot) !== null) {
-      const staleSnapshot = { ...state.snapshot, stale: true };
+      const staleSnapshot = state.snapshot.snapshot && typeof state.snapshot.snapshot === 'object'
+        ? { ...state.snapshot, snapshot: { ...state.snapshot.snapshot, stale: true } }
+        : { ...state.snapshot, stale: true };
       state.snapshot = staleSnapshot;
       state.price = snapshotPrice(staleSnapshot);
       renderSnapshotViews();
