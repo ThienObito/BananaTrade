@@ -811,6 +811,21 @@
 - Rui ro con lai: Submit-order toast luôn ghi “filled” nhưng không hiển thị paper/risk-gated context từ flow hiện tại.
 - Viec tiep theo de xuat: Làm rõ toast là paper order đã được risk gate xác nhận.
 
+## Chu ky 191 — bo qua Phase A bi chan, harden paper-state positions boundary doc lap
+- Trang thai: FAILED
+- File da sua: BLOCKED.md; PROGRESS.md
+- Kiem chung blocker: Interpreter bat buoc `E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe` van `MISSING`; khong the chay pytest/mypy/ruff.
+- Nguyen nhan viec truoc: Phase A van bi chan boi moi truong Python thieu.
+- Rui ro con lai: normalizePaperState chỉ kiểm tra positions là object nhưng vẫn giữ array/object leaf tùy ý, có thể đưa dữ liệu malformed vào render.
+- Viec tiep theo de xuat: Giới hạn positions thành object record không phải array trước khi render.
+
+## Chu ky 192 — harden paper-state positions boundary
+- Trang thai: DONE
+- File da sua: web/app.js; PROGRESS.md
+- Kiem chung: `node --check web/app.js` — pass; quet tĩnh xác nhận normalizePaperState lọc position record malformed trước render — pass.
+- Rui ro con lai: Full pytest/mypy/ruff chưa chạy vì interpreter bắt buộc thiếu.
+- Viec tiep theo de xuat: Khi interpreter tồn tại, chạy A1; không lặp lại paper-state positions guard.
+
 ## Chu ky 190 — lam ro submit-order risk gate
 - Trang thai: DONE
 - File da sua: web/app.js; PROGRESS.md

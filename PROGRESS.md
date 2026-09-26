@@ -1183,3 +1183,16 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Chỉ thay presentation; không thay đổi backend request hoặc fill semantics.
+
+## Chu kỳ 191 — harden paper-state positions boundary [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): normalizePaperState giữ nguyên positions object chưa lọc, có thể đưa array hoặc leaf malformed vào render.
+- Requirement -> test:
+  - Chỉ giữ position record là object không phải array: kiểm tra tĩnh xác nhận — pass.
+  - Không còn truyền raw `payload.positions` sang state normalized: quét tĩnh xác nhận — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Giữ nguyên symbol key và các leaf backend; chỉ loại bỏ record malformed ở boundary.

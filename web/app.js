@@ -128,11 +128,15 @@ async function readJson(response) {
 function normalizePaperState(payload) {
   if (!payload || typeof payload !== 'object' || Array.isArray(payload)) return null;
   if (!payload.positions || typeof payload.positions !== 'object' || Array.isArray(payload.positions)) return null;
+  const positions = {};
+  Object.entries(payload.positions).forEach(([symbol, position]) => {
+    if (position && typeof position === 'object' && !Array.isArray(position)) positions[symbol] = position;
+  });
   const cash = safeNumber(payload.cash);
   const equity = safeNumber(payload.equity);
   if (cash === null || cash < 0 || equity === null || equity < 0) return null;
   return {
-    positions: payload.positions,
+    positions,
     cash,
     equity,
   };
