@@ -62,3 +62,15 @@
 - Đây là lần thứ ba liên tiếp cùng một blocker; không chạy pytest/mypy/ruff, không dùng interpreter thay thế, không sửa code/test.
 - Hạng mục tài liệu API đã hoàn tất; không còn hạng mục độc lập hợp lệ để thực hiện mà không vi phạm hard rule.
 - Hành động: đánh dấu goal bị chặn theo chính sách sau khi ghi nhận đủ ba round liên tiếp.
+
+## Chu kỳ 21 — sửa request snapshot frontend [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy do interpreter bắt buộc bị thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): Phase A bị chặn bởi `E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe` không tồn tại; frontend gọi `/api/snapshot` không có query bắt buộc `symbol` và `timeframe`.
+- Requirement -> test:
+  - Frontend phải gửi symbol và timeframe bắt buộc: kiểm tra tĩnh xác nhận `URLSearchParams` chứa `BTC/USDT`, `1h` và URL `/api/snapshot?`.
+  - JavaScript phải hợp lệ: `node --check web/app.js` — pass, không có output lỗi.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Đây là sửa frontend độc lập, không chạm backend, database, LLM hay exchange. Full suite phải chạy lại khi interpreter đúng đường dẫn được khôi phục.

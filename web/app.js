@@ -1,0 +1,402 @@
+const $ = (selector) => document.querySelector(selector);
+const $$ = (selector) => document.querySelectorAll(selector);
+
+const storedState = JSON.parse(localStorage.getItem('banana-paper-state') || '{}');
+const state = {
+  cash: 10000,
+  position: null,
+  trades: [],
+  ...storedState,
+  // A price is valid only after it has been received from /api/snapshot.
+  price: null,
+  snapshot: null,
+};
+
+const SNAPSHOT_SYMBOL = 'BTC/USDT';
+const SNAPSHOT_TIMEFRAME = '1h';
+
+const clock = $('#clock');
+function tick() {
+  if (clock) clock.textContent = new Date().toISOString().slice(11, 19);
+}
+tick();
+setInterval(tick, 1000);
+
+const toast = $('#toast');
+function notify(message) {
+  if (!toast) return;
+  toast.textContent = message;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 2200);
+}
+
+function save() {
+  localStorage.setItem('banana-paper-state', JSON.stringify({
+    cash: state.cash,
+    position: state.position,
+    trades: state.trades,
+  }));
+}
+
+function snapshotSource(snapshot) {
+  return snapshot?.snapshot || snapshot || {};
+}
+
+function snapshotPrice(snapshot) {
+  const source = snapshotSource(snapshot);
+  const summary = source.timeframes?.['1h'];
+  const value = source.last_price ?? summary?.last_price;
+  const price = Number(value);
+  return Number.isFinite(price) ? price : null;
+}
+
+function snapshotCandles(snapshot, price) {
+  const source = snapshotSource(snapshot);
+  const configured = source.candles ?? snapshot?.candles ?? source.ohlcv;
+  const input = Array.isArray(configured)
+    ? configured
+    : configured?.['1h'] || [];
+  const candles = input
+    .map((candle) => ({
+      open: Number(candle.open),
+      high: Number(candle.high),
+      low: Number(candle.low),
+      close: Number(candle.close),
+    }))
+    .filter((candle) => Object.values(candle).every(Number.isFinite));
+
+  if (!candles.length) {
+    return [{ open: price, high: price, low: price, close: price }];
+  }
+
+  // The snapshot's canonical last price is the chart's final close as well.
+  candles[candles.length - 1] = {
+    ...candles[candles.length - 1],
+    close: price,
+    high: Math.max(candles[candles.length - 1].high, price),
+    low: Math.min(candles[candles.length - 1].low, price),
+  };
+  return candles;
+}
+
+function setStaleBadge(stale) {
+  const price = $('#market-price');
+  const parent = price?.parentElement;
+  if (!parent) return;
+  let badge = $('#snapshot-stale');
+  if (!badge) {
+    badge = document.createElement('span');
+    badge.id = 'snapshot-stale';
+    badge.className = 'badge stale-badge';
+    badge.setAttribute('aria-label', 'Market snapshot is stale');
+    parent.appendChild(badge);
+  }
+  badge.textContent = 'STALE';
+  badge.hidden = !stale;
+}
+
+function renderCandles(snapshot) {
+  const svg = $('#live-candles');
+  const price = snapshotPrice(snapshot);
+  if (!svg || price === null) return;
+
+  svg.querySelectorAll('.area, .line, .guide, .point, .live-candle').forEach((node) => node.remove());
+  const candles = snapshotCandles(snapshot, price);
+  const lows = candles.map((candle) => candle.low);
+  const highs = candles.map((candle) => candle.high);
+  const rawLow = Math.min(...lows);
+  const rawHigh = Math.max(...highs);
+  const rawRange = rawHigh - rawLow;
+  const padding = rawRange ? rawRange * 0.05 : Math.max(Math.abs(price) * 0.001, 1);
+  const low = rawLow - padding;
+  const high = rawHigh + padding;
+  const range = high - low || 1;
+  const width = 760;
+  const height = 245;
+  const step = width / candles.length;
+  const y = (value) => ((high - value) / range) * height;
+
+  candles.forEach((candle, index) => {
+    const x = index * step + step * 0.18;
+    const candleWidth = step * 0.64;
+    const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    group.classList.add('live-candle');
+    group.dataset.close = String(candle.close);
+    const wick = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    wick.setAttribute('x1', String(x + candleWidth / 2));
+    wick.setAttribute('x2', String(x + candleWidth / 2));
+    wick.setAttribute('y1', String(y(candle.high)));
+    wick.setAttribute('y2', String(y(candle.low)));
+    wick.setAttribute('stroke', candle.close >= candle.open ? '#35d399' : '#ff647c');
+    const body = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+    body.setAttribute('x', String(x));
+    body.setAttribute('y', String(Math.min(y(candle.open), y(candle.close))));
+    body.setAttribute('width', String(candleWidth));
+    body.setAttribute('height', String(Math.max(1, Math.abs(y(candle.close) - y(candle.open)))));
+    body.setAttribute('fill', candle.close >= candle.open ? '#35d399' : '#ff647c');
+    body.setAttribute('opacity', '.85');
+    group.append(wick, body);
+    svg.appendChild(group);
+  });
+
+  const closePath = candles.map((candle, index) => {
+    const x = index * step + step / 2;
+    return `${index === 0 ? 'M' : 'L'} ${x} ${y(candle.close)}`;
+  }).join(' ');
+  const priceOverlay = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+  priceOverlay.classList.add('line', 'price-overlay');
+  priceOverlay.setAttribute('d', closePath);
+  priceOverlay.setAttribute('fill', 'none');
+  priceOverlay.setAttribute('stroke', '#35d7ff');
+  priceOverlay.setAttribute('stroke-width', '2.5');
+  priceOverlay.setAttribute('stroke-linecap', 'round');
+  priceOverlay.setAttribute('stroke-linejoin', 'round');
+  priceOverlay.setAttribute('vector-effect', 'non-scaling-stroke');
+  priceOverlay.setAttribute('data-series', 'price-close');
+  priceOverlay.setAttribute('aria-label', 'BTC/USDT price close overlay (blue line)');
+  svg.appendChild(priceOverlay);
+
+  const legend = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+  legend.classList.add('line', 'price-overlay-legend');
+  legend.setAttribute('transform', 'translate(16 18)');
+  legend.setAttribute('role', 'group');
+  legend.setAttribute('aria-label', 'Price chart legend: blue line is price close');
+  const legendBackground = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+  legendBackground.setAttribute('x', '0');
+  legendBackground.setAttribute('y', '-12');
+  legendBackground.setAttribute('width', '132');
+  legendBackground.setAttribute('height', '22');
+  legendBackground.setAttribute('rx', '4');
+  legendBackground.setAttribute('fill', '#080d16');
+  legendBackground.setAttribute('fill-opacity', '.86');
+  legendBackground.setAttribute('stroke', 'none');
+  const legendLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+  legendLine.setAttribute('x1', '8');
+  legendLine.setAttribute('x2', '28');
+  legendLine.setAttribute('y1', '0');
+  legendLine.setAttribute('y2', '0');
+  legendLine.setAttribute('stroke', '#35d7ff');
+  legendLine.setAttribute('stroke-width', '2.5');
+  legendLine.setAttribute('stroke-linecap', 'round');
+  const legendText = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+  legendText.setAttribute('x', '36');
+  legendText.setAttribute('y', '4');
+  legendText.setAttribute('fill', '#e7f0fa');
+  legendText.setAttribute('stroke', 'none');
+  legendText.setAttribute('font-family', 'DM Mono, monospace');
+  legendText.setAttribute('font-size', '10');
+  legendText.setAttribute('letter-spacing', '.8');
+  legendText.textContent = 'PRICE CLOSE';
+  legend.append(legendBackground, legendLine, legendText);
+  svg.appendChild(legend);
+  svg.dataset.lastPrice = String(price);
+}
+
+function renderSnapshotViews() {
+  const price = snapshotPrice(state.snapshot);
+  const chart = $('#live-candles');
+  if (chart && price === null) {
+    chart.querySelectorAll('.area, .line, .guide, .point, .live-candle').forEach((node) => node.remove());
+  }
+  const priceElement = $('#market-price');
+  const orderPrice = $('#order-price');
+  if (price === null) {
+    if (priceElement) priceElement.textContent = '—';
+    if (orderPrice) orderPrice.value = '';
+    setStaleBadge(false);
+    return;
+  }
+  if (priceElement) priceElement.textContent = '$' + price.toFixed(2);
+  if (orderPrice) orderPrice.value = price.toFixed(2);
+  setStaleBadge(Boolean(snapshotSource(state.snapshot).stale ?? state.snapshot.stale));
+  renderCandles(state.snapshot);
+}
+
+async function updateSnapshot() {
+  try {
+    const params = new URLSearchParams({
+      symbol: SNAPSHOT_SYMBOL,
+      timeframe: SNAPSHOT_TIMEFRAME,
+    });
+    const response = await fetch('/api/snapshot?' + params.toString());
+    if (!response.ok) throw new Error('snapshot unavailable');
+    const snapshot = await response.json();
+    const price = snapshotPrice(snapshot);
+    if (price === null) throw new Error('snapshot has no last price');
+    state.snapshot = snapshot;
+    state.price = price;
+    save();
+    renderSnapshotViews();
+    renderState();
+    notify('Market snapshot refreshed');
+  } catch (error) {
+    notify('Market snapshot unavailable; paper price unchanged');
+  }
+}
+
+async function renderState() {
+  try {
+    const response = await fetch('/api/paper/state');
+    if (response.ok) {
+      const data = await response.json();
+      const positions = Object.values(data.positions || {}).filter((position) => position.quantity);
+      if (positions.length && !state.position) {
+        const position = positions[0];
+        state.position = {
+          side: position.quantity > 0 ? 'LONG' : 'SHORT',
+          entry: position.average_price,
+          qty: Math.abs(position.quantity),
+          opened: new Date().toISOString(),
+        };
+      }
+      if (!positions.length) state.position = null;
+      state.cash = data.cash;
+    }
+  } catch (error) {
+    // Paper state is local UI state when the optional backend is unavailable.
+  }
+  const equity = state.cash + (state.position && state.price !== null ? state.position.qty * state.price : 0);
+  const equityElement = $('#paper-equity');
+  const paperState = $('#paper-state');
+  if (equityElement) equityElement.textContent = '$' + equity.toFixed(2);
+  if (paperState) {
+    paperState.textContent = state.position ? '● ' + state.position.side : '● flat';
+    paperState.className = state.position ? 'cyan' : 'up';
+  }
+  renderSnapshotViews();
+}
+
+function metrics() {
+  const trades = state.trades;
+  const wins = trades.filter((trade) => trade.pnl > 0);
+  const pnl = trades.reduce((total, trade) => total + trade.pnl, 0);
+  const gains = trades.filter((trade) => trade.pnl > 0).reduce((total, trade) => total + trade.pnl, 0);
+  const losses = Math.abs(trades.filter((trade) => trade.pnl < 0).reduce((total, trade) => total + trade.pnl, 0));
+  return { pnl, wins, rate: trades.length ? (wins.length / trades.length) * 100 : null, pf: losses ? gains / losses : null };
+}
+
+function bind() {
+  $$('.rail-btn').forEach((button) => {
+    button.onclick = () => {
+      $$('.rail-btn').forEach((item) => item.classList.remove('active'));
+      button.classList.add('active');
+      const view = button.dataset.view;
+      $('.content').innerHTML = views[view] || views.overview;
+      bind();
+      renderState();
+      notify(view + ' workspace active');
+    };
+  });
+  $('#refresh')?.addEventListener('click', updateSnapshot);
+  $$('.tabs button').forEach((button) => button.onclick = () => {
+    $$('.tabs button').forEach((item) => item.classList.remove('selected'));
+    button.classList.add('selected');
+    notify('Timeframe changed to ' + button.textContent);
+  });
+  $('#submit-order')?.addEventListener('click', async () => {
+    const side = $('#order-side').value;
+    const body = {
+      symbol: 'BTC/USDT',
+      side,
+      quantity: Number($('#order-qty').value),
+      price: Number($('#order-price').value),
+      stop_loss: Number($('#order-stop').value),
+      take_profit: Number($('#order-target').value),
+    };
+    try {
+      const response = await fetch('/api/paper/order', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || 'risk rejected');
+      notify('Paper order filled · ' + data.order.order_id);
+    } catch (error) {
+      notify('Order rejected: ' + error.message);
+    }
+  });
+  $$('.run-analysis').forEach((button) => button.onclick = async () => {
+    notify('AI analysis running...');
+    try {
+      const response = await fetch('/api/analysis/run');
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || 'analysis failed');
+      const report = data.reports?.find((item) => item.agent === 'technical_analyst');
+      notify(report ? 'AI bias: ' + report.bias + ' · confidence ' + report.confidence : 'AI analysis completed');
+    } catch (error) {
+      notify('Analysis failed: ' + error.message);
+    }
+  });
+  $('#paper-buy')?.addEventListener('click', () => openPaper('LONG'));
+  $('#paper-sell')?.addEventListener('click', () => openPaper('SHORT'));
+  $('#paper-close')?.addEventListener('click', closePaper);
+  $('#reset-paper')?.addEventListener('click', () => {
+    localStorage.removeItem('banana-paper-state');
+    location.reload();
+  });
+}
+
+async function openPaper(side) {
+  if (state.position) return notify('Đã có position đang mở');
+  if (state.price === null) return notify('Market snapshot chưa sẵn sàng');
+  try {
+    const response = await fetch('/api/paper/order', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ symbol: 'BTC/USDT', side: side === 'LONG' ? 'buy' : 'sell', quantity: 1000 / state.price, price: state.price }),
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || 'order rejected');
+    state.position = { side, entry: state.price, qty: 1000 / state.price, opened: new Date().toISOString() };
+    save();
+    notify('Backend paper ' + side + ' opened');
+    $('.content').innerHTML = views.positions;
+    bind();
+    renderState();
+  } catch (error) {
+    notify('Order rejected: ' + error.message);
+  }
+}
+
+async function closePaper() {
+  if (!state.position) return notify('Không có position để đóng');
+  if (state.price === null) return notify('Market snapshot chưa sẵn sàng');
+  try {
+    const response = await fetch('/api/paper/close', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ symbol: 'BTC/USDT', price: state.price }),
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || 'close rejected');
+    const pnl = state.position.side === 'LONG'
+      ? (state.price - state.position.entry) * state.position.qty
+      : (state.position.entry - state.price) * state.position.qty;
+    state.trades.push({ side: state.position.side, entry: state.position.entry, exit: state.price, pnl, closed: new Date().toISOString() });
+    state.position = null;
+    save();
+    notify('Backend position closed · PnL $' + pnl.toFixed(2));
+    $('.content').innerHTML = views.positions;
+    bind();
+    renderState();
+  } catch (error) {
+    notify('Close rejected: ' + error.message);
+  }
+}
+
+const base = $('.content')?.innerHTML || '';
+const views = {
+  overview: base,
+  council: `<div class="hero"><div><p class="eyebrow">AI COUNCIL <span>ONLINE</span></p><h1>Decision intelligence<span class="cursor">_</span></h1><p class="sub">Phân tích AI và decision gate cho paper trading.</p></div></div><div class="grid"><article class="panel signal-panel"><div class="panel-head"><b>COUNCIL CONSENSUS</b><span class="badge">2 / 4 ONLINE</span></div><div class="signal-main"><div class="orb"><div class="orb-core">68<small>%</small></div></div><div><small class="muted">CURRENT BIAS</small><h2>NEUTRAL<span class="cyan">+</span></h2><p>Chờ xác nhận động lượng</p></div></div><div class="agent"><span class="agent-icon cyan-bg">⌁</span><div><b>Sentiment Agent</b><small>Long positioning mildly crowded</small></div><strong class="up">0.60</strong></div><button class="primary run-analysis">RUN FULL ANALYSIS <span>→</span></button></article><article class="panel positions"><div class="panel-head"><b>DECISION GATE</b><span class="badge">SAFE MODE</span></div><div class="empty-state"><div class="empty-icon">◇</div><b>No trade approved</b><span>Risk gate chưa phê duyệt lệnh.</span></div></article></div>`,
+  positions: `<div class="hero"><div><p class="eyebrow">PAPER TRADING <span>SIMULATION</span></p><h1>Positions & execution<span class="cursor">_</span></h1><p class="sub">Mô phỏng cục bộ, dữ liệu được lưu trong trình duyệt.</p></div></div><div class="ticker"><div><small>EQUITY</small><strong>$${(state.cash + (state.position ? 1000 : 0)).toFixed(2)}</strong><span>paper account</span></div><div><small>LAST PRICE</small><strong>${state.price === null ? '—' : '$' + state.price.toFixed(2)}</strong><span class="up">snapshot source</span></div><div><small>OPEN POSITIONS</small><strong>${state.position ? 1 : 0}</strong><span>${state.position ? state.position.side : 'flat'}</span></div><div><small>TRADES</small><strong>${state.trades.length}</strong><span>closed</span></div></div><article class="panel positions"><div class="panel-head"><b>EXECUTION CONSOLE</b><span class="badge">PAPER ONLY</span></div>${state.position ? `<div class="event"><time>${state.position.side}</time><span class="event-dot cyan-dot"></span><div><b>Entry $${state.position.entry.toFixed(2)}</b><small>Qty ${state.position.qty.toFixed(5)} BTC · opened ${new Date(state.position.opened).toLocaleTimeString()}</small></div><button class="primary" id="paper-close">CLOSE POSITION</button></div>` : `<div class="empty-state"><div class="empty-icon">◌</div><b>No open position</b><span>Chọn lệnh mô phỏng để kiểm tra execution và PnL.</span><div><button class="primary" id="paper-buy">PAPER BUY</button><button class="primary" id="paper-sell">PAPER SELL</button></div></div>`}</article><button class="primary" id="reset-paper">RESET PAPER ACCOUNT</button>`,
+  performance: `<div class="hero"><div><p class="eyebrow">AI PERFORMANCE <span>REAL LOCAL DATA</span></p><h1>Hiệu quả AI trade<span class="cursor">_</span></h1><p class="sub">Metrics được tính từ paper trades đã đóng trên tài khoản này.</p></div></div><div class="ticker"><div><small>NET PNL</small><strong class="up">$${metrics().pnl.toFixed(2)}</strong><span>realized</span></div><div><small>WIN RATE</small><strong>${metrics().rate === null ? '—' : metrics().rate.toFixed(1) + '%'}</strong><span>${state.trades.length} closed trades</span></div><div><small>PROFIT FACTOR</small><strong>${metrics().pf === null ? '—' : metrics().pf.toFixed(2)}</strong><span>gross gain / loss</span></div><div><small>MAX DRAWDOWN</small><strong>—</strong><span>needs equity history</span></div></div><article class="panel activity"><div class="panel-head"><b>CLOSED TRADES</b><span class="badge">LOCAL PAPER DATA</span></div>${state.trades.length ? state.trades.slice().reverse().map((trade) => `<div class="event"><time>${trade.side}</time><span class="event-dot ${trade.pnl >= 0 ? 'green-dot' : 'cyan-dot'}"></span><div><b>${trade.pnl >= 0 ? '+' : ''}$${trade.pnl.toFixed(2)} PnL</b><small>Entry $${trade.entry.toFixed(2)} → Exit $${trade.exit.toFixed(2)}</small></div></div>`).join('') : `<div class="empty-state"><div class="empty-icon">◔</div><b>Chưa có trade đã đóng</b><span>Vào Positions để mở paper order và đo kết quả.</span></div>`}</article>`,
+  journal: base,
+};
+
+// Remove the HTML fallback values before the first snapshot response arrives.
+renderSnapshotViews();
+bind();
+renderState();
+updateSnapshot();
+setInterval(updateSnapshot, 15000);

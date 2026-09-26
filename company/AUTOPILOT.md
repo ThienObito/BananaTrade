@@ -139,6 +139,21 @@
 - Rui ro con lai: Response runtime cua `/api/analysis/run` va server tich hop can duoc xac minh khi moi truong Python duoc khoi phuc; tai lieu khong thay the integration test.
 - Viec tiep theo de xuat: Khoi phuc interpreter bat buoc roi chay lai A1; khong lap lai tai lieu nay.
 
+## Chu ky 21 — bo qua merge fallout bi chan, sua request snapshot doc lap
+- Trang thai: FAILED
+- File da sua: BLOCKED.md; PROGRESS.md
+- Kiem chung blocker: Interpreter bat buoc `E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe` van `MISSING` sau 3 goal rounds; khong the chay pytest/mypy/ruff.
+- Nguyen nhan viec truoc: Moi truong thieu Python interpreter nen Phase A khong the chay.
+- Rui ro con lai: Merge fallout chua duoc chuan doan; thay doi doc lap frontend can kiem chung bang Node.
+- Viec tiep theo de xuat: Sua request `/api/snapshot` cua frontend de khop handler can `symbol` va `timeframe`, sau do chay `node --check`.
+
+## Chu ky 22 — sua request snapshot frontend
+- Trang thai: DONE
+- File da sua: web/app.js; PROGRESS.md
+- Kiem chung: `node --check web/app.js` — pass (khong co output loi); kiem tra tinh co query `symbol=BTC/USDT`, `timeframe=1h` trong `URLSearchParams` — pass.
+- Rui ro con lai: Full pytest/mypy/ruff van chua chay duoc vi interpreter bat buoc bi thieu; merge fallout Phase A chua duoc xu ly.
+- Viec tiep theo de xuat: Khi interpreter ton tai, chay A1; khong lap lai viec sua request snapshot.
+
 ## TONG KET PHIEN
 - Da lam duoc: Hoan tat 18 chu ky hardening; sua breakout theo prior range, RSI flat market, validation OHLCV (cot, so, bounds, timestamp), orderbook (cau truc, price/size, am), va quota ledger/check inputs.
 - So lieu that: Test cuoi `E:\Trade-AI\BananaTrade\.venv\Scripts\python.exe -m pytest -q -p no:cacheprovider --basetemp=.pytest-tmp` — 175 passed in 4.81s.
