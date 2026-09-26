@@ -40,6 +40,10 @@ def closed_candles(frame: pd.DataFrame, timeframe: str, as_of: datetime) -> pd.D
     if timeframe not in durations:
         supported = ", ".join(durations)
         raise ValueError(f"Unsupported timeframe {timeframe!r}; expected one of: {supported}")
+    required = {"timestamp_ms", "open", "high", "low", "close", "volume"}
+    missing = sorted(required.difference(frame.columns))
+    if missing:
+        raise ValueError(f"OHLCV frame missing columns: {', '.join(missing)}")
     if as_of.tzinfo is None:
         as_of = as_of.replace(tzinfo=UTC)
     opened = pd.to_datetime(frame["timestamp_ms"], unit="ms", utc=True)

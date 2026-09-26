@@ -13,6 +13,12 @@ def bars() -> pd.DataFrame:
     return pd.read_csv(path)
 
 
+def test_closed_candles_rejects_missing_ohlcv_columns() -> None:
+    frame = bars().drop(columns=["volume", "low"])
+    with pytest.raises(ValueError, match="OHLCV frame missing columns: low, volume"):
+        closed_candles(frame, "1h", datetime.now(UTC))
+
+
 def test_closed_candles_rejects_unknown_timeframe() -> None:
     with pytest.raises(ValueError, match="Unsupported timeframe"):
         closed_candles(bars(), "2h", datetime.now(UTC))

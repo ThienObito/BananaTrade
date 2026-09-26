@@ -18,3 +18,10 @@
 - Kiem chung: `E:\Trade-AI\BananaTrade\.venv\Scripts\python.exe -m pytest -q -p no:cacheprovider --basetemp=.pytest-tmp` — 152 passed; `python -m ruff check src tests` — All checks passed.
 - Rui ro con lai: Du lieu OHLCV thieu cot van co the gay KeyError tu pandas.
 - Viec tiep theo de xuat: Them validation cot OHLCV truoc khi tinh snapshot.
+
+## Chu ky 4 — validate day du cot OHLCV
+- Trang thai: DONE
+- File da sua: src/bananatrade/data/snapshot.py; tests/test_phase1_snapshot.py
+- Kiem chung: `E:\Trade-AI\BananaTrade\.venv\Scripts\python.exe -m pytest -q -p no:cacheprovider --basetemp=.pytest-tmp` — 153 passed; `python -m ruff check src tests` — All checks passed.
+- Rui ro con lai: Chua validate gia tri NaN/khong phai so trong cot OHLCV.
+- Viec tiep theo de xuat: Kiem tra va tu choi timestamp/gia tri NaN bat hop le.
