@@ -619,6 +619,21 @@
 - Rui ro con lai: `renderState` xoa `state.trades` va `localStorage` khi paper-state request loi, lam mat lich su PnL local do backend tam thoi unavailable.
 - Viec tiep theo de xuat: Giu local trade history va state snapshot khi backend fail; chi danh dau backend unavailable tren UI.
 
+## Chu ky 143 — bo qua Phase A bi chan, review candle finite validation doc lap
+- Trang thai: FAILED
+- File da sua: BLOCKED.md; PROGRESS.md
+- Kiem chung blocker: Interpreter bat buoc `E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe` van `MISSING`; khong the chay pytest/mypy/ruff.
+- Nguyen nhan viec truoc: Phase A van bi chan boi moi truong Python thieu.
+- Rui ro con lai: `snapshotCandles` dung `Number.isFinite` sau safeNumber; leaf null an toan nhung check khong doc rang rang va co the can helper numeric-positive de tranh nham contract.
+- Viec tiep theo de xuat: Tach predicate finite-positive cho candle sau normalize, khong doi behavior.
+
+## Chu ky 144 — chuan hoa candle finite validation
+- Trang thai: DONE
+- File da sua: web/app.js; PROGRESS.md
+- Kiem chung: `node --check web/app.js` — pass; quet tĩnh xác nhận isPositiveFinite kiểm tra number finite dương và candle path không có coercion trực tiếp — pass.
+- Rui ro con lai: Full pytest/mypy/ruff chưa chạy vì interpreter bắt buộc thiếu.
+- Viec tiep theo de xuat: Khi interpreter tồn tại, chạy A1; không lặp lại candle finite validation guard.
+
 ## Chu ky 142 — bao toan local trade history khi backend loi
 - Trang thai: DONE
 - File da sua: web/app.js; PROGRESS.md

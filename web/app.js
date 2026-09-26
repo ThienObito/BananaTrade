@@ -264,6 +264,10 @@ function renderSnapshotMetrics(snapshot) {
   }
 }
 
+function isPositiveFinite(value) {
+  return typeof value === 'number' && Number.isFinite(value) && value > 0;
+}
+
 function snapshotCandles(snapshot, price) {
   const source = snapshotSource(snapshot);
   const summary = snapshotSummary(snapshot);
@@ -283,7 +287,7 @@ function snapshotCandles(snapshot, price) {
       close: safeNumber(candle.close),
     }))
     .filter((candle) => (
-      Object.values(candle).every((value) => Number.isFinite(value) && value > 0)
+      Object.values(candle).every(isPositiveFinite)
       && candle.high >= candle.low
     ));
 
