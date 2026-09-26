@@ -131,9 +131,15 @@ function normalizePosition(payload) {
 
 function normalizeAnalysis(payload) {
   if (!payload || typeof payload !== 'object' || Array.isArray(payload) || !Array.isArray(payload.reports)) return null;
-  const reports = payload.reports.filter((report) => (
-    report && typeof report === 'object' && typeof report.agent === 'string'
-  ));
+  const reports = payload.reports
+    .filter((report) => report && typeof report === 'object' && !Array.isArray(report) && typeof report.agent === 'string')
+    .map((report) => ({
+      agent: report.agent,
+      bias: typeof report.bias === 'string' ? report.bias : null,
+      confidence: typeof report.confidence === 'string' || Number.isFinite(Number(report.confidence))
+        ? report.confidence
+        : null,
+    }));
   return { reports };
 }
 

@@ -523,3 +523,17 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Position array hoặc primitive bị loại; position hợp lệ vẫn phải có quantity khác zero và average price dương.
+
+## Chu kỳ 91 — validate analysis report shape [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): `normalizeAnalysis` giữ nguyên report object sau khi chỉ lọc agent, nên report array và leaf sai type có thể làm notification/UI đọc dữ liệu ngoài contract.
+- Requirement -> test:
+  - Report phải là object không phải array và có agent string: kiểm tra tĩnh xác nhận — pass.
+  - Bias chỉ nhận string, confidence chỉ nhận string hoặc finite numeric: quét tĩnh xác nhận — pass.
+  - Report được tạo thành object sở hữu nhỏ thay vì giữ live payload: quét tĩnh xác nhận — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Report thiếu leaf tùy chọn được chuẩn hóa thành `null`; không suy đoán bias/confidence mặc định.
