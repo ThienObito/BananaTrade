@@ -1042,3 +1042,16 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Giữ prefix `$` cho text display; order input nhận chuỗi formatMetric chuẩn hóa.
+
+## Chu kỳ 169 — chuẩn hóa indicator dot class [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): Performance view dùng `trade.pnl >= 0` trực tiếp để chọn dot class và truyền PnL raw vào formatter.
+- Requirement -> test:
+  - Dot class và signed PnL dùng PnL qua `normalizeTradePnl`: kiểm tra tĩnh xác nhận — pass.
+  - Không còn direct comparison `trade.pnl >= 0`: quét tĩnh xác nhận — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: PnL dương dùng green dot; zero, âm và invalid dùng cyan dot/placeholder an toàn.
