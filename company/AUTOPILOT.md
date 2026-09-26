@@ -355,6 +355,21 @@
 - Rui ro con lai: candle item la null/number/string van bi doc `candle.open` truc tiep trong callback `.map`, co the throw.
 - Viec tiep theo de xuat: Loc candle item object truoc khi doc leaf fields, khong de item sai shape pha chart render.
 
+## Chu ky 75 — bo qua Phase A bi chan, validate candle numeric constraints doc lap
+- Trang thai: FAILED
+- File da sua: BLOCKED.md; PROGRESS.md
+- Kiem chung blocker: Interpreter bat buoc `E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe` van `MISSING`; khong the chay pytest/mypy/ruff.
+- Nguyen nhan viec truoc: Phase A van bi chan boi moi truong Python thieu.
+- Rui ro con lai: candle co so am/zero hoac high < low van duoc coi la finite, lam chart co scale khong hop le va cho phep price sai nghia.
+- Viec tiep theo de xuat: Validate OHLC duong va high/low range truoc khi dua vao chart.
+
+## Chu ky 76 — validate candle numeric constraints
+- Trang thai: DONE
+- File da sua: web/app.js; PROGRESS.md
+- Kiem chung: `node --check web/app.js` — pass; quet tĩnh xác nhận OHLC positive finite và `high >= low` trước render — pass.
+- Rui ro con lai: Full pytest/mypy/ruff chưa chạy vì interpreter bắt buộc thiếu.
+- Viec tiep theo de xuat: Khi interpreter tồn tại, chạy A1; không lặp lại candle numeric guard.
+
 ## Chu ky 74 — validate snapshot candle item
 - Trang thai: DONE
 - File da sua: web/app.js; PROGRESS.md

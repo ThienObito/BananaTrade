@@ -221,7 +221,10 @@ function snapshotCandles(snapshot, price) {
       low: Number(candle.low),
       close: Number(candle.close),
     }))
-    .filter((candle) => Object.values(candle).every(Number.isFinite));
+    .filter((candle) => (
+      Object.values(candle).every((value) => Number.isFinite(value) && value > 0)
+      && candle.high >= candle.low
+    ));
 
   if (!candles.length) {
     return [{ open: price, high: price, low: price, close: price }];

@@ -416,3 +416,16 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Candle hợp lệ vẫn phải qua finite numeric filter; item lỗi không tạo nến giả.
+
+## Chu kỳ 75 — validate candle numeric constraints [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): candle OHLC finite nhưng zero/âm hoặc high thấp hơn low vẫn đi vào chart scale.
+- Requirement -> test:
+  - OHLC phải finite và dương: kiểm tra tĩnh xác nhận numeric guard — pass.
+  - Candle phải có `high >= low`: kiểm tra tĩnh xác nhận range guard — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Không ép quan hệ open/close với high/low ngoài range tối thiểu; chỉ loại giá không dương và range đảo.
