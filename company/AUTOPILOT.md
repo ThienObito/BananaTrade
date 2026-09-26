@@ -102,3 +102,10 @@
 - Kiem chung: `E:\Trade-AI\BananaTrade\.venv\Scripts\python.exe -m pytest -q -p no:cacheprovider --basetemp=.pytest-tmp` — 169 passed; `python -m ruff check src tests` — All checks passed.
 - Rui ro con lai: Chua validate tier rong va token khong phai integer.
 - Viec tiep theo de xuat: Kiem tra dau vao tier/token cua ledger truoc khi ghi SQLite.
+
+## Chu ky 16 — validate quota tier va token input
+- Trang thai: DONE
+- File da sua: src/bananatrade/gateway/quota.py; tests/test_gateway_errors.py
+- Kiem chung: `E:\Trade-AI\BananaTrade\.venv\Scripts\python.exe -m pytest -q -p no:cacheprovider --basetemp=.pytest-tmp` — 171 passed; `python -m ruff check src tests` — All checks passed.
+- Rui ro con lai: Chua validate tier/status trong ham check va gioi han token overflow.
+- Viec tiep theo de xuat: Bo sung validation dau vao cho check va gioi han token hop ly.

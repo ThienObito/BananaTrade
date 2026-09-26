@@ -36,6 +36,10 @@ class QuotaLedger:
                     raise QuotaExhaustedError(f"Quota exhausted for {tier}")
 
     def record(self, tier: str, tokens: int, status: str = "success") -> None:
+        if not isinstance(tier, str) or not tier.strip():
+            raise ValueError("Tier must be a non-empty string")
+        if not isinstance(tokens, int) or isinstance(tokens, bool):
+            raise TypeError("Token count must be an integer")
         if tokens < 0:
             raise ValueError("Token count cannot be negative")
         if status not in {"success", "failed"}:
