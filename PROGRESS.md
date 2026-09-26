@@ -764,3 +764,17 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Giá trị không hợp lệ hiển thị placeholder `—`; numeric string hợp lệ vẫn được format như trước.
+
+## Chu kỳ 127 — chuẩn hóa order ticket numeric leaves [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): Submit order và `openPaper` dùng `Number(input.value)` trực tiếp; input sai shape trong test/mock path có thể bị coercion ngoài contract.
+- Requirement -> test:
+  - Submit order quantity/price/stop/target dùng `safeNumber`: quét tĩnh xác nhận — pass.
+  - `openPaper` quantity dùng `safeNumber` và reject null/non-positive: quét tĩnh xác nhận — pass.
+  - Không còn unsafe `Number($('#...'))` cho order ticket: quét tĩnh xác nhận — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Numeric string từ input DOM vẫn được hỗ trợ; null/boolean/object/array/non-finite bị reject trước request.

@@ -531,12 +531,12 @@ function bind() {
   });
   $('#submit-order')?.addEventListener('click', async () => {
     const side = $('#order-side').value;
-    const quantity = Number($('#order-qty').value);
-    const price = Number($('#order-price').value);
-    const stopLoss = Number($('#order-stop').value);
-    const takeProfit = Number($('#order-target').value);
+    const quantity = safeNumber($('#order-qty').value);
+    const price = safeNumber($('#order-price').value);
+    const stopLoss = safeNumber($('#order-stop').value);
+    const takeProfit = safeNumber($('#order-target').value);
     const values = [quantity, price, stopLoss, takeProfit];
-    if (values.some((value) => !Number.isFinite(value) || value <= 0)) {
+    if (values.some((value) => value === null || value <= 0)) {
       notify('Nhập quantity, entry, stop và target hợp lệ');
       return;
     }
@@ -587,8 +587,8 @@ function bind() {
 async function openPaper(side) {
   if (state.position) return notify('Đã có position đang mở');
   if (state.price === null) return notify('Market snapshot chưa sẵn sàng');
-  const quantity = Number($('#order-qty')?.value);
-  if (!Number.isFinite(quantity) || quantity <= 0) return notify('Nhập quantity hợp lệ trong order ticket');
+  const quantity = safeNumber($('#order-qty')?.value);
+  if (quantity === null || quantity <= 0) return notify('Nhập quantity hợp lệ trong order ticket');
   try {
     const response = await fetch('/api/paper/order', {
       method: 'POST',
