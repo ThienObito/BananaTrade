@@ -62,6 +62,20 @@ def test_retry_on_retryable(kind: str, tmp_path: Path) -> None:
     assert mock.chat.completions.create.await_count == client.retry["max_attempts"]
 
 
+def test_quota_check_rejects_incomplete_limits(tmp_path: Path) -> None:
+    from bananatrade.gateway.quota import QuotaLedger
+    ledger = QuotaLedger(tmp_path / "db.sqlite")
+    with pytest.raises(ValueError, match="Missing quota limits"):
+        ledger.check("tier1_fast", {"max_calls_per_5h": 1})
+
+
+def test_quota_check_rejects_negative_limits(tmp_path: Path) -> None:
+    from bananatrade.gateway.quota import QuotaLedger
+    ledger = QuotaLedger(tmp_path / "db.sqlite")
+    with pytest.raises(ValueError, match="cannot be negative"):
+        ledger.check("tier1_fast", {"max_calls_per_5h": -1, "max_calls_per_7d": 1})
+
+
 def test_failed_call_ledger_status(tmp_path: Path) -> None:
     path = tmp_path / "db.sqlite"
     mock = Mock(); mock.chat.completions.create = AsyncMock(side_effect=exc("notfound"))

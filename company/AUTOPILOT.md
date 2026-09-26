@@ -88,3 +88,10 @@
 - Kiem chung: `E:\Trade-AI\BananaTrade\.venv\Scripts\python.exe -m pytest -q -p no:cacheprovider --basetemp=.pytest-tmp` — 165 passed; `python -m ruff check src tests` — All checks passed.
 - Rui ro con lai: Logic da bao ve level dict/string bang validation cap price/size.
 - Viec tiep theo de xuat: Chuyen sang kiem tra cac module gateway va xu ly loi mang.
+
+## Chu ky 14 — validate quota limits
+- Trang thai: DONE
+- File da sua: src/bananatrade/gateway/quota.py; tests/test_gateway_errors.py
+- Kiem chung: `E:\Trade-AI\BananaTrade\.venv\Scripts\python.exe -m pytest -q -p no:cacheprovider --basetemp=.pytest-tmp` — 167 passed; `python -m ruff check src tests` — All checks passed.
+- Rui ro con lai: Chua validate tokens am khi ghi ledger.
+- Viec tiep theo de xuat: Tu choi record co token am va status khong hop le.

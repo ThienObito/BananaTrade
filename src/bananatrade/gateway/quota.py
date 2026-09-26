@@ -21,6 +21,12 @@ class QuotaLedger:
                 pass
 
     def check(self, tier: str, limits: dict[str, int]) -> None:
+        required = ("max_calls_per_5h", "max_calls_per_7d")
+        missing = [key for key in required if key not in limits]
+        if missing:
+            raise ValueError(f"Missing quota limits: {', '.join(missing)}")
+        if any(limits[key] < 0 for key in required):
+            raise ValueError("Quota limits cannot be negative")
         now = datetime.now(UTC)
         with sqlite3.connect(self.path) as connection:
             for hours, key in [(5, "max_calls_per_5h"), (168, "max_calls_per_7d")]:
