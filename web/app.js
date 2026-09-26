@@ -396,9 +396,8 @@ async function renderState() {
       .map((position) => normalizePosition(position))
       .filter((position) => position !== null);
     state.position = positions[0] || null;
-    // The backend currently exposes fills, not closed-trade PnL. Do not
-    // manufacture performance numbers from fills; an empty history is honest.
-    state.trades = [];
+    // The backend currently exposes fills, not closed-trade PnL. Preserve
+    // locally recorded closed trades until the backend exposes an audit trail.
     state.cash = Number.isFinite(Number(backendState.cash)) ? Number(backendState.cash) : null;
     state.equity = Number.isFinite(Number(backendState.equity)) ? Number(backendState.equity) : null;
     save();

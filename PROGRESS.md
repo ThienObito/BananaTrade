@@ -338,3 +338,16 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: HTTP error không được coi là trạng thái paper hợp lệ; UI chuyển waiting và xóa cache như payload/network error.
+
+## Chu kỳ 63 — giữ lịch sử PnL local khi sync state [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): sync paper-state thành công luôn gán `state.trades = []`, làm mất closed-trade PnL sau refresh dù backend chưa cung cấp audit trail.
+- Requirement -> test:
+  - Sync state hợp lệ không xóa closed trades local: kiểm tra tĩnh xác nhận không có reset trong success block — pass.
+  - State fail-closed vẫn xóa trades để không hiển thị dữ liệu stale: quét tĩnh xác nhận reset chỉ trong catch — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Chỉ giữ các trade do client paper flow ghi nhận; không suy diễn PnL từ backend fills.

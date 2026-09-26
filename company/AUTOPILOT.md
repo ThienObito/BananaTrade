@@ -307,6 +307,21 @@
 - Rui ro con lai: `renderState` chi normalize khi `response.ok`, nhung HTTP 4xx/5xx khong throw va co the giu state cu thay vi fail-closed.
 - Viec tiep theo de xuat: Throw khi `/api/paper/state` tra non-2xx de di qua catch reset state.
 
+## Chu ky 63 — bo qua Phase A bi chan, giu lich su PnL local khi sync state
+- Trang thai: FAILED
+- File da sua: BLOCKED.md; PROGRESS.md
+- Kiem chung blocker: Interpreter bat buoc `E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe` van `MISSING`; khong the chay pytest/mypy/ruff.
+- Nguyen nhan viec truoc: Phase A van bi chan boi moi truong Python thieu.
+- Rui ro con lai: moi lan `/api/paper/state` thanh cong deu gan `state.trades = []`, lam mat lich su trade da dong va metric PnL sau khi refresh.
+- Viec tiep theo de xuat: Khong reset trades khi state backend hop le; chi reset khi backend state fail-closed.
+
+## Chu ky 64 — giu lich su PnL local khi sync state
+- Trang thai: DONE
+- File da sua: web/app.js; PROGRESS.md
+- Kiem chung: `node --check web/app.js` — pass; quet tĩnh xác nhận `state.trades` chỉ reset trong fail-closed catch, không reset khi sync thành công — pass.
+- Rui ro con lai: Full pytest/mypy/ruff chưa chạy vì interpreter bắt buộc thiếu.
+- Viec tiep theo de xuat: Khi interpreter tồn tại, chạy A1; không lặp lại trade-history preservation.
+
 ## Chu ky 62 — fail-closed HTTP paper state
 - Trang thai: DONE
 - File da sua: web/app.js; PROGRESS.md
