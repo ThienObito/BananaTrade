@@ -496,3 +496,17 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Metadata sai shape hoặc leaf sai type hiển thị trạng thái trung tính, không suy đoán dữ liệu.
+
+## Chu kỳ 87 — validate paper state shape [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): `normalizePaperState` biến positions sai shape thành object rỗng và cho phép cash/equity âm, khiến UI tiếp nhận state ngoài contract.
+- Requirement -> test:
+  - Payload phải có positions plain object không phải array: kiểm tra tĩnh xác nhận — pass.
+  - Cash/equity phải finite và không âm: kiểm tra tĩnh xác nhận — pass.
+  - Payload sai shape trả `null` để renderState fail-closed: quét tĩnh xác nhận — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Paper backend vẫn là nguồn dữ liệu authoritative; không tạo positions/cash/equity mặc định khi payload sai.

@@ -105,15 +105,14 @@ async function readJson(response) {
 
 function normalizePaperState(payload) {
   if (!payload || typeof payload !== 'object' || Array.isArray(payload)) return null;
-  const positions = payload.positions && typeof payload.positions === 'object' && !Array.isArray(payload.positions)
-    ? payload.positions
-    : {};
+  if (!payload.positions || typeof payload.positions !== 'object' || Array.isArray(payload.positions)) return null;
   const cash = Number(payload.cash);
   const equity = Number(payload.equity);
+  if (!Number.isFinite(cash) || cash < 0 || !Number.isFinite(equity) || equity < 0) return null;
   return {
-    positions,
-    cash: Number.isFinite(cash) ? cash : null,
-    equity: Number.isFinite(equity) ? equity : null,
+    positions: payload.positions,
+    cash,
+    equity,
   };
 }
 
