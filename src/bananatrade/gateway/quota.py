@@ -21,6 +21,10 @@ class QuotaLedger:
                 pass
 
     def check(self, tier: str, limits: dict[str, int]) -> None:
+        if not isinstance(tier, str) or not tier.strip():
+            raise ValueError("Tier must be a non-empty string")
+        if not isinstance(limits, dict):
+            raise TypeError("Quota limits must be a dictionary")
         required = ("max_calls_per_5h", "max_calls_per_7d")
         missing = [key for key in required if key not in limits]
         if missing:

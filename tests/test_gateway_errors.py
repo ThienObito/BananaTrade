@@ -62,6 +62,20 @@ def test_retry_on_retryable(kind: str, tmp_path: Path) -> None:
     assert mock.chat.completions.create.await_count == client.retry["max_attempts"]
 
 
+def test_quota_check_rejects_empty_tier(tmp_path: Path) -> None:
+    from bananatrade.gateway.quota import QuotaLedger
+    ledger = QuotaLedger(tmp_path / "db.sqlite")
+    with pytest.raises(ValueError, match="non-empty string"):
+        ledger.check("", {"max_calls_per_5h": 1, "max_calls_per_7d": 1})
+
+
+def test_quota_check_rejects_non_dict_limits(tmp_path: Path) -> None:
+    from bananatrade.gateway.quota import QuotaLedger
+    ledger = QuotaLedger(tmp_path / "db.sqlite")
+    with pytest.raises(TypeError, match="dictionary"):
+        ledger.check("tier1_fast", [])  # type: ignore[arg-type]
+
+
 def test_quota_record_rejects_empty_tier(tmp_path: Path) -> None:
     from bananatrade.gateway.quota import QuotaLedger
     ledger = QuotaLedger(tmp_path / "db.sqlite")
