@@ -62,6 +62,20 @@ def test_retry_on_retryable(kind: str, tmp_path: Path) -> None:
     assert mock.chat.completions.create.await_count == client.retry["max_attempts"]
 
 
+def test_quota_record_rejects_negative_tokens(tmp_path: Path) -> None:
+    from bananatrade.gateway.quota import QuotaLedger
+    ledger = QuotaLedger(tmp_path / "db.sqlite")
+    with pytest.raises(ValueError, match="cannot be negative"):
+        ledger.record("tier1_fast", -1)
+
+
+def test_quota_record_rejects_invalid_status(tmp_path: Path) -> None:
+    from bananatrade.gateway.quota import QuotaLedger
+    ledger = QuotaLedger(tmp_path / "db.sqlite")
+    with pytest.raises(ValueError, match="Invalid ledger status"):
+        ledger.record("tier1_fast", 1, "pending")
+
+
 def test_quota_check_rejects_incomplete_limits(tmp_path: Path) -> None:
     from bananatrade.gateway.quota import QuotaLedger
     ledger = QuotaLedger(tmp_path / "db.sqlite")

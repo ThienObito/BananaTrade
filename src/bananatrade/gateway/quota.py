@@ -36,6 +36,10 @@ class QuotaLedger:
                     raise QuotaExhaustedError(f"Quota exhausted for {tier}")
 
     def record(self, tier: str, tokens: int, status: str = "success") -> None:
+        if tokens < 0:
+            raise ValueError("Token count cannot be negative")
+        if status not in {"success", "failed"}:
+            raise ValueError("Invalid ledger status")
         with sqlite3.connect(self.path) as connection:
             connection.execute("INSERT INTO calls (tier, ts, tokens, status) VALUES (?,?,?,?)", (tier, datetime.now(UTC).isoformat(), tokens, status))
 
