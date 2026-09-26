@@ -84,7 +84,6 @@ const state = {
   // A price is valid only after it has been received from /api/snapshot.
   price: null,
   snapshot: null,
-  equity: null,
 };
 
 const SNAPSHOT_SYMBOL = 'BTC/USDT';

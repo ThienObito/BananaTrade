@@ -712,3 +712,16 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: `normalizePaperState` là boundary duy nhất cho backend numeric state; không thay đổi hành vi hiển thị.
+
+## Chu kỳ 119 — loại bỏ duplicate equity state [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): State object khai báo `equity` hai lần; key sau cùng là `null`, ghi đè giá trị normalize và làm contract state khó đọc.
+- Requirement -> test:
+  - State chỉ khai báo một `equity` key: kiểm tra tĩnh xác nhận — pass.
+  - Không thay đổi merge order của stored state hoặc backend sync: review diff xác nhận — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: `state.equity` vẫn mặc định null khi chưa có backend; stored state merge tiếp tục giữ nguyên.
