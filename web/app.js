@@ -130,11 +130,12 @@ function normalizePaperState(payload) {
   if (!payload.positions || typeof payload.positions !== 'object' || Array.isArray(payload.positions)) return null;
   const positions = Object.create(null);
   Object.entries(payload.positions).forEach(([symbol, position]) => {
-    if (!symbol.trim() || !position || typeof position !== 'object' || Array.isArray(position)) return;
+    const normalizedSymbol = symbol.trim().toUpperCase();
+    if (!normalizedSymbol || !position || typeof position !== 'object' || Array.isArray(position)) return;
     const quantity = safeNumber(position.quantity);
     const averagePrice = safeNumber(position.average_price);
     if (quantity !== null && quantity !== 0 && averagePrice !== null && averagePrice > 0) {
-      positions[symbol] = {
+      positions[normalizedSymbol] = {
         quantity,
         average_price: averagePrice,
         opened: normalizeTimestamp(position.opened),

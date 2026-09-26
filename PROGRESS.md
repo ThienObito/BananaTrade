@@ -1222,3 +1222,16 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Không đổi API; chỉ harden boundary container trước render.
+
+## Chu kỳ 197 — canonicalize paper-state symbol keys [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): positions giữ symbol key có whitespace hoặc casing không ổn định, làm lookup/render không nhất quán.
+- Requirement -> test:
+  - Symbol key được trim và uppercase trước khi normalized: kiểm tra tĩnh xác nhận — pass.
+  - Assignment dùng key canonical, không dùng raw key: quét tĩnh xác nhận — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Chỉ canonicalize key ở UI boundary; không sửa payload backend hoặc symbol contract.
