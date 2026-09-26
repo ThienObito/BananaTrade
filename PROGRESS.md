@@ -191,3 +191,16 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Backend paper state vẫn ghi đè position/cash/equity khi endpoint trả dữ liệu; normalization chỉ bảo vệ fallback localStorage.
+
+## Chu kỳ 41 — reset snapshot khi backend lỗi [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): request snapshot lỗi sau response thành công để lại `state.price`/snapshot cũ, khiến dashboard tiếp tục hiển thị giá stale như dữ liệu hiện tại.
+- Requirement -> test:
+  - Snapshot lỗi phải xóa price và snapshot runtime: kiểm tra tĩnh xác nhận cả hai được set `null` trong catch — pass.
+  - Không ảnh hưởng paper account state: thay đổi chỉ nằm trong `updateSnapshot` — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Khi snapshot lỗi, UI hiển thị placeholder; paper position/cash/equity vẫn chờ `/api/paper/state`.

@@ -326,7 +326,10 @@ async function updateSnapshot() {
     renderState();
     notify('Market snapshot refreshed');
   } catch (error) {
-    notify('Market snapshot unavailable; paper price unchanged');
+    state.snapshot = null;
+    state.price = null;
+    renderSnapshotViews();
+    notify('Market snapshot unavailable');
   }
 }
 

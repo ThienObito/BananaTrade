@@ -219,6 +219,21 @@
 - Rui ro con lai: state merge tu localStorage co the nhan `position`, `trades`, `cash` sai kieu; cac ham render co the goi `.toFixed`, `.length` hoac phep tinh tren du lieu khong hop le.
 - Viec tiep theo de xuat: Loc va chuan hoa local state truoc khi gan vao state runtime.
 
+## Chu ky 41 — bo qua Phase A bi chan, reset runtime snapshot khi backend loi doc lap
+- Trang thai: FAILED
+- File da sua: BLOCKED.md; PROGRESS.md
+- Kiem chung blocker: Interpreter bat buoc `E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe` van `MISSING`; khong the chay pytest/mypy/ruff.
+- Nguyen nhan viec truoc: Phase A van bi chan boi moi truong Python thieu.
+- Rui ro con lai: Khi snapshot backend loi sau mot response thanh cong, state giu `price`/snapshot cu va UI tiep tuc hien thi gia stale ma khong co dau hieu mat ket noi.
+- Viec tiep theo de xuat: Xoa runtime snapshot/price khi request that bai, giu paper account khong bi anh huong.
+
+## Chu ky 42 — reset snapshot khi backend loi
+- Trang thai: DONE
+- File da sua: web/app.js; PROGRESS.md
+- Kiem chung: `node --check web/app.js` — pass; quet tĩnh xác nhận snapshot catch xóa `state.snapshot` và `state.price`, không còn thông báo giữ giá cũ — pass.
+- Rui ro con lai: Full pytest/mypy/ruff chưa chạy vì interpreter bắt buộc thiếu.
+- Viec tiep theo de xuat: Khi interpreter tồn tại, chạy A1; không lặp lại snapshot reset.
+
 ## Chu ky 40 — chuan hoa local state
 - Trang thai: DONE
 - File da sua: web/app.js; PROGRESS.md
