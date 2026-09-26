@@ -259,6 +259,21 @@
 - Rui ro con lai: analysis response HTTP 200 nhung malformed duoc normalize thanh `{reports: []}`, UI co the bao completed nhu mot thanh cong trong khi backend tra payload loi.
 - Viec tiep theo de xuat: Phan biet payload invalid voi payload hop le khong co report, hien thi loi typed khi malformed.
 
+## Chu ky 51 — bo qua Phase A bi chan, chuan hoa order response guard doc lap
+- Trang thai: FAILED
+- File da sua: BLOCKED.md; PROGRESS.md
+- Kiem chung blocker: Interpreter bat buoc `E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe` van `MISSING`; khong the chay pytest/mypy/ruff.
+- Nguyen nhan viec truoc: Phase A van bi chan boi moi truong Python thieu.
+- Rui ro con lai: submit/open/close lap lai guard order shape, de thong bao loi khong dong nhat va kho kiem soat khi backend doi schema.
+- Viec tiep theo de xuat: Tao helper `readOrderId` duy nhat, tra null cho payload malformed va dung truoc moi state mutation.
+
+## Chu ky 52 — shared order response helper
+- Trang thai: DONE
+- File da sua: web/app.js; PROGRESS.md
+- Kiem chung: `node --check web/app.js` — pass; quet tĩnh xác nhận một `readOrderId` dùng ở cả submit/open/close, không còn guard trùng — pass.
+- Rui ro con lai: Full pytest/mypy/ruff chưa chạy vì interpreter bắt buộc thiếu.
+- Viec tiep theo de xuat: Khi interpreter tồn tại, chạy A1; không lặp lại shared order helper.
+
 ## Chu ky 50 — strict analysis payload
 - Trang thai: DONE
 - File da sua: web/app.js; PROGRESS.md

@@ -119,6 +119,11 @@ function normalizeAnalysis(payload) {
   return { reports };
 }
 
+function readOrderId(payload) {
+  const orderId = payload?.order?.order_id;
+  return typeof orderId === 'string' && orderId ? orderId : null;
+}
+
 function save() {
   persistState({
     cash: state.cash,
@@ -448,10 +453,9 @@ function bind() {
       });
       const data = await readJson(response);
       if (!response.ok) throw new Error(data.error || 'risk rejected');
-      if (!data.order || typeof data.order.order_id !== 'string' || !data.order.order_id) {
-        throw new Error('Backend returned invalid order');
-      }
-      notify('Paper order filled · ' + data.order.order_id);
+      const orderId = readOrderId(data);
+      if (!orderId) throw new Error('Backend returned invalid order');
+      notify('Paper order filled · ' + orderId);
     } catch (error) {
       notify('Order rejected: ' + error.message);
     }
@@ -491,9 +495,8 @@ async function openPaper(side) {
     });
     const data = await readJson(response);
     if (!response.ok) throw new Error(data.error || 'order rejected');
-    if (!data.order || typeof data.order.order_id !== 'string' || !data.order.order_id) {
-      throw new Error('Backend returned invalid order');
-    }
+    const orderId = readOrderId(data);
+    if (!orderId) throw new Error('Backend returned invalid order');
     state.position = { side, entry: state.price, qty: quantity, opened: new Date().toISOString() };
     save();
     notify('Backend paper ' + side + ' opened');
@@ -521,9 +524,8 @@ async function closePaper() {
     });
     const data = await readJson(response);
     if (!response.ok) throw new Error(data.error || 'close rejected');
-    if (!data.order || typeof data.order.order_id !== 'string' || !data.order.order_id) {
-      throw new Error('Backend returned invalid close order');
-    }
+    const orderId = readOrderId(data);
+    if (!orderId) throw new Error('Backend returned invalid close order');
     const pnl = state.position.side === 'LONG'
       ? (state.price - state.position.entry) * state.position.qty
       : (state.position.entry - state.price) * state.position.qty;

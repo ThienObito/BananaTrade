@@ -257,3 +257,16 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Không tạo dữ liệu mặc định; phân biệt rõ malformed response và empty analysis result.
+
+## Chu kỳ 51 — shared order response helper [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): submit/open/close có ba bản sao kiểm tra `order_id`, dễ lệch thông báo và schema handling.
+- Requirement -> test:
+  - Một helper duy nhất đọc order ID an toàn từ payload: kiểm tra tĩnh xác nhận `readOrderId` — pass.
+  - Cả ba flow dùng helper trước state mutation/thông báo thành công: quét tĩnh xác nhận ba call site — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Helper chỉ chấp nhận non-empty string và không thay đổi API/backend.
