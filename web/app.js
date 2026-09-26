@@ -127,9 +127,9 @@ async function readJson(response) {
 function normalizePaperState(payload) {
   if (!payload || typeof payload !== 'object' || Array.isArray(payload)) return null;
   if (!payload.positions || typeof payload.positions !== 'object' || Array.isArray(payload.positions)) return null;
-  const cash = Number(payload.cash);
-  const equity = Number(payload.equity);
-  if (!Number.isFinite(cash) || cash < 0 || !Number.isFinite(equity) || equity < 0) return null;
+  const cash = safeNumber(payload.cash);
+  const equity = safeNumber(payload.equity);
+  if (cash === null || cash < 0 || equity === null || equity < 0) return null;
   return {
     positions: payload.positions,
     cash,
@@ -139,9 +139,9 @@ function normalizePaperState(payload) {
 
 function normalizePosition(payload) {
   if (!payload || typeof payload !== 'object' || Array.isArray(payload)) return null;
-  const quantity = Number(payload.quantity);
-  const averagePrice = Number(payload.average_price);
-  if (!Number.isFinite(quantity) || quantity === 0 || !Number.isFinite(averagePrice) || averagePrice <= 0) return null;
+  const quantity = safeNumber(payload.quantity);
+  const averagePrice = safeNumber(payload.average_price);
+  if (quantity === null || quantity === 0 || averagePrice === null || averagePrice <= 0) return null;
   return {
     side: quantity > 0 ? 'LONG' : 'SHORT',
     entry: averagePrice,

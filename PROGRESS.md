@@ -686,3 +686,16 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Numeric string không rỗng vẫn được hỗ trợ; state sai shape tiếp tục bị loại thay vì coercion mơ hồ.
+
+## Chu kỳ 115 — chuẩn hóa backend paper numeric leaves [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): `normalizePaperState` và `normalizePosition` dùng `Number()` trực tiếp, cho phép boolean/null/object/array coercion vào paper state.
+- Requirement -> test:
+  - Paper cash/equity dùng `safeNumber` và reject giá trị null/non-finite trước bound checks: quét tĩnh xác nhận — pass.
+  - Position quantity/average price dùng `safeNumber` và reject sai type trước bound checks: quét tĩnh xác nhận — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Numeric string hợp lệ vẫn được hỗ trợ thống nhất với stored state; payload sai shape fail-closed.
