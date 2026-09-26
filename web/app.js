@@ -16,27 +16,37 @@ function normalizeTimestamp(value) {
   return Number.isFinite(parsed.getTime()) ? parsed.toISOString() : new Date().toISOString();
 }
 
+function safeNumber(value) {
+  if (value === null || typeof value === 'boolean' || (value && typeof value === 'object')) return null;
+  if (typeof value === 'string' && !value.trim()) return null;
+  const number = Number(value);
+  return Number.isFinite(number) ? number : null;
+}
+
 function normalizeStoredState(stored) {
   const normalized = {};
-  if (Number.isFinite(Number(stored.cash)) && Number(stored.cash) >= 0) normalized.cash = Number(stored.cash);
-  if (Number.isFinite(Number(stored.equity)) && Number(stored.equity) >= 0) normalized.equity = Number(stored.equity);
-  if (Array.isArray(stored.trades)) normalized.trades = stored.trades.filter((trade) => (
-    trade && typeof trade === 'object' && !Array.isArray(trade)
-    && Number.isFinite(Number(trade.entry)) && Number(trade.entry) > 0
-    && Number.isFinite(Number(trade.exit)) && Number(trade.exit) > 0
-    && Number.isFinite(Number(trade.pnl))
-  )).map((trade) => ({
+  const cash = safeNumber(stored.cash);
+  const equity = safeNumber(stored.equity);
+  if (cash !== null && cash >= 0) normalized.cash = cash;
+  if (equity !== null && equity >= 0) normalized.equity = equity;
+  if (Array.isArray(stored.trades)) normalized.trades = stored.trades.filter((trade) => {
+    if (!trade || typeof trade !== 'object' || Array.isArray(trade)) return false;
+    const entry = safeNumber(trade.entry);
+    const exit = safeNumber(trade.exit);
+    const pnl = safeNumber(trade.pnl);
+    return entry !== null && entry > 0 && exit !== null && exit > 0 && pnl !== null;
+  }).map((trade) => ({
     side: trade.side === 'SHORT' ? 'SHORT' : 'LONG',
-    entry: Number(trade.entry),
-    exit: Number(trade.exit),
-    pnl: Number(trade.pnl),
+    entry: safeNumber(trade.entry),
+    exit: safeNumber(trade.exit),
+    pnl: safeNumber(trade.pnl),
     closed: normalizeTimestamp(trade.closed),
   }));
   if (stored.position && typeof stored.position === 'object' && !Array.isArray(stored.position)) {
     const position = stored.position;
-    const entry = Number(position.entry);
-    const qty = Number(position.qty);
-    if (Number.isFinite(entry) && entry > 0 && Number.isFinite(qty) && qty > 0) {
+    const entry = safeNumber(position.entry);
+    const qty = safeNumber(position.qty);
+    if (entry !== null && entry > 0 && qty !== null && qty > 0) {
       normalized.position = {
         side: position.side === 'SHORT' ? 'SHORT' : 'LONG',
         entry,

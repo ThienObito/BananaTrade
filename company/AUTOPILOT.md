@@ -507,6 +507,21 @@
 - Rui ro con lai: `snapshotPrice` dung `Number(value)` truc tiep nen boolean/null/object/array co the bi coercion thanh gia tri duong ngoai contract.
 - Viec tiep theo de xuat: Chi nhan numeric number hoac numeric string khong rong, loai boolean/object/array truoc khi Number.
 
+## Chu ky 113 — bo qua Phase A bi chan, validate stored numeric leaves doc lap
+- Trang thai: FAILED
+- File da sua: BLOCKED.md; PROGRESS.md
+- Kiem chung blocker: Interpreter bat buoc `E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe` van `MISSING`; khong the chay pytest/mypy/ruff.
+- Nguyen nhan viec truoc: Phase A van bi chan boi moi truong Python thieu.
+- Rui ro con lai: `normalizeStoredState` dung `Number()` truc tiep cho cash/equity/trade/position, cho phep boolean/null/object/array coercion thanh so hop le ngoai contract.
+- Viec tiep theo de xuat: Tao helper numeric leaf an toan va dung truoc cac bound checks cua local state.
+
+## Chu ky 114 — chuan hoa stored numeric leaves
+- Trang thai: DONE
+- File da sua: web/app.js; PROGRESS.md
+- Kiem chung: `node --check web/app.js` — pass; quet tĩnh xác nhận safeNumber reject null/boolean/object/array/whitespace và local numeric fields dùng helper — pass.
+- Rui ro con lai: Full pytest/mypy/ruff chưa chạy vì interpreter bắt buộc thiếu.
+- Viec tiep theo de xuat: Khi interpreter tồn tại, chạy A1; không lặp lại stored numeric guard.
+
 ## Chu ky 112 — validate snapshot price leaf
 - Trang thai: DONE
 - File da sua: web/app.js; PROGRESS.md
