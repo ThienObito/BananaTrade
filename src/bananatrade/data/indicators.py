@@ -13,7 +13,10 @@ def rsi(close: pd.Series, period: int = 14) -> pd.Series:
     avg_loss = loss.ewm(alpha=1 / period, adjust=False, min_periods=period).mean()
     relative = avg_gain / avg_loss.replace(0, float("nan"))
     result = 100 - (100 / (1 + relative))
-    return result.mask((avg_loss == 0) & (avg_gain > 0), 100.0)
+    # A flat market has no gains or losses; the neutral RSI is 50 rather than
+    # an undefined value. Keep the directional edge cases at 0 and 100.
+    result = result.mask((avg_loss == 0) & (avg_gain > 0), 100.0)
+    return result.mask((avg_gain == 0) & (avg_loss == 0), 50.0)
 
 
 def atr(frame: pd.DataFrame, period: int = 14) -> pd.Series:

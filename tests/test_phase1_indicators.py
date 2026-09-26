@@ -49,6 +49,11 @@ def test_indicators_no_lookahead(fixture: str, n: int, k: int) -> None:
         pd.testing.assert_series_equal(func(short).reset_index(drop=True), func(long).iloc[:n].reset_index(drop=True), check_names=False)
 
 
+def test_rsi_flat_market_is_neutral() -> None:
+    result = rsi(pd.Series([10.0] * 20), 3)
+    assert result.iloc[-1] == pytest.approx(50.0)
+
+
 def test_volume_zscore_zero_std() -> None:
     result = volume_zscore(pd.Series([5.0] * 10), 3)
     assert not result.replace([float("inf"), float("-inf")], pd.NA).dropna().any()
