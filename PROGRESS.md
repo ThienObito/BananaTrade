@@ -87,3 +87,15 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Frontend hiện hiển thị `—` khi chưa có dữ liệu, lấy giá/indicator từ `/api/snapshot`, equity từ `/api/paper/state`, và quantity từ order ticket. Không thay đổi backend hoặc test Python.
+
+## Chu kỳ 25 — sửa luồng đóng paper position [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): frontend gọi route `/api/paper/close` không tồn tại trong backend; route thực tế là `/api/paper/order`.
+- Requirement -> test:
+  - Đóng LONG/SHORT phải gửi lệnh ngược qua route paper order hiện có: kiểm tra tĩnh xác nhận side ngược, quantity vị thế và giá snapshot — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Đây là thay đổi frontend độc lập, vẫn paper-only và không thêm endpoint/backend giả. Full HTTP integration test cần chạy sau khi interpreter được khôi phục.

@@ -155,6 +155,21 @@
 - Rui ro con lai: Dashboard con nhieu gia tri HTML hard-code khong truy vet duoc ve backend; thay doi doc lap frontend se xu ly phan nay.
 - Viec tiep theo de xuat: Xoa placeholder dashboard va chi hien thi gia, chi so, equity tu snapshot/paper-state backend.
 
+## Chu ky 25 — bo qua Phase A bi chan, sua luong dong paper position doc lap
+- Trang thai: FAILED
+- File da sua: BLOCKED.md; PROGRESS.md
+- Kiem chung blocker: Interpreter bat buoc `E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe` van `MISSING`; khong the chay pytest/mypy/ruff.
+- Nguyen nhan viec truoc: Phase A merge fallout van bi chan boi moi truong Python thieu; khong lap lai chuan doan.
+- Rui ro con lai: Frontend goi `/api/paper/close` nhung backend hien tai chi co POST `/api/paper/order`; nut dong position se nhan 404.
+- Viec tiep theo de xuat: Dung cung endpoint paper order voi side nguoc de dong position, sau do chay node check.
+
+## Chu ky 26 — sua luong dong paper position
+- Trang thai: DONE
+- File da sua: web/app.js; PROGRESS.md
+- Kiem chung: `node --check web/app.js` — pass; quet tĩnh xác nhận không còn `/api/paper/close`, luồng đóng dùng `/api/paper/order` với side ngược, quantity vị thế và giá snapshot — pass.
+- Rui ro con lai: Full pytest/mypy/ruff chưa chạy được vì interpreter bắt buộc thiếu; cần integration test HTTP khi môi trường khôi phục.
+- Viec tiep theo de xuat: Khi interpreter tồn tại, chạy A1; không lặp lại sửa close route.
+
 ## Chu ky 24 — loai bo so lieu placeholder khoi dashboard
 - Trang thai: DONE
 - File da sua: web/index.html; web/app.js; PROGRESS.md

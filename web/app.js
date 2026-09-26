@@ -397,10 +397,15 @@ async function closePaper() {
   if (!state.position) return notify('Không có position để đóng');
   if (state.price === null) return notify('Market snapshot chưa sẵn sàng');
   try {
-    const response = await fetch('/api/paper/close', {
+    const response = await fetch('/api/paper/order', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ symbol: SNAPSHOT_SYMBOL, price: state.price }),
+      body: JSON.stringify({
+        symbol: SNAPSHOT_SYMBOL,
+        side: state.position.side === 'LONG' ? 'sell' : 'buy',
+        quantity: state.position.qty,
+        price: state.price,
+      }),
     });
     const data = await response.json();
     if (!response.ok) throw new Error(data.error || 'close rejected');
