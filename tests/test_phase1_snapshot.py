@@ -98,6 +98,11 @@ def test_compact_dict_has_no_nan_or_inf() -> None:
     json.dumps(compact, allow_nan=False)
 
 
+def test_orderbook_rejects_malformed_levels() -> None:
+    with pytest.raises(ValueError, match="numeric sizes"):
+        build_snapshot("BTC/USDT", {"1h": bars().iloc[:30]}, {"bids": [[100]], "asks": []}, 0.0, datetime.now(UTC))
+
+
 def test_orderbook_imbalance_hand_computed() -> None:
     """Imbalance is (total bid size - total ask size) / (total bid size + total ask size)."""
     as_of = datetime.fromtimestamp(2_000_000_000, UTC)
