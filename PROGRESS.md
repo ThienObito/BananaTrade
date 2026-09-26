@@ -298,3 +298,16 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Không thay đổi backend; position hợp lệ vẫn hiển thị side LONG/SHORT và entry/qty đã chuẩn hóa.
+
+## Chu kỳ 57 — chuẩn hóa timestamp paper state [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): timestamp `opened`/`closed` từ backend hoặc localStorage có thể là string malformed, gây `Invalid Date` trong UI.
+- Requirement -> test:
+  - Timestamp phải là ISO hợp lệ hoặc fallback timestamp hiện tại: kiểm tra tĩnh xác nhận `normalizeTimestamp` + `getTime()` finite — pass.
+  - Trade/position không dùng raw timestamp: quét tĩnh xác nhận ba call site dùng helper — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Không bịa dữ liệu giao dịch; fallback chỉ áp dụng cho metadata thời gian hiển thị.

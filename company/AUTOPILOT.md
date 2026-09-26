@@ -283,6 +283,21 @@
 - Rui ro con lai: position payload co `quantity` string/NaN hoac `average_price` sai kieu van duoc map thanh state, dan toi side/qty/entry khong tin cay.
 - Viec tiep theo de xuat: Them helper chuan hoa mot position hop le, chi cho phep quantity va average_price finite, quantity khac 0.
 
+## Chu ky 57 — bo qua Phase A bi chan, chan paper position khong hop le doc lap
+- Trang thai: FAILED
+- File da sua: BLOCKED.md; PROGRESS.md
+- Kiem chung blocker: Interpreter bat buoc `E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe` van `MISSING`; khong the chay pytest/mypy/ruff.
+- Nguyen nhan viec truoc: Phase A van bi chan boi moi truong Python thieu.
+- Rui ro con lai: `normalizePosition` van chap nhan timestamp `opened` bat ky; gia tri date malformed co the hien thi `Invalid Date` trong positions view.
+- Viec tiep theo de xuat: Chuan hoa timestamp `opened`/`closed`, khong de date malformed di vao UI.
+
+## Chu ky 58 — chuan hoa timestamp paper state
+- Trang thai: DONE
+- File da sua: web/app.js; PROGRESS.md
+- Kiem chung: `node --check web/app.js` — pass; quet tĩnh xác nhận local trade và backend position đều dùng `normalizeTimestamp` — pass.
+- Rui ro con lai: Full pytest/mypy/ruff chưa chạy vì interpreter bắt buộc thiếu.
+- Viec tiep theo de xuat: Khi interpreter tồn tại, chạy A1; không lặp lại timestamp normalization.
+
 ## Chu ky 56 — validate backend position
 - Trang thai: DONE
 - File da sua: web/app.js; PROGRESS.md

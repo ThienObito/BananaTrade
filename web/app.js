@@ -10,6 +10,12 @@ function loadStoredState() {
   }
 }
 
+function normalizeTimestamp(value) {
+  if (typeof value !== 'string') return new Date().toISOString();
+  const parsed = new Date(value);
+  return Number.isFinite(parsed.getTime()) ? parsed.toISOString() : new Date().toISOString();
+}
+
 function normalizeStoredState(stored) {
   const normalized = {};
   if (Number.isFinite(Number(stored.cash))) normalized.cash = Number(stored.cash);
@@ -24,7 +30,7 @@ function normalizeStoredState(stored) {
     entry: Number(trade.entry),
     exit: Number(trade.exit),
     pnl: Number(trade.pnl),
-    closed: typeof trade.closed === 'string' ? trade.closed : new Date().toISOString(),
+    closed: normalizeTimestamp(trade.closed),
   }));
   if (stored.position && typeof stored.position === 'object') {
     const position = stored.position;
@@ -35,7 +41,7 @@ function normalizeStoredState(stored) {
         side: position.side === 'SHORT' ? 'SHORT' : 'LONG',
         entry,
         qty,
-        opened: typeof position.opened === 'string' ? position.opened : new Date().toISOString(),
+        opened: normalizeTimestamp(position.opened),
       };
     }
   }
@@ -120,7 +126,7 @@ function normalizePosition(payload) {
     side: quantity > 0 ? 'LONG' : 'SHORT',
     entry: averagePrice,
     qty: Math.abs(quantity),
-    opened: typeof payload.opened === 'string' ? payload.opened : new Date().toISOString(),
+    opened: normalizeTimestamp(payload.opened),
   };
 }
 
