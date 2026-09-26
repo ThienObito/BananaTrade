@@ -371,6 +371,21 @@
 - Rui ro con lai: `snapshotSource` tra primitive truthy nguyen ven; cac helper nested access co the gap primitive/array khong co contract object.
 - Viec tiep theo de xuat: Chi chap nhan source plain object, khong phai array; fallback object rong.
 
+## Chu ky 79 — bo qua Phase A bi chan, validate snapshot timeframe shape doc lap
+- Trang thai: FAILED
+- File da sua: BLOCKED.md; PROGRESS.md
+- Kiem chung blocker: Interpreter bat buoc `E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe` van `MISSING`; khong the chay pytest/mypy/ruff.
+- Nguyen nhan viec truoc: Phase A van bi chan boi moi truong Python thieu.
+- Rui ro con lai: `source.timeframes` la primitive/array van bi truy cap `[SNAPSHOT_TIMEFRAME]`; array co the tra object bat ngo va lam helpers doc sai shape.
+- Viec tiep theo de xuat: Chi doc timeframe tu map object khong phai array, fallback undefined.
+
+## Chu ky 80 — validate snapshot timeframe shape
+- Trang thai: DONE
+- File da sua: web/app.js; PROGRESS.md
+- Kiem chung: `node --check web/app.js` — pass; quet tĩnh xác nhận price/indicators/candles không còn truy cập timeframe primitive/array — pass.
+- Rui ro con lai: Full pytest/mypy/ruff chưa chạy vì interpreter bắt buộc thiếu.
+- Viec tiep theo de xuat: Khi interpreter tồn tại, chạy A1; không lặp lại timeframe shape guard.
+
 ## Chu ky 78 — bao ve snapshot source shape
 - Trang thai: DONE
 - File da sua: web/app.js; PROGRESS.md

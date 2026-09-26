@@ -164,7 +164,10 @@ function snapshotSource(snapshot) {
 
 function snapshotPrice(snapshot) {
   const source = snapshotSource(snapshot);
-  const summary = source.timeframes?.[SNAPSHOT_TIMEFRAME];
+  const timeframes = source.timeframes && typeof source.timeframes === 'object' && !Array.isArray(source.timeframes)
+    ? source.timeframes
+    : {};
+  const summary = timeframes[SNAPSHOT_TIMEFRAME];
   const value = source.last_price ?? summary?.last_price;
   const price = Number(value);
   return Number.isFinite(price) ? price : null;
@@ -172,7 +175,10 @@ function snapshotPrice(snapshot) {
 
 function snapshotIndicators(snapshot) {
   const source = snapshotSource(snapshot);
-  const indicators = source.indicators || source.timeframes?.[SNAPSHOT_TIMEFRAME]?.indicators;
+  const timeframes = source.timeframes && typeof source.timeframes === 'object' && !Array.isArray(source.timeframes)
+    ? source.timeframes
+    : {};
+  const indicators = source.indicators || timeframes[SNAPSHOT_TIMEFRAME]?.indicators;
   return indicators && typeof indicators === 'object' && !Array.isArray(indicators) ? indicators : {};
 }
 
@@ -212,7 +218,9 @@ function snapshotCandles(snapshot, price) {
   const configured = source.candles ?? snapshot?.candles ?? source.ohlcv;
   const configuredInput = Array.isArray(configured)
     ? configured
-    : configured?.[SNAPSHOT_TIMEFRAME];
+    : configured && typeof configured === 'object' && !Array.isArray(configured)
+      ? configured[SNAPSHOT_TIMEFRAME]
+      : undefined;
   const input = Array.isArray(configuredInput) ? configuredInput : [];
   const candles = input
     .filter((candle) => candle && typeof candle === 'object' && !Array.isArray(candle))

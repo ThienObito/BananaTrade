@@ -442,3 +442,17 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Không tạo snapshot hoặc giá trị market mặc định; source sai shape sẽ render placeholder.
+
+## Chu kỳ 79 — validate snapshot timeframe shape [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): `timeframes` primitive/array có thể bị truy cập như map và truyền summary ngoài contract vào price/indicator/candle helpers.
+- Requirement -> test:
+  - Chỉ dùng timeframes plain object không phải array: kiểm tra tĩnh xác nhận guard — pass.
+  - Price và indicators dùng cùng map đã chuẩn hóa: quét tĩnh xác nhận — pass.
+  - Candle map chỉ index configured object hợp lệ: kiểm tra tĩnh xác nhận guard — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Timeframe sai shape bị coi là thiếu dữ liệu, không tạo summary hoặc candle giả.
