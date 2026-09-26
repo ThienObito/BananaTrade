@@ -285,10 +285,10 @@ function snapshotCandles(snapshot, price) {
   const candles = input
     .filter((candle) => candle && typeof candle === 'object' && !Array.isArray(candle))
     .map((candle) => ({
-      open: Number(candle.open),
-      high: Number(candle.high),
-      low: Number(candle.low),
-      close: Number(candle.close),
+      open: safeNumber(candle.open),
+      high: safeNumber(candle.high),
+      low: safeNumber(candle.low),
+      close: safeNumber(candle.close),
     }))
     .filter((candle) => (
       Object.values(candle).every((value) => Number.isFinite(value) && value > 0)

@@ -738,3 +738,16 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Backend snapshot là nguồn dữ liệu phiên hiện tại; localStorage chỉ giữ cash/position/trades qua `save()`.
+
+## Chu kỳ 123 — chuẩn hóa candle numeric leaves [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): `snapshotCandles` dùng `Number()` trực tiếp cho OHLC, cho phép boolean/null/object/array coercion thành candle hợp lệ.
+- Requirement -> test:
+  - OHLC dùng `safeNumber` trước positive/range checks: quét tĩnh xác nhận — pass.
+  - Không còn `Number(candle.open/high/low/close)` trực tiếp: quét tĩnh xác nhận — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Candle sai leaf thành null và bị filter; fallback candle vẫn dùng canonical snapshot price đã validate.
