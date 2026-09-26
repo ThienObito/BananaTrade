@@ -57,6 +57,14 @@ function notify(message) {
   setTimeout(() => toast.classList.remove('show'), 2200);
 }
 
+async function readJson(response) {
+  try {
+    return await response.json();
+  } catch (error) {
+    return { error: 'Backend returned invalid JSON' };
+  }
+}
+
 function save() {
   persistState({
     cash: state.cash,
@@ -276,7 +284,7 @@ async function updateSnapshot() {
     });
     const response = await fetch('/api/snapshot?' + params.toString());
     if (!response.ok) throw new Error('snapshot unavailable');
-    const snapshot = await response.json();
+    const snapshot = await readJson(response);
     const price = snapshotPrice(snapshot);
     if (price === null) throw new Error('snapshot has no last price');
     state.snapshot = snapshot;
@@ -295,7 +303,7 @@ async function renderState() {
   try {
     const response = await fetch('/api/paper/state');
     if (response.ok) {
-      backendState = await response.json();
+      backendState = await readJson(response);
       const positions = Object.values(backendState.positions || {}).filter((position) => position.quantity);
       if (positions.length) {
         const position = positions[0];
@@ -380,7 +388,7 @@ function bind() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
       });
-      const data = await response.json();
+      const data = await readJson(response);
       if (!response.ok) throw new Error(data.error || 'risk rejected');
       notify('Paper order filled · ' + data.order.order_id);
     } catch (error) {
@@ -391,7 +399,7 @@ function bind() {
     notify('AI analysis running...');
     try {
       const response = await fetch('/api/analysis/run');
-      const data = await response.json();
+      const data = await readJson(response);
       if (!response.ok) throw new Error(data.error || 'analysis failed');
       const report = data.reports?.find((item) => item.agent === 'technical_analyst');
       notify(report ? 'AI bias: ' + report.bias + ' · confidence ' + report.confidence : 'AI analysis completed');
@@ -419,7 +427,7 @@ async function openPaper(side) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ symbol: SNAPSHOT_SYMBOL, side: side === 'LONG' ? 'buy' : 'sell', quantity, price: state.price }),
     });
-    const data = await response.json();
+    const data = await readJson(response);
     if (!response.ok) throw new Error(data.error || 'order rejected');
     state.position = { side, entry: state.price, qty: quantity, opened: new Date().toISOString() };
     save();
@@ -446,7 +454,7 @@ async function closePaper() {
         price: state.price,
       }),
     });
-    const data = await response.json();
+    const data = await readJson(response);
     if (!response.ok) throw new Error(data.error || 'close rejected');
     const pnl = state.position.side === 'LONG'
       ? (state.price - state.position.entry) * state.position.qty

@@ -164,3 +164,16 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Reload vẫn làm mới UI; backend account không bị xóa bởi thao tác localStorage này.
+
+## Chu kỳ 37 — parse response API an toàn [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): `response.json()` trực tiếp có thể throw khi backend trả body rỗng, HTML hoặc JSON malformed.
+- Requirement -> test:
+  - Snapshot, paper state, open/close order và analysis dùng parser an toàn: quét tĩnh xác nhận sáu call site dùng `readJson(response)` — pass.
+  - Parser trả typed error object khi JSON invalid: kiểm tra tĩnh xác nhận fallback `Backend returned invalid JSON` — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Backend response schema không thay đổi; frontend chỉ thêm lớp bảo vệ parse lỗi.
