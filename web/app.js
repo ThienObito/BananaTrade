@@ -111,6 +111,14 @@ function normalizePaperState(payload) {
   };
 }
 
+function normalizeAnalysis(payload) {
+  if (!payload || typeof payload !== 'object' || Array.isArray(payload)) return null;
+  const reports = Array.isArray(payload.reports) ? payload.reports.filter((report) => (
+    report && typeof report === 'object' && typeof report.agent === 'string'
+  )) : [];
+  return { reports };
+}
+
 function save() {
   persistState({
     cash: state.cash,
@@ -452,10 +460,11 @@ function bind() {
     notify('AI analysis running...');
     try {
       const response = await fetch('/api/analysis/run');
-      const data = await readJson(response);
-      if (!response.ok) throw new Error(data.error || 'analysis failed');
-      const report = data.reports?.find((item) => item.agent === 'technical_analyst');
-      notify(report ? 'AI bias: ' + report.bias + ' · confidence ' + report.confidence : 'AI analysis completed');
+      const data = normalizeAnalysis(await readJson(response));
+      if (!response.ok) throw new Error(data?.error || 'analysis failed');
+      if (!data) throw new Error('Backend returned invalid analysis');
+      const report = data.reports.find((item) => item.agent === 'technical_analyst');
+      notify(report ? 'AI bias: ' + (report.bias || '—') + ' · confidence ' + (report.confidence || '—') : 'AI analysis completed');
     } catch (error) {
       notify('Analysis failed: ' + error.message);
     }

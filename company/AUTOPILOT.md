@@ -243,6 +243,21 @@
 - Rui ro con lai: order endpoint tra HTTP 200 nhung body thieu `order.order_id`; frontend van truy cap truc tiep va throw loi sau khi order da duoc chap nhan.
 - Viec tiep theo de xuat: Validate order success payload truoc khi hien thi filled/open state.
 
+## Chu ky 47 — bo qua Phase A bi chan, xac thuc analysis response doc lap
+- Trang thai: FAILED
+- File da sua: BLOCKED.md; PROGRESS.md
+- Kiem chung blocker: Interpreter bat buoc `E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe` van `MISSING`; khong the chay pytest/mypy/ruff.
+- Nguyen nhan viec truoc: Phase A van bi chan boi moi truong Python thieu.
+- Rui ro con lai: `/api/analysis/run` tra HTTP 200 nhung `reports` khong phai array hoac report thieu field; frontend van goi `.find`/doc field khong validate.
+- Viec tiep theo de xuat: Them validator analysis payload, chi hien thi report co shape hop le.
+
+## Chu ky 48 — xac thuc analysis response
+- Trang thai: DONE
+- File da sua: web/app.js; PROGRESS.md
+- Kiem chung: `node --check web/app.js` — pass; quet tĩnh xác nhận reports được normalize/filter và analysis flow validate trước `.find` — pass.
+- Rui ro con lai: Full pytest/mypy/ruff chưa chạy vì interpreter bắt buộc thiếu.
+- Viec tiep theo de xuat: Khi interpreter tồn tại, chạy A1; không lặp lại analysis response guard.
+
 ## Chu ky 46 — xac thuc order response
 - Trang thai: DONE
 - File da sua: web/app.js; PROGRESS.md

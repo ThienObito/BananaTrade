@@ -231,3 +231,16 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Không thay đổi backend hoặc broker; validator chỉ bảo vệ client khỏi response success giả.
+
+## Chu kỳ 47 — xác thực analysis response [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): analysis response 200 có thể thiếu `reports` hoặc chứa item không phải object, làm frontend gọi `.find`/đọc field trên payload sai shape.
+- Requirement -> test:
+  - Chỉ dùng reports là array và report có agent string: kiểm tra tĩnh xác nhận `normalizeAnalysis` filter — pass.
+  - Analysis flow validate trước `.find`: kiểm tra tĩnh xác nhận `normalizeAnalysis(await readJson(response))` và guard null — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Validator không tạo report hoặc bias giả; response hợp lệ nhưng không có technical report chỉ hiển thị completed.
