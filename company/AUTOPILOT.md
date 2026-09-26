@@ -643,6 +643,21 @@
 - Rui ro con lai: `state.position` duoc normalize tu backend nhung views positions goi `.toFixed()` truc tiep; local state co the sai shape sau mock/storage path.
 - Viec tiep theo de xuat: Normalize position boundary truoc khi render va chi render leaf numeric da safe.
 
+## Chu ky 149 — bo qua Phase A bi chan, normalize performance trade display doc lap
+- Trang thai: FAILED
+- File da sua: BLOCKED.md; PROGRESS.md
+- Kiem chung blocker: Interpreter bat buoc `E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe` van `MISSING`; khong the chay pytest/mypy/ruff.
+- Nguyen nhan viec truoc: Phase A van bi chan boi moi truong Python thieu.
+- Rui ro con lai: Performance view goi `.toFixed()` truc tiep tren pnl/entry/exit/rate/pf cua trade history; state history co the chua leaf sai type.
+- Viec tiep theo de xuat: Dung formatMetric cho metrics va trade leaves truoc khi render.
+
+## Chu ky 150 — chuan hoa performance trade formatting
+- Trang thai: DONE
+- File da sua: web/app.js; PROGRESS.md
+- Kiem chung: `node --check web/app.js` — pass; quet tĩnh xác nhận metrics và closed-trade leaves dùng formatMetric, không còn direct `.toFixed()` — pass.
+- Rui ro con lai: Full pytest/mypy/ruff chưa chạy vì interpreter bắt buộc thiếu.
+- Viec tiep theo de xuat: Khi interpreter tồn tại, chạy A1; không lặp lại performance formatting guard.
+
 ## Chu ky 148 — chuan hoa position display boundary
 - Trang thai: DONE
 - File da sua: web/app.js; PROGRESS.md

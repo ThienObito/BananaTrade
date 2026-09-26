@@ -911,3 +911,17 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Position backend đã normalize giữ nguyên hiển thị; dữ liệu sai shape hiển thị placeholder thay vì throw.
+
+## Chu kỳ 149 — chuẩn hóa performance trade formatting [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): Performance view gọi `.toFixed()` trực tiếp trên PnL, entry, exit, win rate và profit factor từ local trade history.
+- Requirement -> test:
+  - Performance metrics dùng `formatMetric`: kiểm tra tĩnh xác nhận — pass.
+  - Closed trade numeric leaves dùng `formatMetric`: kiểm tra tĩnh xác nhận — pass.
+  - Không còn direct `.toFixed()` trên các performance leaves: quét tĩnh xác nhận — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Giữ dấu PnL dương/âm và placeholder null; chỉ thay boundary formatting để tránh render throw.
