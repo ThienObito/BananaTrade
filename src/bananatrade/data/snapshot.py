@@ -95,10 +95,17 @@ def build_snapshot(symbol: str, ohlcv_by_tf: dict[str, pd.DataFrame], orderbook:
         missing.append("orderbook")
     else:
         try:
-            bids = sum(float(level[1]) for level in orderbook.get("bids", []))
-            asks = sum(float(level[1]) for level in orderbook.get("asks", []))
+            bid_levels = orderbook.get("bids", [])
+            ask_levels = orderbook.get("asks", [])
+            bids = sum(float(level[1]) for level in bid_levels)
+            asks = sum(float(level[1]) for level in ask_levels)
+            for level in [*bid_levels, *ask_levels]:
+                if float(level[0]) < 0:
+                    raise ValueError("Orderbook prices cannot be negative")
         except (IndexError, TypeError, ValueError) as exc:
-            raise ValueError("Orderbook levels must contain numeric sizes") from exc
+            if str(exc) == "Orderbook prices cannot be negative":
+                raise
+            raise ValueError("Orderbook levels must contain numeric prices and sizes") from exc
         if bids < 0 or asks < 0:
             raise ValueError("Orderbook sizes cannot be negative")
         imbalance = (bids - asks) / (bids + asks) if bids + asks else None
