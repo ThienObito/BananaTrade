@@ -435,6 +435,21 @@
 - Rui ro con lai: `normalizeStoredState` chi kiem tra trade object va position object, nhung array co the lot qua guard va duoc doc fields; local storage payload cung co the ke thua object prototype khong mong muon.
 - Viec tiep theo de xuat: Reject arrays cho trade/position truoc khi doc leaf fields.
 
+## Chu ky 95 — bo qua Phase A bi chan, validate local state numeric bounds doc lap
+- Trang thai: FAILED
+- File da sua: BLOCKED.md; PROGRESS.md
+- Kiem chung blocker: Interpreter bat buoc `E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe` van `MISSING`; khong the chay pytest/mypy/ruff.
+- Nguyen nhan viec truoc: Phase A van bi chan boi moi truong Python thieu.
+- Rui ro con lai: `normalizeStoredState` chap nhan cash/equity am va trade entry/exit/pnl am tu localStorage; cac gia tri nay co the lam metrics/PnL UI hien thi sai hoac tao ticket khong hop le.
+- Viec tiep theo de xuat: Chi chap nhan cash/equity khong am; entry/exit duong va pnl finite.
+
+## Chu ky 96 — validate local state numeric bounds
+- Trang thai: DONE
+- File da sua: web/app.js; PROGRESS.md
+- Kiem chung: `node --check web/app.js` — pass; quet tĩnh xác nhận local cash/equity âm, entry/exit không dương và PnL non-finite bị loại — pass.
+- Rui ro con lai: Full pytest/mypy/ruff chưa chạy vì interpreter bắt buộc thiếu.
+- Viec tiep theo de xuat: Khi interpreter tồn tại, chạy A1; không lặp lại local numeric bounds guard.
+
 ## Chu ky 94 — validate stored paper state shapes
 - Trang thai: DONE
 - File da sua: web/app.js; PROGRESS.md

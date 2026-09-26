@@ -550,3 +550,17 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Local state sai shape bị loại; backend vẫn authoritative cho paper cash/equity/positions.
+
+## Chu kỳ 95 — validate local state numeric bounds [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): localStorage có thể chứa cash/equity âm hoặc trade entry/exit không dương, làm metrics và paper UI hiển thị state ngoài contract.
+- Requirement -> test:
+  - Cash/equity local chỉ nhận finite không âm: kiểm tra tĩnh xác nhận — pass.
+  - Trade entry/exit chỉ nhận finite dương: kiểm tra tĩnh xác nhận — pass.
+  - Trade PnL phải finite: kiểm tra tĩnh xác nhận — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: PnL có thể âm hợp lệ; chỉ loại PnL non-finite và giá entry/exit không dương.

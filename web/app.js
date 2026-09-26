@@ -18,12 +18,12 @@ function normalizeTimestamp(value) {
 
 function normalizeStoredState(stored) {
   const normalized = {};
-  if (Number.isFinite(Number(stored.cash))) normalized.cash = Number(stored.cash);
-  if (Number.isFinite(Number(stored.equity))) normalized.equity = Number(stored.equity);
+  if (Number.isFinite(Number(stored.cash)) && Number(stored.cash) >= 0) normalized.cash = Number(stored.cash);
+  if (Number.isFinite(Number(stored.equity)) && Number(stored.equity) >= 0) normalized.equity = Number(stored.equity);
   if (Array.isArray(stored.trades)) normalized.trades = stored.trades.filter((trade) => (
     trade && typeof trade === 'object' && !Array.isArray(trade)
-    && Number.isFinite(Number(trade.entry))
-    && Number.isFinite(Number(trade.exit))
+    && Number.isFinite(Number(trade.entry)) && Number(trade.entry) > 0
+    && Number.isFinite(Number(trade.exit)) && Number(trade.exit) > 0
     && Number.isFinite(Number(trade.pnl))
   )).map((trade) => ({
     side: trade.side === 'SHORT' ? 'SHORT' : 'LONG',
