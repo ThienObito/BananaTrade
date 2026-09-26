@@ -1003,3 +1003,16 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Invalid position data bị từ chối trước request close; paper-only behavior và PnL formula LONG/SHORT không đổi.
+
+## Chu kỳ 163 — chuẩn hóa positions last-price display [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): Positions view gọi `state.price.toFixed()` trực tiếp trong ticker, không dùng numeric display boundary chung.
+- Requirement -> test:
+  - Last price trong Positions view dùng `formatMetric`: kiểm tra tĩnh xác nhận — pass.
+  - Không còn direct `state.price.toFixed()` trong Positions view: quét tĩnh xác nhận — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Giá vẫn hiển thị prefix `$`; giá null giữ placeholder `—`.
