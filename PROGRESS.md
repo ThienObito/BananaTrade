@@ -977,3 +977,16 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Invalid value vẫn hiển thị `—`; chỉ thay presentation của zero PnL.
+
+## Chu kỳ 159 — chuẩn hóa close PnL notification [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): closePaper notification dùng `pnl.toFixed()` trực tiếp sau close order thành công, không dùng signed numeric boundary chung.
+- Requirement -> test:
+  - Close PnL notification dùng `formatSignedMetric`: kiểm tra tĩnh xác nhận — pass.
+  - Không còn direct `pnl.toFixed()` trong close notification: quét tĩnh xác nhận — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Notification giữ dấu dương/âm, zero không dấu và invalid fallback `—`.

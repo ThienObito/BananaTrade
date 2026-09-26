@@ -640,7 +640,7 @@ async function closePaper() {
     state.trades.push({ side: state.position.side, entry: state.position.entry, exit: state.price, pnl, closed: new Date().toISOString() });
     state.position = null;
     save();
-    notify('Backend position closed · PnL $' + pnl.toFixed(2));
+    notify('Backend position closed · PnL $' + formatSignedMetric(pnl));
     $('.content').innerHTML = views.positions;
     bind();
     renderState();

@@ -683,6 +683,21 @@
 - Rui ro con lai: `formatSignedMetric` hien thi `+0`, khong phu hop presentation thong thuong cua PnL zero va tao edge-case sign khong can thiet.
 - Viec tiep theo de xuat: Hien thi zero khong dau, giu dau cho so duong/am.
 
+## Chu ky 159 — bo qua Phase A bi chan, normalize close PnL notification doc lap
+- Trang thai: FAILED
+- File da sua: BLOCKED.md; PROGRESS.md
+- Kiem chung blocker: Interpreter bat buoc `E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe` van `MISSING`; khong the chay pytest/mypy/ruff.
+- Nguyen nhan viec truoc: Phase A van bi chan boi moi truong Python thieu.
+- Rui ro con lai: closePaper notification goi `pnl.toFixed()` truc tiep; malformed/overflow edge co the lam thong bao throw sau order da thanh cong.
+- Viec tiep theo de xuat: Dung formatSignedMetric cho close PnL notification.
+
+## Chu ky 160 — normalize close PnL notification
+- Trang thai: DONE
+- File da sua: web/app.js; PROGRESS.md
+- Kiem chung: `node --check web/app.js` — pass; quet tĩnh xác nhận close notification dùng formatSignedMetric, không còn pnl.toFixed trực tiếp — pass.
+- Rui ro con lai: Full pytest/mypy/ruff chưa chạy vì interpreter bắt buộc thiếu.
+- Viec tiep theo de xuat: Khi interpreter tồn tại, chạy A1; không lặp lại close PnL notification guard.
+
 ## Chu ky 158 — dieu chinh signed zero display
 - Trang thai: DONE
 - File da sua: web/app.js; PROGRESS.md
