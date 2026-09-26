@@ -899,6 +899,21 @@
 - Rui ro con lai: Candidate indicator object rỗng ở source có thể chặn summary indicator hợp lệ vì chỉ kiểm tra shape.
 - Viec tiep theo de xuat: Chỉ chọn candidate có ít nhất một entry numeric hợp lệ.
 
+## Chu ky 213 — bo qua Phase A bi chan, harden empty snapshot indicator map doc lap
+- Trang thai: FAILED
+- File da sua: BLOCKED.md; PROGRESS.md
+- Kiem chung blocker: Interpreter bat buoc `E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe` van `MISSING`; khong the chay pytest/mypy/ruff.
+- Nguyen nhan viec truoc: Phase A van bi chan boi moi truong Python thieu.
+- Rui ro con lai: Empty/all-malformed indicator path trả plain object có prototype, không nhất quán với normalized path.
+- Viec tiep theo de xuat: Trả null-prototype map an toàn cho mọi empty path.
+
+## Chu ky 214 — harden empty snapshot indicator map
+- Trang thai: DONE
+- File da sua: web/app.js; PROGRESS.md
+- Kiem chung: `node --check web/app.js` — pass; quet tĩnh xác nhận empty indicator path dùng null-prototype map — pass.
+- Rui ro con lai: Full pytest/mypy/ruff chưa chạy vì interpreter bắt buộc thiếu.
+- Viec tiep theo de xuat: Khi interpreter tồn tại, chạy A1; không lặp lại empty indicator map guard.
+
 ## Chu ky 212 — harden empty snapshot indicator fallback
 - Trang thai: DONE
 - File da sua: web/app.js; PROGRESS.md

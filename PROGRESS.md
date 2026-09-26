@@ -1322,3 +1322,16 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Empty hoặc all-malformed source sẽ fallback sang summary; nếu cả hai không hợp lệ trả map rỗng.
+
+## Chu kỳ 213 — harden empty snapshot indicator map [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): Empty/all-malformed indicator path trả plain object có prototype, không nhất quán với normalized path.
+- Requirement -> test:
+  - Empty indicator path trả null-prototype map: kiểm tra tĩnh xác nhận — pass.
+  - Không còn plain `{}` ở indicator empty path: quét tĩnh xác nhận — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Chỉ thay đổi container nội bộ; render output vẫn tương đương map rỗng.

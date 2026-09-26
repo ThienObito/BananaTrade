@@ -240,7 +240,7 @@ function snapshotIndicators(snapshot) {
     candidate && typeof candidate === 'object' && !Array.isArray(candidate)
     && Object.values(candidate).some((value) => safeNumber(value) !== null)
   ));
-  if (!indicators) return {};
+  if (!indicators) return Object.create(null);
   const normalized = Object.create(null);
   Object.entries(indicators).forEach(([key, value]) => {
     const normalizedKey = key.trim().toLowerCase();
