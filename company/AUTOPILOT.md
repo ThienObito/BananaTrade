@@ -1654,6 +1654,14 @@
 - Rui ro con lai: Full pytest/mypy/ruff van chua chay duoc vi interpreter bat buoc bi thieu; merge fallout Phase A chua duoc xu ly.
 - Viec tiep theo de xuat: Khi interpreter ton tai, chay A1; khong lap lai viec sua request snapshot.
 
+## Chu ky 223 — dung vi interpreter bat buoc thieu
+- Trang thai: BLOCKED
+- File da sua: BLOCKED.md; PROGRESS.md; company/AUTOPILOT.md
+- Kiem chung blocker: Interpreter bat buoc `E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe` van `MISSING`; khong the chay pytest/mypy/ruff.
+- Nguyen nhan: Moi truong thieu interpreter duoc quy dinh, blocker lap lai qua nhieu round.
+- Rui ro con lai: Phase A–C, test count va runtime dashboard chua co them bang chung trong phien nay.
+- Viec tiep theo de xuat: Khoi dong lai khi file interpreter ton tai; khi do chay A1 va tiep tuc Phase B/C.
+
 ## TONG KET PHIEN
 - Da lam duoc: Hoan tat 18 chu ky hardening; sua breakout theo prior range, RSI flat market, validation OHLCV (cot, so, bounds, timestamp), orderbook (cau truc, price/size, am), va quota ledger/check inputs.
 - So lieu that: Test cuoi `E:\Trade-AI\BananaTrade\.venv\Scripts\python.exe -m pytest -q -p no:cacheprovider --basetemp=.pytest-tmp` — 175 passed in 4.81s.

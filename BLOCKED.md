@@ -701,3 +701,10 @@
 - Kết quả thực tế: `MISSING E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe`.
 - Không chạy `pytest`, `mypy`, `ruff` và không dùng interpreter thay thế theo hard rule.
 - Phase A tiếp tục bị chặn; đã chuyển sang một hạng mục frontend độc lập không phụ thuộc Python.
+
+## Goal round 104 — blocker vẫn tồn tại, dừng phiên
+- Đã xác nhận lại thư mục `E:\\Trade-AI\\BananaTrade`.
+- Lệnh kiểm tra: `Test-Path -LiteralPath 'E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe'`.
+- Kết quả thực tế: `MISSING E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe`.
+- Không chạy `pytest`, `mypy`, `ruff` và không dùng interpreter thay thế theo hard rule.
+- Blocker này đã tồn tại qua nhiều round liên tiếp; dừng phiên theo hard rule thay vì thực hiện thay đổi không liên quan.
