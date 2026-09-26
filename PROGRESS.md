@@ -645,3 +645,17 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Không tạo reports mặc định; payload analysis sai container tiếp tục fail-closed.
+
+## Chu kỳ 109 — chuẩn hóa snapshot indicator leaves [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): Indicator container đúng object nhưng leaf boolean/object/array có thể bị `Number()` coercion trong `formatMetric`, tạo hiển thị ngoài contract.
+- Requirement -> test:
+  - Indicators phải là object không phải array: kiểm tra tĩnh xác nhận — pass.
+  - Boolean/object/array leaf thành `null`: quét tĩnh xác nhận — pass.
+  - Leaf finite numeric hoặc numeric string được chuẩn hóa thành number; sai thành `null`: quét tĩnh xác nhận — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Không tạo indicator kỹ thuật mặc định; leaf sai type hiển thị placeholder qua `formatMetric`.

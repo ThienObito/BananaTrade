@@ -491,6 +491,21 @@
 - Rui ro con lai: `normalizeAnalysis` trộn guard container vào điều kiện dài; contract reports list không có nhánh rõ ràng để fail-closed trước filter/map.
 - Viec tiep theo de xuat: Tách `reports` local và reject rõ khi không phải array trước khi xử lý.
 
+## Chu ky 109 — bo qua Phase A bi chan, validate snapshot indicator leaves doc lap
+- Trang thai: FAILED
+- File da sua: BLOCKED.md; PROGRESS.md
+- Kiem chung blocker: Interpreter bat buoc `E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe` van `MISSING`; khong the chay pytest/mypy/ruff.
+- Nguyen nhan viec truoc: Phase A van bi chan boi moi truong Python thieu.
+- Rui ro con lai: `snapshotIndicators` chi guard container object, sau do formatMetric dung Number() nen boolean/object/array co the bi coercion thanh gia tri ngoai contract.
+- Viec tiep theo de xuat: Chi giu indicator leaf finite number hoac numeric string hop le, loai boolean/object/array.
+
+## Chu ky 110 — chuan hoa snapshot indicator leaves
+- Trang thai: DONE
+- File da sua: web/app.js; PROGRESS.md
+- Kiem chung: `node --check web/app.js` — pass; quet tĩnh xác nhận indicator boolean/object/array không bị Number coercion và leaf sai thành null — pass.
+- Rui ro con lai: Full pytest/mypy/ruff chưa chạy vì interpreter bắt buộc thiếu.
+- Viec tiep theo de xuat: Khi interpreter tồn tại, chạy A1; không lặp lại indicator leaf guard.
+
 ## Chu ky 108 — validate analysis reports container
 - Trang thai: DONE
 - File da sua: web/app.js; PROGRESS.md
