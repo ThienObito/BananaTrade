@@ -607,10 +607,10 @@ async function openPaper(side) {
     });
     const data = await readJson(response);
     if (!response.ok) throw new Error(backendError(data, 'order rejected'));
-    requireOrderId(data);
+    const orderId = requireOrderId(data);
     state.position = { side: normalizedSide, entry: price, qty: quantity, opened: new Date().toISOString() };
     save();
-    notify('Backend paper ' + normalizedSide + ' opened');
+    notify('Backend paper ' + normalizedSide + ' opened · ' + orderId);
     $('.content').innerHTML = views.positions;
     bind();
     renderState();

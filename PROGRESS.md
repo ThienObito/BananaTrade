@@ -1133,3 +1133,15 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Chỉ bổ sung LONG/SHORT vào notification; không đổi execution hoặc PnL.
+
+## Chu kỳ 183 — chuẩn hóa openPaper response notification [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): openPaper đã validate order id nhưng bỏ qua giá trị id trong notification, làm giảm khả năng trace paper fill.
+- Requirement -> test:
+  - Order id được gán từ `requireOrderId` và dùng trong notification: kiểm tra tĩnh xác nhận — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Không đổi request hoặc state; chỉ bổ sung backend order id vào toast.
