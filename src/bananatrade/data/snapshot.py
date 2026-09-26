@@ -54,7 +54,14 @@ def closed_candles(frame: pd.DataFrame, timeframe: str, as_of: datetime) -> pd.D
         raise ValueError("OHLCV frame contains negative volume")
     if as_of.tzinfo is None:
         as_of = as_of.replace(tzinfo=UTC)
-    opened = pd.to_datetime(frame["timestamp_ms"], unit="ms", utc=True)
+    try:
+        opened = pd.to_datetime(frame["timestamp_ms"], unit="ms", utc=True, errors="coerce")
+    except (OverflowError, ValueError, TypeError) as exc:
+        raise ValueError("OHLCV frame contains invalid timestamps") from exc
+    if opened.isna().any():
+        raise ValueError("OHLCV frame contains invalid timestamps")
+    if not opened.is_monotonic_increasing or opened.duplicated().any():
+        raise ValueError("OHLCV frame timestamps must be unique and sorted")
     return frame.loc[opened + durations[timeframe] <= as_of].copy()
 
 

@@ -13,6 +13,21 @@ def bars() -> pd.DataFrame:
     return pd.read_csv(path)
 
 
+def test_closed_candles_rejects_invalid_timestamps() -> None:
+    frame = bars().copy()
+    frame["timestamp_ms"] = frame["timestamp_ms"].astype("float64")
+    frame.loc[0, "timestamp_ms"] = float("inf")
+    with pytest.raises(ValueError, match="invalid timestamps"):
+        closed_candles(frame, "1h", datetime.now(UTC))
+
+
+def test_closed_candles_rejects_unsorted_timestamps() -> None:
+    frame = bars().copy()
+    frame.iloc[[0, 1]] = frame.iloc[[1, 0]].to_numpy()
+    with pytest.raises(ValueError, match="unique and sorted"):
+        closed_candles(frame, "1h", datetime.now(UTC))
+
+
 def test_closed_candles_rejects_inconsistent_ohlcv_bounds() -> None:
     frame = bars().copy()
     frame.loc[0, "high"] = frame.loc[0, "close"] - 1

@@ -39,3 +39,10 @@
 - Kiem chung: `E:\Trade-AI\BananaTrade\.venv\Scripts\python.exe -m pytest -q -p no:cacheprovider --basetemp=.pytest-tmp` — 156 passed; `python -m ruff check src tests` — All checks passed.
 - Rui ro con lai: Chua xu ly timestamp khong hop le hoac khong tang dan.
 - Viec tiep theo de xuat: Them validation timestamp ms hop le va thu tu thoi gian.
+
+## Chu ky 7 — validate timestamp OHLCV
+- Trang thai: DONE
+- File da sua: src/bananatrade/data/snapshot.py; tests/test_phase1_snapshot.py
+- Kiem chung: `E:\Trade-AI\BananaTrade\.venv\Scripts\python.exe -m pytest -q -p no:cacheprovider --basetemp=.pytest-tmp` — 158 passed; `python -m ruff check src tests` — All checks passed.
+- Rui ro con lai: Chua kiem tra timestamp tuong lai qua xa so voi as_of.
+- Viec tiep theo de xuat: Xem xet loc timestamp tuong lai va bao ve overflow trong cac nguon du lieu.
