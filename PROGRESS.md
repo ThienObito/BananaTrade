@@ -939,3 +939,16 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Zero hiển thị `+0`; invalid leaf hiển thị `—` và không throw.
+
+## Chu kỳ 153 — chuẩn hóa performance metrics input [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): `metrics()` tin `state.trades` đã normalize; trade malformed từ local boundary có thể làm reduce thành NaN hoặc render không ổn định.
+- Requirement -> test:
+  - Chỉ trade object có PnL numeric safe được dùng tính metrics: kiểm tra tĩnh xác nhận — pass.
+  - Gains/losses/rate/pf tính từ tập trade đã normalize: review branch xác nhận — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Trade history display vẫn dùng dữ liệu state hiện tại; metrics bỏ qua record malformed thay vì làm hỏng toàn bộ performance view.

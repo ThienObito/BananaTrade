@@ -659,6 +659,21 @@
 - Rui ro con lai: Performance view lap lai logic dau `trade.pnl >= 0 ? '+' : ''` va formatMetric; zero/invalid edge co the khong nhat quan.
 - Viec tiep theo de xuat: Dung helper formatSignedMetric chung cho PnL display.
 
+## Chu ky 153 — bo qua Phase A bi chan, normalize performance metrics input doc lap
+- Trang thai: FAILED
+- File da sua: BLOCKED.md; PROGRESS.md
+- Kiem chung blocker: Interpreter bat buoc `E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe` van `MISSING`; khong the chay pytest/mypy/ruff.
+- Nguyen nhan viec truoc: Phase A van bi chan boi moi truong Python thieu.
+- Rui ro con lai: `metrics()` tin moi `state.trades` da normalize; local boundary co the chua malformed trade va lam reduce thanh NaN/throw khi render performance.
+- Viec tiep theo de xuat: Loc va normalize numeric PnL truoc khi tinh metrics, khong doi trade history display.
+
+## Chu ky 154 — normalize performance metrics input
+- Trang thai: DONE
+- File da sua: web/app.js; PROGRESS.md
+- Kiem chung: `node --check web/app.js` — pass; quet tĩnh xác nhận metrics lọc object/PnL numeric qua safeNumber trước reduce — pass.
+- Rui ro con lai: Full pytest/mypy/ruff chưa chạy vì interpreter bắt buộc thiếu.
+- Viec tiep theo de xuat: Khi interpreter tồn tại, chạy A1; không lặp lại metrics input guard.
+
 ## Chu ky 152 — tach signed PnL formatter
 - Trang thai: DONE
 - File da sua: web/app.js; PROGRESS.md

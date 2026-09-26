@@ -504,10 +504,13 @@ async function renderState() {
 }
 
 function metrics() {
-  const trades = state.trades;
+  const trades = state.trades
+    .filter((trade) => trade && typeof trade === 'object' && !Array.isArray(trade))
+    .map((trade) => ({ pnl: safeNumber(trade.pnl) }))
+    .filter((trade) => trade.pnl !== null);
   const wins = trades.filter((trade) => trade.pnl > 0);
   const pnl = trades.reduce((total, trade) => total + trade.pnl, 0);
-  const gains = trades.filter((trade) => trade.pnl > 0).reduce((total, trade) => total + trade.pnl, 0);
+  const gains = wins.reduce((total, trade) => total + trade.pnl, 0);
   const losses = Math.abs(trades.filter((trade) => trade.pnl < 0).reduce((total, trade) => total + trade.pnl, 0));
   return { pnl, wins, rate: trades.length ? (wins.length / trades.length) * 100 : null, pf: losses ? gains / losses : null };
 }
