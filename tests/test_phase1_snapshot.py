@@ -98,6 +98,11 @@ def test_compact_dict_has_no_nan_or_inf() -> None:
     json.dumps(compact, allow_nan=False)
 
 
+def test_orderbook_rejects_short_levels() -> None:
+    with pytest.raises(ValueError, match="price and size"):
+        build_snapshot("BTC/USDT", {"1h": bars().iloc[:30]}, {"bids": [[100]], "asks": []}, 0.0, datetime.now(UTC))
+
+
 def test_orderbook_ignores_empty_levels() -> None:
     result = build_snapshot("BTC/USDT", {"1h": bars().iloc[:30]}, {"bids": [[], [100, 2]], "asks": [[101, 2]]}, 0.0, datetime.now(UTC))
     assert result.orderbook_imbalance == 0.0
@@ -119,7 +124,7 @@ def test_orderbook_rejects_negative_sizes() -> None:
 
 
 def test_orderbook_rejects_malformed_levels() -> None:
-    with pytest.raises(ValueError, match="numeric prices and sizes"):
+    with pytest.raises(ValueError, match="price and size"):
         build_snapshot("BTC/USDT", {"1h": bars().iloc[:30]}, {"bids": [[100]], "asks": []}, 0.0, datetime.now(UTC))
 
 

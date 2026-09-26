@@ -101,13 +101,15 @@ def build_snapshot(symbol: str, ohlcv_by_tf: dict[str, pd.DataFrame], orderbook:
                 raise TypeError("Orderbook sides must be lists")
             bid_levels = [level for level in bid_levels if level]
             ask_levels = [level for level in ask_levels if level]
+            if any(not isinstance(level, (list, tuple)) or len(level) < 2 for level in [*bid_levels, *ask_levels]):
+                raise ValueError("Orderbook levels must contain price and size")
             bids = sum(float(level[1]) for level in bid_levels)
             asks = sum(float(level[1]) for level in ask_levels)
             for level in [*bid_levels, *ask_levels]:
                 if float(level[0]) < 0:
                     raise ValueError("Orderbook prices cannot be negative")
         except (IndexError, TypeError, ValueError) as exc:
-            if str(exc) in {"Orderbook prices cannot be negative", "Orderbook sides must be lists"}:
+            if str(exc) in {"Orderbook prices cannot be negative", "Orderbook sides must be lists", "Orderbook levels must contain price and size"}:
                 raise ValueError(str(exc)) from exc
             raise ValueError("Orderbook levels must contain numeric prices and sizes") from exc
         if bids < 0 or asks < 0:
