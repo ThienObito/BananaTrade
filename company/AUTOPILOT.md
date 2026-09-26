@@ -603,6 +603,21 @@
 - Rui ro con lai: `snapshotPrice` da reject boolean/object/whitespace nhung van dung `Number(value)` rieng, khong dung chung safeNumber boundary.
 - Viec tiep theo de xuat: Dung safeNumber cho snapshot price va giu positive-price guard.
 
+## Chu ky 139 — bo qua Phase A bi chan, review hard numeric coercion boundary doc lap
+- Trang thai: FAILED
+- File da sua: BLOCKED.md; PROGRESS.md
+- Kiem chung blocker: Interpreter bat buoc `E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe` van `MISSING`; khong the chay pytest/mypy/ruff.
+- Nguyen nhan viec truoc: Phase A van bi chan boi moi truong Python thieu.
+- Rui ro con lai: `safeNumber` la boundary duy nhat con dung `Number(value)` noi bo; can ghi ro de tranh static scan nham va kiem tra cac call site khong coercion ngoai.
+- Viec tiep theo de xuat: Quet toan bo call sites va xac nhan chi safeNumber duoc phep dung Number noi bo.
+
+## Chu ky 140 — ra soat numeric coercion boundary
+- Trang thai: DONE
+- File da sua: web/app.js; PROGRESS.md
+- Kiem chung: `node --check web/app.js` — pass; scan chính xác xác nhận chỉ safeNumber dùng Number(normalized), không có coercion trực tiếp ở call site, tổng 28 safeNumber calls — pass.
+- Rui ro con lai: Full pytest/mypy/ruff chưa chạy vì interpreter bắt buộc thiếu.
+- Viec tiep theo de xuat: Khi interpreter tồn tại, chạy A1; không lặp lại numeric boundary scan trừ khi thêm call site mới.
+
 ## Chu ky 138 — chuan hoa snapshot price conversion
 - Trang thai: DONE
 - File da sua: web/app.js; PROGRESS.md

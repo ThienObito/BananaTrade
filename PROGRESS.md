@@ -844,3 +844,17 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Numeric string hợp lệ tiếp tục được hỗ trợ; null/boolean/object/array/whitespace/non-finite hoặc non-positive trả null.
+
+## Chu kỳ 139 — rà soát numeric coercion boundary [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): Cần phân biệt `Number()` nội bộ hợp lệ trong `safeNumber` với coercion trực tiếp tại call site; scan ban đầu quá rộng và bắt nhầm các call `safeNumber(...)`.
+- Requirement -> test:
+  - `safeNumber` là nơi duy nhất dùng `Number(normalized)`: quét tĩnh chính xác — pass.
+  - Không có `Number(...)` trực tiếp ngoài safeNumber boundary: quét tĩnh — pass.
+  - Có 28 call sites dùng safeNumber: scan thực tế — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Sửa safeNumber để trim string trước conversion; giữ numeric string hỗ trợ nhưng reject whitespace-only.

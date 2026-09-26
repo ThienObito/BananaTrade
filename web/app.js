@@ -19,8 +19,9 @@ function normalizeTimestamp(value) {
 
 function safeNumber(value) {
   if (value === null || typeof value === 'boolean' || (value && typeof value === 'object')) return null;
-  if (typeof value === 'string' && !value.trim()) return null;
-  const number = Number(value);
+  const normalized = typeof value === 'string' ? value.trim() : value;
+  if (normalized === '') return null;
+  const number = Number(normalized);
   return Number.isFinite(number) ? number : null;
 }
 
