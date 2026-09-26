@@ -627,6 +627,21 @@
 - Rui ro con lai: `snapshotCandles` dung `Number.isFinite` sau safeNumber; leaf null an toan nhung check khong doc rang rang va co the can helper numeric-positive de tranh nham contract.
 - Viec tiep theo de xuat: Tach predicate finite-positive cho candle sau normalize, khong doi behavior.
 
+## Chu ky 145 — bo qua Phase A bi chan, normalize equity formatting doc lap
+- Trang thai: FAILED
+- File da sua: BLOCKED.md; PROGRESS.md
+- Kiem chung blocker: Interpreter bat buoc `E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe` van `MISSING`; khong the chay pytest/mypy/ruff.
+- Nguyen nhan viec truoc: Phase A van bi chan boi moi truong Python thieu.
+- Rui ro con lai: `renderState` va positions view dung `Number.isFinite` truc tiep tren equity; call path tin state da normalize nhung helper boundary nen nhat quan voi safeNumber.
+- Viec tiep theo de xuat: Dung safeNumber cho equity display va giu placeholder voi leaf sai type.
+
+## Chu ky 146 — chuan hoa equity formatting
+- Trang thai: DONE
+- File da sua: web/app.js; PROGRESS.md
+- Kiem chung: `node --check web/app.js` — pass; quet tĩnh xác nhận renderState chuẩn hóa equity bằng safeNumber và positions view dùng formatMetric — pass.
+- Rui ro con lai: Full pytest/mypy/ruff chưa chạy vì interpreter bắt buộc thiếu.
+- Viec tiep theo de xuat: Khi interpreter tồn tại, chạy A1; không lặp lại equity formatting guard.
+
 ## Chu ky 144 — chuan hoa candle finite validation
 - Trang thai: DONE
 - File da sua: web/app.js; PROGRESS.md

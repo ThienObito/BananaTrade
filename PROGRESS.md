@@ -885,3 +885,16 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Chỉ refactor predicate, không đổi filtering/range behavior hoặc fallback candle.
+
+## Chu kỳ 145 — chuẩn hóa equity formatting [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): Equity display dùng `Number.isFinite` trực tiếp ở renderState và positions view, không đồng nhất với numeric boundary safeNumber.
+- Requirement -> test:
+  - RenderState equity dùng safeNumber và placeholder invalid: kiểm tra tĩnh xác nhận — pass.
+  - Positions view dùng `formatMetric(state.equity)`: kiểm tra tĩnh xác nhận — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Backend equity đã normalize vẫn hiển thị như trước; leaf sai type hiển thị `—` thay vì coercion.
