@@ -843,6 +843,21 @@
 - Rui ro con lai: positions giữ symbol key có whitespace hoặc casing không ổn định, làm lookup/render không nhất quán.
 - Viec tiep theo de xuat: Trim và canonicalize symbol key trước khi lưu normalized positions.
 
+## Chu ky 199 — bo qua Phase A bi chan, harden duplicate paper-state symbols doc lap
+- Trang thai: FAILED
+- File da sua: BLOCKED.md; PROGRESS.md
+- Kiem chung blocker: Interpreter bat buoc `E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe` van `MISSING`; khong the chay pytest/mypy/ruff.
+- Nguyen nhan viec truoc: Phase A van bi chan boi moi truong Python thieu.
+- Rui ro con lai: Hai symbol key khác casing/whitespace có thể ghi đè position sau canonicalization mà không có quy tắc rõ ràng.
+- Viec tiep theo de xuat: Giữ record đầu tiên cho mỗi canonical symbol, tránh overwrite không xác định.
+
+## Chu ky 200 — harden duplicate paper-state symbols
+- Trang thai: DONE
+- File da sua: web/app.js; PROGRESS.md
+- Kiem chung: `node --check web/app.js` — pass; quet tĩnh xác nhận duplicate canonical symbol không overwrite record đầu tiên — pass.
+- Rui ro con lai: Full pytest/mypy/ruff chưa chạy vì interpreter bắt buộc thiếu.
+- Viec tiep theo de xuat: Khi interpreter tồn tại, chạy A1; không lặp lại duplicate symbol guard.
+
 ## Chu ky 198 — canonicalize paper-state symbol keys
 - Trang thai: DONE
 - File da sua: web/app.js; PROGRESS.md

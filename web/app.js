@@ -134,7 +134,7 @@ function normalizePaperState(payload) {
     if (!normalizedSymbol || !position || typeof position !== 'object' || Array.isArray(position)) return;
     const quantity = safeNumber(position.quantity);
     const averagePrice = safeNumber(position.average_price);
-    if (quantity !== null && quantity !== 0 && averagePrice !== null && averagePrice > 0) {
+    if (quantity !== null && quantity !== 0 && averagePrice !== null && averagePrice > 0 && !positions[normalizedSymbol]) {
       positions[normalizedSymbol] = {
         quantity,
         average_price: averagePrice,

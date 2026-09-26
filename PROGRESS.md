@@ -1235,3 +1235,15 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Chỉ canonicalize key ở UI boundary; không sửa payload backend hoặc symbol contract.
+
+## Chu kỳ 199 — harden duplicate paper-state symbols [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): Hai symbol key khác casing/whitespace có thể ghi đè position sau canonicalization mà không có quy tắc rõ ràng.
+- Requirement -> test:
+  - Record đầu tiên thắng và duplicate canonical symbol không overwrite: kiểm tra tĩnh xác nhận — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Duy trì thứ tự Object.entries; không thay đổi backend payload.
