@@ -363,6 +363,21 @@
 - Rui ro con lai: candle co so am/zero hoac high < low van duoc coi la finite, lam chart co scale khong hop le va cho phep price sai nghia.
 - Viec tiep theo de xuat: Validate OHLC duong va high/low range truoc khi dua vao chart.
 
+## Chu ky 77 — bo qua Phase A bi chan, bao ve snapshot source shape doc lap
+- Trang thai: FAILED
+- File da sua: BLOCKED.md; PROGRESS.md
+- Kiem chung blocker: Interpreter bat buoc `E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe` van `MISSING`; khong the chay pytest/mypy/ruff.
+- Nguyen nhan viec truoc: Phase A van bi chan boi moi truong Python thieu.
+- Rui ro con lai: `snapshotSource` tra primitive truthy nguyen ven; cac helper nested access co the gap primitive/array khong co contract object.
+- Viec tiep theo de xuat: Chi chap nhan source plain object, khong phai array; fallback object rong.
+
+## Chu ky 78 — bao ve snapshot source shape
+- Trang thai: DONE
+- File da sua: web/app.js; PROGRESS.md
+- Kiem chung: `node --check web/app.js` — pass; quet tĩnh xác nhận source primitive/array bị fallback trước nested access — pass.
+- Rui ro con lai: Full pytest/mypy/ruff chưa chạy vì interpreter bắt buộc thiếu.
+- Viec tiep theo de xuat: Khi interpreter tồn tại, chạy A1; không lặp lại source shape guard.
+
 ## Chu ky 76 — validate candle numeric constraints
 - Trang thai: DONE
 - File da sua: web/app.js; PROGRESS.md

@@ -429,3 +429,16 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Không ép quan hệ open/close với high/low ngoài range tối thiểu; chỉ loại giá không dương và range đảo.
+
+## Chu kỳ 77 — bảo vệ snapshot source shape [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): `snapshotSource` có thể trả primitive/array truthy, không giữ contract object cho các helper nested access.
+- Requirement -> test:
+  - Snapshot source chỉ là plain object không phải array: kiểm tra tĩnh xác nhận guard type/array — pass.
+  - Payload primitive/array fallback về object rỗng: kiểm tra tĩnh xác nhận — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Không tạo snapshot hoặc giá trị market mặc định; source sai shape sẽ render placeholder.

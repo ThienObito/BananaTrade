@@ -158,7 +158,8 @@ function save() {
 }
 
 function snapshotSource(snapshot) {
-  return snapshot?.snapshot || snapshot || {};
+  const source = snapshot?.snapshot || snapshot;
+  return source && typeof source === 'object' && !Array.isArray(source) ? source : {};
 }
 
 function snapshotPrice(snapshot) {
