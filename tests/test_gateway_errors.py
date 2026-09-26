@@ -104,6 +104,20 @@ def test_quota_record_rejects_invalid_status(tmp_path: Path) -> None:
         ledger.record("tier1_fast", 1, "pending")
 
 
+def test_quota_check_rejects_non_integer_limit(tmp_path: Path) -> None:
+    from bananatrade.gateway.quota import QuotaLedger
+    ledger = QuotaLedger(tmp_path / "db.sqlite")
+    with pytest.raises(TypeError, match="must be an integer"):
+        ledger.check("tier1_fast", {"max_calls_per_5h": 1.5, "max_calls_per_7d": 1})
+
+
+def test_quota_check_rejects_boolean_limit(tmp_path: Path) -> None:
+    from bananatrade.gateway.quota import QuotaLedger
+    ledger = QuotaLedger(tmp_path / "db.sqlite")
+    with pytest.raises(TypeError, match="must be an integer"):
+        ledger.check("tier1_fast", {"max_calls_per_5h": True, "max_calls_per_7d": 1})
+
+
 def test_quota_check_rejects_incomplete_limits(tmp_path: Path) -> None:
     from bananatrade.gateway.quota import QuotaLedger
     ledger = QuotaLedger(tmp_path / "db.sqlite")

@@ -116,3 +116,10 @@
 - Kiem chung: `E:\Trade-AI\BananaTrade\.venv\Scripts\python.exe -m pytest -q -p no:cacheprovider --basetemp=.pytest-tmp` — 173 passed; `python -m ruff check src tests` — All checks passed.
 - Rui ro con lai: Chua validate kieu cua tung quota limit trong dict.
 - Viec tiep theo de xuat: Kiem tra quota limits la so nguyen truoc khi so sanh.
+
+## Chu ky 18 — validate kieu quota limits
+- Trang thai: DONE
+- File da sua: src/bananatrade/gateway/quota.py; tests/test_gateway_errors.py
+- Kiem chung: `E:\Trade-AI\BananaTrade\.venv\Scripts\python.exe -m pytest -q -p no:cacheprovider --basetemp=.pytest-tmp` — 175 passed; `python -m ruff check src tests` — All checks passed.
+- Rui ro con lai: Chua kiem tra gioi han quota qua lon va timestamp ledger malformed.
+- Viec tiep theo de xuat: Kiem tra timestamp va tinh nhat quan du lieu quota SQLite.

@@ -29,8 +29,12 @@ class QuotaLedger:
         missing = [key for key in required if key not in limits]
         if missing:
             raise ValueError(f"Missing quota limits: {', '.join(missing)}")
-        if any(limits[key] < 0 for key in required):
-            raise ValueError("Quota limits cannot be negative")
+        for key in required:
+            value = limits[key]
+            if not isinstance(value, int) or isinstance(value, bool):
+                raise TypeError(f"Quota limit {key} must be an integer")
+            if value < 0:
+                raise ValueError("Quota limits cannot be negative")
         now = datetime.now(UTC)
         with sqlite3.connect(self.path) as connection:
             for hours, key in [(5, "max_calls_per_5h"), (168, "max_calls_per_7d")]:
