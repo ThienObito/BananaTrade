@@ -931,6 +931,21 @@
 - Rui ro con lai: Candidate summary có thể thắng/giữ ưu tiên sai khi source candidate bị loại trước map.
 - Viec tiep theo de xuat: Gán source rank trước filter bằng map index ổn định.
 
+## Chu ky 221 — bo qua Phase A bi chan, harden semantic snapshot indicator source rank doc lap
+- Trang thai: FAILED
+- File da sua: BLOCKED.md; PROGRESS.md
+- Kiem chung blocker: Interpreter bat buoc `E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe` van `MISSING`; khong the chay pytest/mypy/ruff.
+- Nguyen nhan viec truoc: sourceRank biểu diễn vị trí candidate nhưng tên không nói rõ source/summary semantics, dễ bị dùng sai khi thêm candidate.
+- Rui ro con lai: Tie-break có thể ưu tiên nhầm candidate nếu danh sách mở rộng.
+- Viec tiep theo de xuat: Đặt semantic rank `source`/`summary` explicit thay vì index number.
+
+## Chu ky 222 — semantic snapshot indicator source rank
+- Trang thai: DONE
+- File da sua: web/app.js; PROGRESS.md
+- Kiem chung: `node --check web/app.js` — pass; quet tĩnh xác nhận rank source/summary semantic và source thắng khi hòa — pass.
+- Rui ro con lai: Full pytest/mypy/ruff chưa chạy vì interpreter bắt buộc thiếu.
+- Viec tiep theo de xuat: Khi interpreter tồn tại, chạy A1; không lặp lại semantic source-rank guard.
+
 ## Chu ky 220 — on dinh source rank sau filter
 - Trang thai: DONE
 - File da sua: web/app.js; PROGRESS.md
