@@ -88,6 +88,12 @@ tick();
 setInterval(tick, 1000);
 
 const toast = $('#toast');
+function errorMessage(error, fallback = 'Request failed') {
+  if (error && typeof error.message === 'string' && error.message.trim()) return error.message.trim();
+  if (typeof error === 'string' && error.trim()) return error.trim();
+  return fallback;
+}
+
 function notify(message) {
   if (!toast) return;
   toast.textContent = message;
@@ -521,7 +527,7 @@ function bind() {
       const orderId = requireOrderId(data);
       notify('Paper order filled · ' + orderId);
     } catch (error) {
-      notify('Order rejected: ' + error.message);
+      notify('Order rejected: ' + errorMessage(error, 'order rejected'));
     }
   });
   $$('.run-analysis').forEach((button) => button.onclick = async () => {
@@ -534,7 +540,7 @@ function bind() {
       const report = data.reports.find((item) => item.agent === 'technical_analyst');
       notify(report ? 'AI bias: ' + (report.bias || '—') + ' · confidence ' + (report.confidence || '—') : 'AI analysis completed');
     } catch (error) {
-      notify('Analysis failed: ' + error.message);
+      notify('Analysis failed: ' + errorMessage(error, 'analysis failed'));
     }
   });
   $('#paper-buy')?.addEventListener('click', () => openPaper('LONG'));
@@ -567,7 +573,7 @@ async function openPaper(side) {
     bind();
     renderState();
   } catch (error) {
-    notify('Order rejected: ' + error.message);
+    notify('Order rejected: ' + errorMessage(error, 'order rejected'));
   }
 }
 
@@ -599,7 +605,7 @@ async function closePaper() {
     bind();
     renderState();
   } catch (error) {
-    notify('Close rejected: ' + error.message);
+    notify('Close rejected: ' + errorMessage(error, 'close rejected'));
   }
 }
 

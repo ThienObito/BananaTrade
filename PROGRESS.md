@@ -590,3 +590,17 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Envelope sai shape bị reject; không thay đổi order ID normalization đã có.
+
+## Chu kỳ 101 — chuẩn hóa error message cho order/analysis [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): Catch handler đọc trực tiếp `error.message`, nên thrown value hoặc backend error shape sai có thể tạo notification undefined/không ổn định.
+- Requirement -> test:
+  - Error object có message string không rỗng được trim: kiểm tra tĩnh xác nhận — pass.
+  - Error string được dùng trực tiếp sau trim: quét tĩnh xác nhận — pass.
+  - Order open/close và analysis đều dùng fallback message an toàn: quét tĩnh xác nhận — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Không hiển thị object/undefined thô cho người dùng; fallback chỉ mô tả lỗi thao tác, không che response thành công.
