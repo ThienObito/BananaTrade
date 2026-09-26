@@ -1029,3 +1029,16 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Timestamp invalid fallback về ISO hiện tại qua helper hiện có; không thay đổi dữ liệu persisted.
+
+## Chu kỳ 167 — chuẩn hóa market/equity display [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): `renderSnapshotViews` và `renderState` gọi `.toFixed()` trực tiếp cho market price/equity, không dùng numeric display boundary chung.
+- Requirement -> test:
+  - Market price text, order price input và equity text dùng `formatMetric`: kiểm tra tĩnh xác nhận — pass.
+  - Không còn direct `toFixed()` tại các display boundary này: quét tĩnh xác nhận — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Giữ prefix `$` cho text display; order input nhận chuỗi formatMetric chuẩn hóa.

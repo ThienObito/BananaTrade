@@ -439,8 +439,8 @@ function renderSnapshotViews() {
     setStaleBadge(false);
     return;
   }
-  if (priceElement) priceElement.textContent = '$' + price.toFixed(2);
-  if (orderPrice) orderPrice.value = price.toFixed(2);
+  if (priceElement) priceElement.textContent = '$' + formatMetric(price);
+  if (orderPrice) orderPrice.value = formatMetric(price);
   setStaleBadge(snapshotIsStale(state.snapshot));
   renderSnapshotMetrics(state.snapshot);
   renderCandles(state.snapshot);
@@ -495,7 +495,7 @@ async function renderState() {
   const equityElement = $('#paper-equity');
   const paperState = $('#paper-state');
   const equity = safeNumber(state.equity);
-  if (equityElement) equityElement.textContent = equity !== null ? '$' + equity.toFixed(2) : '—';
+  if (equityElement) equityElement.textContent = equity !== null ? '$' + formatMetric(equity) : '—';
   if (paperState) {
     paperState.textContent = state.position ? '● ' + state.position.side : backendState ? '● flat' : '● waiting for backend';
     paperState.className = state.position ? 'cyan' : backendState ? 'up' : 'muted';

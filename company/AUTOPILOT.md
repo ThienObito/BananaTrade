@@ -715,6 +715,21 @@
 - Rui ro con lai: Positions view goi `new Date(state.position.opened).toLocaleTimeString()` truc tiep; malformed timestamp co the hien thi Invalid Date.
 - Viec tiep theo de xuat: Normalize timestamp truoc khi format opened time.
 
+## Chu ky 167 — bo qua Phase A bi chan, normalize market/equity display doc lap
+- Trang thai: FAILED
+- File da sua: BLOCKED.md; PROGRESS.md
+- Kiem chung blocker: Interpreter bat buoc `E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe` van `MISSING`; khong the chay pytest/mypy/ruff.
+- Nguyen nhan viec truoc: Phase A van bi chan boi moi truong Python thieu.
+- Rui ro con lai: renderSnapshotViews va renderState goi `.toFixed()` truc tiep cho price/equity; malformed boundary co the lam UI throw.
+- Viec tiep theo de xuat: Dung formatMetric cho market price va equity display.
+
+## Chu ky 168 — normalize market/equity display
+- Trang thai: DONE
+- File da sua: web/app.js; PROGRESS.md
+- Kiem chung: `node --check web/app.js` — pass; quet tĩnh xác nhận market price, order price và equity dùng formatMetric, không còn direct toFixed ở các boundary này — pass.
+- Rui ro con lai: Full pytest/mypy/ruff chưa chạy vì interpreter bắt buộc thiếu.
+- Viec tiep theo de xuat: Khi interpreter tồn tại, chạy A1; không lặp lại market/equity display guard.
+
 ## Chu ky 166 — normalize position opened timestamp
 - Trang thai: DONE
 - File da sua: web/app.js; PROGRESS.md
