@@ -651,6 +651,21 @@
 - Rui ro con lai: Performance view goi `.toFixed()` truc tiep tren pnl/entry/exit/rate/pf cua trade history; state history co the chua leaf sai type.
 - Viec tiep theo de xuat: Dung formatMetric cho metrics va trade leaves truoc khi render.
 
+## Chu ky 151 — bo qua Phase A bi chan, tach signed PnL formatter doc lap
+- Trang thai: FAILED
+- File da sua: BLOCKED.md; PROGRESS.md
+- Kiem chung blocker: Interpreter bat buoc `E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe` van `MISSING`; khong the chay pytest/mypy/ruff.
+- Nguyen nhan viec truoc: Phase A van bi chan boi moi truong Python thieu.
+- Rui ro con lai: Performance view lap lai logic dau `trade.pnl >= 0 ? '+' : ''` va formatMetric; zero/invalid edge co the khong nhat quan.
+- Viec tiep theo de xuat: Dung helper formatSignedMetric chung cho PnL display.
+
+## Chu ky 152 — tach signed PnL formatter
+- Trang thai: DONE
+- File da sua: web/app.js; PROGRESS.md
+- Kiem chung: `node --check web/app.js` — pass; quet tĩnh xác nhận formatSignedMetric dùng safe numeric formatting và performance view dùng helper, không duplicate sign logic — pass.
+- Rui ro con lai: Full pytest/mypy/ruff chưa chạy vì interpreter bắt buộc thiếu.
+- Viec tiep theo de xuat: Khi interpreter tồn tại, chạy A1; không lặp lại signed PnL formatting guard.
+
 ## Chu ky 150 — chuan hoa performance trade formatting
 - Trang thai: DONE
 - File da sua: web/app.js; PROGRESS.md

@@ -925,3 +925,17 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Giữ dấu PnL dương/âm và placeholder null; chỉ thay boundary formatting để tránh render throw.
+
+## Chu kỳ 151 — chuẩn hóa signed PnL formatting [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): Performance view lặp logic thêm dấu `+` cho PnL và gọi formatMetric riêng, không có helper chung cho signed numeric display.
+- Requirement -> test:
+  - `formatSignedMetric` giữ dấu dương/âm và dùng safe numeric formatting: kiểm tra tĩnh xác nhận — pass.
+  - Closed trade PnL dùng helper chung: kiểm tra tĩnh xác nhận — pass.
+  - Không còn duplicate sign logic trong performance view: quét tĩnh xác nhận — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Zero hiển thị `+0`; invalid leaf hiển thị `—` và không throw.
