@@ -667,6 +667,21 @@
 - Rui ro con lai: `metrics()` tin moi `state.trades` da normalize; local boundary co the chua malformed trade va lam reduce thanh NaN/throw khi render performance.
 - Viec tiep theo de xuat: Loc va normalize numeric PnL truoc khi tinh metrics, khong doi trade history display.
 
+## Chu ky 155 — bo qua Phase A bi chan, tach metrics trade pnl helper doc lap
+- Trang thai: FAILED
+- File da sua: BLOCKED.md; PROGRESS.md
+- Kiem chung blocker: Interpreter bat buoc `E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe` van `MISSING`; khong the chay pytest/mypy/ruff.
+- Nguyen nhan viec truoc: Phase A van bi chan boi moi truong Python thieu.
+- Rui ro con lai: `metrics()` tu normalize PnL bang inline chain, trong khi formatSignedMetric va display co boundary rieng; can helper named de giu contract ro rang.
+- Viec tiep theo de xuat: Tach `normalizeTradePnl` va dung cho metrics.
+
+## Chu ky 156 — tach metrics trade PnL helper
+- Trang thai: DONE
+- File da sua: web/app.js; PROGRESS.md
+- Kiem chung: `node --check web/app.js` — pass; quet tĩnh xác nhận normalizeTradePnl dùng safeNumber và metrics gọi helper, không còn inline type normalization — pass.
+- Rui ro con lai: Full pytest/mypy/ruff chưa chạy vì interpreter bắt buộc thiếu.
+- Viec tiep theo de xuat: Khi interpreter tồn tại, chạy A1; không lặp lại metrics PnL helper guard.
+
 ## Chu ky 154 — normalize performance metrics input
 - Trang thai: DONE
 - File da sua: web/app.js; PROGRESS.md

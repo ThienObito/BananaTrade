@@ -503,10 +503,14 @@ async function renderState() {
   renderSnapshotViews();
 }
 
+function normalizeTradePnl(trade) {
+  if (!trade || typeof trade !== 'object' || Array.isArray(trade)) return null;
+  return safeNumber(trade.pnl);
+}
+
 function metrics() {
   const trades = state.trades
-    .filter((trade) => trade && typeof trade === 'object' && !Array.isArray(trade))
-    .map((trade) => ({ pnl: safeNumber(trade.pnl) }))
+    .map((trade) => ({ pnl: normalizeTradePnl(trade) }))
     .filter((trade) => trade.pnl !== null);
   const wins = trades.filter((trade) => trade.pnl > 0);
   const pnl = trades.reduce((total, trade) => total + trade.pnl, 0);

@@ -952,3 +952,16 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Trade history display vẫn dùng dữ liệu state hiện tại; metrics bỏ qua record malformed thay vì làm hỏng toàn bộ performance view.
+
+## Chu kỳ 155 — tách metrics trade PnL helper [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): `metrics()` dùng inline normalization chain, không có helper named để tái sử dụng/kiểm tra boundary PnL.
+- Requirement -> test:
+  - `normalizeTradePnl` reject non-object và trả PnL qua safeNumber: kiểm tra tĩnh xác nhận — pass.
+  - `metrics()` dùng helper thay vì inline type chain: kiểm tra tĩnh xác nhận — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Không đổi kết quả metrics; chỉ đặt tên boundary để dễ review và tái sử dụng.
