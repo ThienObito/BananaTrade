@@ -99,6 +99,8 @@ def build_snapshot(symbol: str, ohlcv_by_tf: dict[str, pd.DataFrame], orderbook:
             asks = sum(float(level[1]) for level in orderbook.get("asks", []))
         except (IndexError, TypeError, ValueError) as exc:
             raise ValueError("Orderbook levels must contain numeric sizes") from exc
+        if bids < 0 or asks < 0:
+            raise ValueError("Orderbook sizes cannot be negative")
         imbalance = (bids - asks) / (bids + asks) if bids + asks else None
     if funding is None:
         missing.append("funding")
