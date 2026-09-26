@@ -218,3 +218,16 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Validator không tạo số liệu mặc định; field không hợp lệ thành `null`, còn positions sai shape thành object rỗng.
+
+## Chu kỳ 45 — xác thực order response [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): HTTP 200 với body thiếu `order.order_id` làm frontend throw sau khi backend đã xử lý, khiến UI không phản ánh đúng kết quả.
+- Requirement -> test:
+  - Submit/open/close order chỉ thành công khi có `data.order.order_id` là non-empty string: quét tĩnh xác nhận ba guard — pass.
+  - Payload sai không làm thay đổi local position/trades: guard nằm trước mọi state mutation — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Không thay đổi backend hoặc broker; validator chỉ bảo vệ client khỏi response success giả.

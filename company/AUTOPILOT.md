@@ -235,6 +235,21 @@
 - Rui ro con lai: `/api/paper/state` body hop le nhung thieu `positions`, `cash` hoac `equity` van duoc gan vao UI; payload malformed co the gay loi hoac hien thi flat sai.
 - Viec tiep theo de xuat: Them validator response paper state, chi chap nhan object va field co shape mong doi.
 
+## Chu ky 45 — bo qua Phase A bi chan, chan order response sai shape doc lap
+- Trang thai: FAILED
+- File da sua: BLOCKED.md; PROGRESS.md
+- Kiem chung blocker: Interpreter bat buoc `E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe` van `MISSING`; khong the chay pytest/mypy/ruff.
+- Nguyen nhan viec truoc: Phase A van bi chan boi moi truong Python thieu.
+- Rui ro con lai: order endpoint tra HTTP 200 nhung body thieu `order.order_id`; frontend van truy cap truc tiep va throw loi sau khi order da duoc chap nhan.
+- Viec tiep theo de xuat: Validate order success payload truoc khi hien thi filled/open state.
+
+## Chu ky 46 — xac thuc order response
+- Trang thai: DONE
+- File da sua: web/app.js; PROGRESS.md
+- Kiem chung: `node --check web/app.js` — pass; quet tĩnh xác nhận submit/open/close đều yêu cầu `data.order.order_id` hợp lệ trước state mutation — pass.
+- Rui ro con lai: Full pytest/mypy/ruff chưa chạy vì interpreter bắt buộc thiếu.
+- Viec tiep theo de xuat: Khi interpreter tồn tại, chạy A1; không lặp lại order response guard.
+
 ## Chu ky 44 — xac thuc paper state response
 - Trang thai: DONE
 - File da sua: web/app.js; PROGRESS.md
