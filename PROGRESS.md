@@ -990,3 +990,16 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Notification giữ dấu dương/âm, zero không dấu và invalid fallback `—`.
+
+## Chu kỳ 161 — chuẩn hóa close PnL calculation [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): closePaper tính PnL trực tiếp từ state leaves mà không normalize entry/quantity/price ngay trước calculation.
+- Requirement -> test:
+  - Entry, quantity, price đi qua safeNumber và reject non-positive: kiểm tra tĩnh xác nhận — pass.
+  - PnL calculation dùng safe operands, không đọc trực tiếp malformed state leaves: quét tĩnh xác nhận — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Invalid position data bị từ chối trước request close; paper-only behavior và PnL formula LONG/SHORT không đổi.

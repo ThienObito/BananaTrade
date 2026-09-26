@@ -691,6 +691,21 @@
 - Rui ro con lai: closePaper notification goi `pnl.toFixed()` truc tiep; malformed/overflow edge co the lam thong bao throw sau order da thanh cong.
 - Viec tiep theo de xuat: Dung formatSignedMetric cho close PnL notification.
 
+## Chu ky 161 — bo qua Phase A bi chan, harden close PnL calculation doc lap
+- Trang thai: FAILED
+- File da sua: BLOCKED.md; PROGRESS.md
+- Kiem chung blocker: Interpreter bat buoc `E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe` van `MISSING`; khong the chay pytest/mypy/ruff.
+- Nguyen nhan viec truoc: Phase A van bi chan boi moi truong Python thieu.
+- Rui ro con lai: closePaper tinh PnL truc tiep tu state.position/state.price; local malformed numeric leaves co the tao NaN du order response thanh cong.
+- Viec tiep theo de xuat: Normalize entry/qty/price truoc calculation va reject neu khong hop le.
+
+## Chu ky 162 — harden close PnL calculation
+- Trang thai: DONE
+- File da sua: web/app.js; PROGRESS.md
+- Kiem chung: `node --check web/app.js` — pass; quet tĩnh xác nhận closePaper normalize entry/quantity/price bằng safeNumber, reject invalid và tính PnL bằng operands an toàn — pass.
+- Rui ro con lai: Full pytest/mypy/ruff chưa chạy vì interpreter bắt buộc thiếu.
+- Viec tiep theo de xuat: Khi interpreter tồn tại, chạy A1; không lặp lại close calculation guard.
+
 ## Chu ky 160 — normalize close PnL notification
 - Trang thai: DONE
 - File da sua: web/app.js; PROGRESS.md

@@ -619,7 +619,12 @@ async function openPaper(side) {
 
 async function closePaper() {
   if (!state.position) return notify('Không có position để đóng');
-  if (state.price === null) return notify('Market snapshot chưa sẵn sàng');
+  const entry = safeNumber(state.position.entry);
+  const quantity = safeNumber(state.position.qty);
+  const price = safeNumber(state.price);
+  if (entry === null || entry <= 0 || quantity === null || quantity <= 0 || price === null || price <= 0) {
+    return notify('Position data chưa hợp lệ');
+  }
   try {
     const response = await fetch('/api/paper/order', {
       method: 'POST',
@@ -627,17 +632,17 @@ async function closePaper() {
       body: JSON.stringify({
         symbol: SNAPSHOT_SYMBOL,
         side: state.position.side === 'LONG' ? 'sell' : 'buy',
-        quantity: state.position.qty,
-        price: state.price,
+        quantity,
+        price,
       }),
     });
     const data = await readJson(response);
     if (!response.ok) throw new Error(backendError(data, 'close rejected'));
     requireOrderId(data, true);
     const pnl = state.position.side === 'LONG'
-      ? (state.price - state.position.entry) * state.position.qty
-      : (state.position.entry - state.price) * state.position.qty;
-    state.trades.push({ side: state.position.side, entry: state.position.entry, exit: state.price, pnl, closed: new Date().toISOString() });
+      ? (price - entry) * quantity
+      : (entry - price) * quantity;
+    state.trades.push({ side: state.position.side, entry, exit: price, pnl, closed: new Date().toISOString() });
     state.position = null;
     save();
     notify('Backend position closed · PnL $' + formatSignedMetric(pnl));
