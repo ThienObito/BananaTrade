@@ -227,6 +227,21 @@
 - Rui ro con lai: Khi snapshot backend loi sau mot response thanh cong, state giu `price`/snapshot cu va UI tiep tuc hien thi gia stale ma khong co dau hieu mat ket noi.
 - Viec tiep theo de xuat: Xoa runtime snapshot/price khi request that bai, giu paper account khong bi anh huong.
 
+## Chu ky 43 — bo qua Phase A bi chan, xac thuc paper state response doc lap
+- Trang thai: FAILED
+- File da sua: BLOCKED.md; PROGRESS.md
+- Kiem chung blocker: Interpreter bat buoc `E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe` van `MISSING`; khong the chay pytest/mypy/ruff.
+- Nguyen nhan viec truoc: Phase A van bi chan boi moi truong Python thieu.
+- Rui ro con lai: `/api/paper/state` body hop le nhung thieu `positions`, `cash` hoac `equity` van duoc gan vao UI; payload malformed co the gay loi hoac hien thi flat sai.
+- Viec tiep theo de xuat: Them validator response paper state, chi chap nhan object va field co shape mong doi.
+
+## Chu ky 44 — xac thuc paper state response
+- Trang thai: DONE
+- File da sua: web/app.js; PROGRESS.md
+- Kiem chung: `node --check web/app.js` — pass; quet tĩnh xác nhận response paper state qua `normalizePaperState`, positions không còn đọc trực tiếp từ payload chưa validate — pass.
+- Rui ro con lai: Full pytest/mypy/ruff chưa chạy vì interpreter bắt buộc thiếu.
+- Viec tiep theo de xuat: Khi interpreter tồn tại, chạy A1; không lặp lại paper-state validator.
+
 ## Chu ky 42 — reset snapshot khi backend loi
 - Trang thai: DONE
 - File da sua: web/app.js; PROGRESS.md

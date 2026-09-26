@@ -204,3 +204,17 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Khi snapshot lỗi, UI hiển thị placeholder; paper position/cash/equity vẫn chờ `/api/paper/state`.
+
+## Chu kỳ 43 — xác thực paper state response [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): response `/api/paper/state` có thể thiếu field hoặc sai kiểu nhưng frontend vẫn truy cập trực tiếp.
+- Requirement -> test:
+  - Chỉ nhận paper-state object, không nhận array/null: kiểm tra tĩnh xác nhận validator trả `null` cho shape sai — pass.
+  - Positions phải là object; cash/equity phải finite hoặc null: kiểm tra tĩnh xác nhận normalization — pass.
+  - `renderState` chỉ dùng payload sau validator: kiểm tra tĩnh xác nhận `normalizePaperState(await readJson(response))` — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Validator không tạo số liệu mặc định; field không hợp lệ thành `null`, còn positions sai shape thành object rỗng.

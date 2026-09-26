@@ -97,6 +97,20 @@ async function readJson(response) {
   }
 }
 
+function normalizePaperState(payload) {
+  if (!payload || typeof payload !== 'object' || Array.isArray(payload)) return null;
+  const positions = payload.positions && typeof payload.positions === 'object' && !Array.isArray(payload.positions)
+    ? payload.positions
+    : {};
+  const cash = Number(payload.cash);
+  const equity = Number(payload.equity);
+  return {
+    positions,
+    cash: Number.isFinite(cash) ? cash : null,
+    equity: Number.isFinite(equity) ? equity : null,
+  };
+}
+
 function save() {
   persistState({
     cash: state.cash,
@@ -338,8 +352,9 @@ async function renderState() {
   try {
     const response = await fetch('/api/paper/state');
     if (response.ok) {
-      backendState = await readJson(response);
-      const positions = Object.values(backendState.positions || {}).filter((position) => position.quantity);
+      backendState = normalizePaperState(await readJson(response));
+      if (!backendState) throw new Error('paper state has invalid shape');
+      const positions = Object.values(backendState.positions).filter((position) => position && position.quantity);
       if (positions.length) {
         const position = positions[0];
         state.position = {
