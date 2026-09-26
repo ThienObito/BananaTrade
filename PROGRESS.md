@@ -125,3 +125,16 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Backend chưa cung cấp closed-trade PnL; frontend giữ lịch sử performance rỗng thay vì hiển thị số liệu giả. Full integration test cần chạy sau khi khôi phục Python.
+
+## Chu kỳ 31 — loader local state an toàn [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): `JSON.parse` ở top-level có thể làm crash toàn bộ dashboard khi localStorage chứa JSON hỏng hoặc kiểu dữ liệu không phải object.
+- Requirement -> test:
+  - State hỏng không chặn dashboard: kiểm tra tĩnh xác nhận `loadStoredState()` bắt lỗi và fallback `{}` — pass.
+  - Không nhận array như state object: kiểm tra tĩnh xác nhận `!Array.isArray(stored)` — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Backend vẫn là nguồn state paper chính; loader chỉ là fallback an toàn cho localStorage.

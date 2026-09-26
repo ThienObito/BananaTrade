@@ -1,7 +1,16 @@
 const $ = (selector) => document.querySelector(selector);
 const $$ = (selector) => document.querySelectorAll(selector);
 
-const storedState = JSON.parse(localStorage.getItem('banana-paper-state') || '{}');
+function loadStoredState() {
+  try {
+    const stored = JSON.parse(localStorage.getItem('banana-paper-state') || '{}');
+    return stored && typeof stored === 'object' && !Array.isArray(stored) ? stored : {};
+  } catch (error) {
+    return {};
+  }
+}
+
+const storedState = loadStoredState();
 const state = {
   cash: null,
   equity: null,

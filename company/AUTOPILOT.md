@@ -179,6 +179,21 @@
 - Rui ro con lai: Frontend luu `position` va `trades` trong localStorage nhung `/api/paper/state` chi tra positions/fills; reload co the hien thi state cu hoac khong hien thi lich su backend.
 - Viec tiep theo de xuat: Dung positions/fills tu backend lam nguon chinh, xoa state local khi backend tra ve du lieu.
 
+## Chu ky 31 — bo qua Phase A bi chan, bao ve loader local state doc lap
+- Trang thai: FAILED
+- File da sua: BLOCKED.md; PROGRESS.md
+- Kiem chung blocker: Interpreter bat buoc `E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe` van `MISSING`; khong the chay pytest/mypy/ruff.
+- Nguyen nhan viec truoc: Phase A van bi chan boi moi truong Python thieu.
+- Rui ro con lai: `JSON.parse(localStorage.getItem(...))` co the nem exception khi localStorage bi hong, chan toan bo dashboard truoc khi backend state duoc tai.
+- Viec tiep theo de xuat: Dung loader an toan, bo qua local state khong hop le va tiep tuc voi backend.
+
+## Chu ky 32 — loader local state an toan
+- Trang thai: DONE
+- File da sua: web/app.js; PROGRESS.md
+- Kiem chung: `node --check web/app.js` — pass; quet tĩnh xác nhận JSON localStorage hỏng/array fallback về object rỗng — pass.
+- Rui ro con lai: Full pytest/mypy/ruff chưa chạy vì interpreter bắt buộc thiếu.
+- Viec tiep theo de xuat: Khi interpreter tồn tại, chạy A1; không lặp lại safe loader.
+
 ## Chu ky 30 — dong bo paper state tu backend
 - Trang thai: DONE
 - File da sua: web/app.js; PROGRESS.md
