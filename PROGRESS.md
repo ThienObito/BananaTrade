@@ -1016,3 +1016,16 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Giá vẫn hiển thị prefix `$`; giá null giữ placeholder `—`.
+
+## Chu kỳ 165 — chuẩn hóa position opened timestamp [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): Positions view parse `state.position.opened` trực tiếp bằng `new Date(...)`, malformed timestamp có thể render `Invalid Date`.
+- Requirement -> test:
+  - Opened timestamp đi qua `normalizeTimestamp` trước format: kiểm tra tĩnh xác nhận — pass.
+  - Không còn direct parse `new Date(state.position.opened)`: quét tĩnh xác nhận — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Timestamp invalid fallback về ISO hiện tại qua helper hiện có; không thay đổi dữ liệu persisted.

@@ -707,6 +707,21 @@
 - Rui ro con lai: Positions view goi `state.price.toFixed()` truc tiep khi render ticker; malformed state price co the lam view throw.
 - Viec tiep theo de xuat: Dung formatMetric cho last-price display.
 
+## Chu ky 165 — bo qua Phase A bi chan, normalize position opened timestamp doc lap
+- Trang thai: FAILED
+- File da sua: BLOCKED.md; PROGRESS.md
+- Kiem chung blocker: Interpreter bat buoc `E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe` van `MISSING`; khong the chay pytest/mypy/ruff.
+- Nguyen nhan viec truoc: Phase A van bi chan boi moi truong Python thieu.
+- Rui ro con lai: Positions view goi `new Date(state.position.opened).toLocaleTimeString()` truc tiep; malformed timestamp co the hien thi Invalid Date.
+- Viec tiep theo de xuat: Normalize timestamp truoc khi format opened time.
+
+## Chu ky 166 — normalize position opened timestamp
+- Trang thai: DONE
+- File da sua: web/app.js; PROGRESS.md
+- Kiem chung: `node --check web/app.js` — pass; quet tĩnh xác nhận Positions opened time dùng normalizeTimestamp trước Date formatting — pass.
+- Rui ro con lai: Full pytest/mypy/ruff chưa chạy vì interpreter bắt buộc thiếu.
+- Viec tiep theo de xuat: Khi interpreter tồn tại, chạy A1; không lặp lại position timestamp guard.
+
 ## Chu ky 164 — normalize positions last-price display
 - Trang thai: DONE
 - File da sua: web/app.js; PROGRESS.md
