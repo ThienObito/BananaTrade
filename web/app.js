@@ -235,8 +235,9 @@ function snapshotPrice(snapshot) {
 function snapshotIndicators(snapshot) {
   const source = snapshotSource(snapshot);
   const summary = snapshotSummary(snapshot);
-  const indicators = source.indicators || summary.indicators;
-  if (!indicators || typeof indicators !== 'object' || Array.isArray(indicators)) return {};
+  const candidates = [source.indicators, summary.indicators];
+  const indicators = candidates.find((candidate) => candidate && typeof candidate === 'object' && !Array.isArray(candidate));
+  if (!indicators) return {};
   const normalized = Object.create(null);
   Object.entries(indicators).forEach(([key, value]) => {
     const normalizedKey = key.trim().toLowerCase();

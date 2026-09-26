@@ -1285,3 +1285,16 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Duy trì thứ tự Object.entries; không thay đổi snapshot payload.
+
+## Chu kỳ 207 — harden snapshot indicator source fallback [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): snapshotIndicators dùng truthy fallback, có thể chọn array hoặc malformed source thay vì container object hợp lệ.
+- Requirement -> test:
+  - Chỉ chọn candidate indicator là object không phải array: kiểm tra tĩnh xác nhận — pass.
+  - Fallback hợp lệ giữa source và timeframe summary: quét tĩnh xác nhận — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Ưu tiên source.indicators hợp lệ; chỉ fallback summary.indicators khi source không hợp lệ.
