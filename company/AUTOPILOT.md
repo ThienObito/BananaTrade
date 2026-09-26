@@ -187,6 +187,21 @@
 - Rui ro con lai: `JSON.parse(localStorage.getItem(...))` co the nem exception khi localStorage bi hong, chan toan bo dashboard truoc khi backend state duoc tai.
 - Viec tiep theo de xuat: Dung loader an toan, bo qua local state khong hop le va tiep tuc voi backend.
 
+## Chu ky 33 — bo qua Phase A bi chan, bao ve localStorage unavailable doc lap
+- Trang thai: FAILED
+- File da sua: BLOCKED.md; PROGRESS.md
+- Kiem chung blocker: Interpreter bat buoc `E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe` van `MISSING`; khong the chay pytest/mypy/ruff.
+- Nguyen nhan viec truoc: Phase A van bi chan boi moi truong Python thieu.
+- Rui ro con lai: `localStorage.getItem` co the nem SecurityError trong che do private/quyen bi chan, van lam crash loader truoc khi fallback JSON.
+- Viec tiep theo de xuat: Bao boc ca thao tac localStorage trong try/catch va tiep tuc voi state rong.
+
+## Chu ky 34 — bao ve localStorage unavailable
+- Trang thai: DONE
+- File da sua: web/app.js; PROGRESS.md
+- Kiem chung: `node --check web/app.js` — pass; quet tĩnh xác nhận chỉ còn một `localStorage.setItem`, nằm trong `persistState` có try/catch — pass.
+- Rui ro con lai: Full pytest/mypy/ruff chưa chạy vì interpreter bắt buộc thiếu.
+- Viec tiep theo de xuat: Khi interpreter tồn tại, chạy A1; không lặp lại storage guard.
+
 ## Chu ky 32 — loader local state an toan
 - Trang thai: DONE
 - File da sua: web/app.js; PROGRESS.md

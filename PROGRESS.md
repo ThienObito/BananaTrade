@@ -138,3 +138,16 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Backend vẫn là nguồn state paper chính; loader chỉ là fallback an toàn cho localStorage.
+
+## Chu kỳ 33 — bảo vệ localStorage unavailable [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): `localStorage.getItem` hoặc `setItem` có thể ném lỗi quyền truy cập trong private mode/storage bị chặn, làm hỏng dashboard dù backend còn hoạt động.
+- Requirement -> test:
+  - Đọc local state lỗi phải fallback rỗng: đã có `loadStoredState()` bắt lỗi — pass.
+  - Ghi local state lỗi không được chặn backend state: kiểm tra tĩnh xác nhận mọi `setItem` nằm trong `persistState` có try/catch — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Dashboard không phụ thuộc localStorage; backend vẫn là nguồn dữ liệu paper authoritative.

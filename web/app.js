@@ -10,6 +10,14 @@ function loadStoredState() {
   }
 }
 
+function persistState(payload) {
+  try {
+    localStorage.setItem('banana-paper-state', JSON.stringify(payload));
+  } catch (error) {
+    // The backend remains authoritative when browser storage is unavailable.
+  }
+}
+
 const storedState = loadStoredState();
 const state = {
   cash: null,
@@ -42,11 +50,11 @@ function notify(message) {
 }
 
 function save() {
-  localStorage.setItem('banana-paper-state', JSON.stringify({
+  persistState({
     cash: state.cash,
     position: state.position,
     trades: state.trades,
-  }));
+  });
 }
 
 function snapshotSource(snapshot) {
