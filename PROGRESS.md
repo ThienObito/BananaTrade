@@ -631,3 +631,17 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Không suy đoán confidence/bias; chỉ chuẩn hóa whitespace và kiểu dữ liệu đã có.
+
+## Chu kỳ 107 — validate analysis reports container [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): Reports container guard nằm trong điều kiện dài, chưa biểu đạt rõ fail-closed trước filter/map.
+- Requirement -> test:
+  - Payload object được kiểm tra trước khi đọc reports: kiểm tra tĩnh xác nhận — pass.
+  - Reports phải là array qua biến local riêng: kiểm tra tĩnh xác nhận — pass.
+  - Reports không phải array trả `null` trước filter/map: quét tĩnh xác nhận — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Không tạo reports mặc định; payload analysis sai container tiếp tục fail-closed.

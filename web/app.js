@@ -141,8 +141,10 @@ function normalizePosition(payload) {
 }
 
 function normalizeAnalysis(payload) {
-  if (!payload || typeof payload !== 'object' || Array.isArray(payload) || !Array.isArray(payload.reports)) return null;
-  const reports = payload.reports
+  if (!payload || typeof payload !== 'object' || Array.isArray(payload)) return null;
+  const sourceReports = payload.reports;
+  if (!Array.isArray(sourceReports)) return null;
+  const reports = sourceReports
     .filter((report) => report && typeof report === 'object' && !Array.isArray(report))
     .map((report) => {
       const agent = typeof report.agent === 'string' ? report.agent.trim() : '';

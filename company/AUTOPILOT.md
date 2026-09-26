@@ -483,6 +483,21 @@
 - Rui ro con lai: `normalizeAnalysis` chap nhan agent/bias string chi co whitespace va giu confidence numeric string khong chuan hoa; notification co the hien thi nhan rong hoac gia tri khong dong nhat.
 - Viec tiep theo de xuat: Trim agent/bias/confidence string, loai leaf string rong va chuyen confidence numeric ve number.
 
+## Chu ky 107 — bo qua Phase A bi chan, validate analysis report container doc lap
+- Trang thai: FAILED
+- File da sua: BLOCKED.md; PROGRESS.md
+- Kiem chung blocker: Interpreter bat buoc `E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe` van `MISSING`; khong the chay pytest/mypy/ruff.
+- Nguyen nhan viec truoc: Phase A van bi chan boi moi truong Python thieu.
+- Rui ro con lai: `normalizeAnalysis` trộn guard container vào điều kiện dài; contract reports list không có nhánh rõ ràng để fail-closed trước filter/map.
+- Viec tiep theo de xuat: Tách `reports` local và reject rõ khi không phải array trước khi xử lý.
+
+## Chu ky 108 — validate analysis reports container
+- Trang thai: DONE
+- File da sua: web/app.js; PROGRESS.md
+- Kiem chung: `node --check web/app.js` — pass; quet tĩnh xác nhận reports primitive/object bị reject trước filter/map qua guard riêng — pass.
+- Rui ro con lai: Full pytest/mypy/ruff chưa chạy vì interpreter bắt buộc thiếu.
+- Viec tiep theo de xuat: Khi interpreter tồn tại, chạy A1; không lặp lại reports container guard.
+
 ## Chu ky 106 — chuan hoa analysis report leaf
 - Trang thai: DONE
 - File da sua: web/app.js; PROGRESS.md
