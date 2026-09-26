@@ -250,7 +250,7 @@ function formatMetric(value, digits = 2) {
 function formatSignedMetric(value, digits = 2) {
   const number = safeNumber(value);
   if (number === null) return '—';
-  return (number >= 0 ? '+' : '') + formatMetric(number, digits);
+  return (number > 0 ? '+' : '') + formatMetric(number, digits);
 }
 
 function renderSnapshotMetrics(snapshot) {

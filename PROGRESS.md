@@ -965,3 +965,15 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Không đổi kết quả metrics; chỉ đặt tên boundary để dễ review và tái sử dụng.
+
+## Chu kỳ 157 — điều chỉnh signed zero display [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): `formatSignedMetric` dùng điều kiện `number >= 0`, khiến PnL zero hiển thị dấu `+` không cần thiết.
+- Requirement -> test:
+  - Số dương có dấu `+`, số âm có dấu `-`, zero không có dấu: kiểm tra tĩnh xác nhận — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Invalid value vẫn hiển thị `—`; chỉ thay presentation của zero PnL.
