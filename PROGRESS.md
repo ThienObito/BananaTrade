@@ -1298,3 +1298,15 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Ưu tiên source.indicators hợp lệ; chỉ fallback summary.indicators khi source không hợp lệ.
+
+## Chu kỳ 209 — harden snapshot indicator values [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): snapshotIndicators giữ null cho value malformed, làm normalized map chứa entry không biểu diễn dữ liệu numeric hợp lệ.
+- Requirement -> test:
+  - Indicator value được normalize và chỉ giữ finite numeric value: kiểm tra tĩnh xác nhận — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Indicator malformed bị bỏ qua hoàn toàn thay vì render placeholder; không đổi dữ liệu backend.

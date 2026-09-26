@@ -241,7 +241,8 @@ function snapshotIndicators(snapshot) {
   const normalized = Object.create(null);
   Object.entries(indicators).forEach(([key, value]) => {
     const normalizedKey = key.trim().toLowerCase();
-    if (normalizedKey && !(normalizedKey in normalized)) normalized[normalizedKey] = safeNumber(value);
+    const normalizedValue = safeNumber(value);
+    if (normalizedKey && normalizedValue !== null && !(normalizedKey in normalized)) normalized[normalizedKey] = normalizedValue;
   });
   return normalized;
 }
