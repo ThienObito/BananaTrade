@@ -1457,3 +1457,15 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Không thay đổi code round này; chỉ ghi nhận kiểm chứng.
+
+## Chu kỳ 231 — kiểm chứng frontend không sửa code [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không chạy; interpreter bắt buộc không tồn tại.
+- Checks: ruff=na mypy=na pytest=na; `node --check web/app.js` — pass; static scan transient guards — pass.
+- Root cause (Phase A only): Interpreter thiếu tiếp tục chặn Python suite; frontend guard đã ổn định nên không cần sửa lặp lại.
+- Requirement -> test:
+  - Snapshot stale fallback và paper-state preservation vẫn tồn tại: static scan — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Không thay đổi code round này; chỉ ghi nhận kiểm chứng.

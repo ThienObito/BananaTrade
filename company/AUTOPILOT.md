@@ -1715,6 +1715,14 @@
 - Viec doc lap: Kiểm chứng lại JavaScript và transient guards, không lặp lại code change.
 - Rui ro con lai: Python suite, Phase A–C và runtime smoke vẫn chưa có bằng chứng mới.
 
+## Chu ky 231 — bo qua Phase A bi chan, kiem chung frontend khong sua code
+- Trang thai: FAILED
+- File da sua: BLOCKED.md; PROGRESS.md
+- Kiem chung blocker: Interpreter bat buoc `E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe` van `MISSING`; khong the chay pytest/mypy/ruff.
+- Nguyen nhan viec bi chan: Moi truong thieu interpreter, khong duoc dung interpreter thay the.
+- Viec doc lap: Kiểm chứng JavaScript và transient guards, không sửa code vì guard đã có.
+- Rui ro con lai: Python suite, Phase A–C và runtime smoke vẫn chưa có bằng chứng mới.
+
 ## TONG KET PHIEN
 - Da lam duoc:
   - Hoàn tất các hardening frontend paper/snapshot trong các commit `7b22a44`, `2a81747` và `4bf8501`: giữ paper state khi backend lỗi tạm thời; giữ snapshot cuối, đánh dấu `stale` cho payload phẳng và payload lồng nhau.
