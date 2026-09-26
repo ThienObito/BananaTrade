@@ -237,11 +237,12 @@ function snapshotIndicators(snapshot) {
   const summary = snapshotSummary(snapshot);
   const candidates = [source.indicators, summary.indicators];
   const validCandidates = candidates
-    .filter((candidate) => candidate && typeof candidate === 'object' && !Array.isArray(candidate))
-    .map((candidate, index) => ({
+    .map((candidate, sourceRank) => ({ candidate, sourceRank }))
+    .filter(({ candidate }) => candidate && typeof candidate === 'object' && !Array.isArray(candidate))
+    .map(({ candidate, sourceRank }) => ({
       candidate,
       validCount: Object.values(candidate).filter((value) => safeNumber(value) !== null).length,
-      sourceRank: index === 0 ? 0 : 1,
+      sourceRank,
     }))
     .filter(({ validCount }) => validCount > 0);
   if (!validCandidates.length) return Object.create(null);

@@ -923,6 +923,21 @@
 - Rui ro con lai: Thay đổi implementation sau này có thể vô tình làm mất source priority khi validCount bằng nhau.
 - Viec tiep theo de xuat: Gắn source rank và tie-break explicit trong reduce.
 
+## Chu ky 219 — bo qua Phase A bi chan, harden snapshot indicator source rank sau filter doc lap
+- Trang thai: FAILED
+- File da sua: BLOCKED.md; PROGRESS.md
+- Kiem chung blocker: Interpreter bat buoc `E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe` van `MISSING`; khong the chay pytest/mypy/ruff.
+- Nguyen nhan viec truoc: sourceRank được tính từ index sau filter, nên source malformed có thể làm summary hợp lệ bị gán rank source và tie-break sai.
+- Rui ro con lai: Candidate summary có thể thắng/giữ ưu tiên sai khi source candidate bị loại trước map.
+- Viec tiep theo de xuat: Gán source rank trước filter bằng map index ổn định.
+
+## Chu ky 220 — on dinh source rank sau filter
+- Trang thai: DONE
+- File da sua: web/app.js; PROGRESS.md
+- Kiem chung: `node --check web/app.js` — pass; quet tĩnh xác nhận sourceRank được gán trước filter và summary giữ rank chính xác — pass.
+- Rui ro con lai: Full pytest/mypy/ruff chưa chạy vì interpreter bắt buộc thiếu.
+- Viec tiep theo de xuat: Khi interpreter tồn tại, chạy A1; không lặp lại source-rank-after-filter guard.
+
 ## Chu ky 218 — explicit snapshot indicator candidate tie
 - Trang thai: DONE
 - File da sua: web/app.js; PROGRESS.md

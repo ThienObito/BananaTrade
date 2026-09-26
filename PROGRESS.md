@@ -1361,3 +1361,16 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Source candidate rank 0, summary rank 1; không đổi snapshot payload.
+
+## Chu kỳ 219 — ổn định source rank sau filter [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): sourceRank tính từ index sau filter, nên malformed source có thể làm summary hợp lệ nhận rank sai.
+- Requirement -> test:
+  - Source rank được gán trước filter và giữ ổn định: kiểm tra tĩnh xác nhận — pass.
+  - Summary không bị nhầm rank source khi source malformed: quét tĩnh xác nhận — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Giữ source rank 0 và summary rank 1 từ candidate list gốc.
