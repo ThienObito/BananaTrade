@@ -387,6 +387,21 @@
 - Rui ro con lai: timeframe summary primitive/array van co the duoc doc `.last_price`/`.indicators`; optional chaining khong bao dam semantic object contract.
 - Viec tiep theo de xuat: Them helper chuan hoa summary object cho price/indicators/candles.
 
+## Chu ky 83 — bo qua Phase A bi chan, chan snapshot price khong duong doc lap
+- Trang thai: FAILED
+- File da sua: BLOCKED.md; PROGRESS.md
+- Kiem chung blocker: Interpreter bat buoc `E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe` van `MISSING`; khong the chay pytest/mypy/ruff.
+- Nguyen nhan viec truoc: Phase A van bi chan boi moi truong Python thieu.
+- Rui ro con lai: `snapshotPrice` chap nhan so 0/am vi chi kiem tra finite; chart va order form co the hien thi gia khong hop le.
+- Viec tiep theo de xuat: Chi chap nhan last price finite va lon hon 0.
+
+## Chu ky 84 — chan snapshot price khong duong
+- Trang thai: DONE
+- File da sua: web/app.js; PROGRESS.md
+- Kiem chung: `node --check web/app.js` — pass; quet tĩnh xác nhận price zero/âm bị loại và snapshot refresh fail-closed — pass.
+- Rui ro con lai: Full pytest/mypy/ruff chưa chạy vì interpreter bắt buộc thiếu.
+- Viec tiep theo de xuat: Khi interpreter tồn tại, chạy A1; không lặp lại positive price guard.
+
 ## Chu ky 82 — chan snapshot summary shape
 - Trang thai: DONE
 - File da sua: web/app.js; PROGRESS.md

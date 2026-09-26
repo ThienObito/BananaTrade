@@ -176,7 +176,7 @@ function snapshotPrice(snapshot) {
   const summary = snapshotSummary(snapshot);
   const value = source.last_price ?? summary.last_price;
   const price = Number(value);
-  return Number.isFinite(price) ? price : null;
+  return Number.isFinite(price) && price > 0 ? price : null;
 }
 
 function snapshotIndicators(snapshot) {

@@ -469,3 +469,16 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Summary sai shape bị fallback object rỗng; không tạo giá hoặc indicators/candles mặc định.
+
+## Chu kỳ 83 — chặn snapshot price không dương [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): `snapshotPrice` chỉ kiểm tra finite nên giá zero/âm vẫn được dùng cho chart và order form.
+- Requirement -> test:
+  - Last price phải finite và dương: kiểm tra tĩnh xác nhận positive guard — pass.
+  - Giá không hợp lệ tiếp tục làm snapshot refresh fail-closed: quét tĩnh xác nhận — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Không tạo giá thay thế; giá zero/âm được coi là snapshot unavailable.
