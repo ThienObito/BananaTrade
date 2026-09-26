@@ -339,6 +339,21 @@
 - Rui ro con lai: `snapshotIndicators` tra ve array/string neu payload sai shape; `renderSnapshotMetrics` van doc `.ema`... va co the hien thi sai hoac crash neu helper tiep tuc mo rong.
 - Viec tiep theo de xuat: Chi chap nhan indicators la plain object, fallback object rong.
 
+## Chu ky 71 — bo qua Phase A bi chan, validate snapshot candle input doc lap
+- Trang thai: FAILED
+- File da sua: BLOCKED.md; PROGRESS.md
+- Kiem chung blocker: Interpreter bat buoc `E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe` van `MISSING`; khong the chay pytest/mypy/ruff.
+- Nguyen nhan viec truoc: Phase A van bi chan boi moi truong Python thieu.
+- Rui ro con lai: candle input khong phai array (hoac timeframe value khong phai array) co the bi `.map` truc tiep va throw truoc khi filter.
+- Viec tiep theo de xuat: Chuan hoa candle input thanh array rong truoc khi map.
+
+## Chu ky 72 — validate snapshot candle input
+- Trang thai: DONE
+- File da sua: web/app.js; PROGRESS.md
+- Kiem chung: `node --check web/app.js` — pass; quet tĩnh xác nhận candle config non-array không đi vào `.map` — pass.
+- Rui ro con lai: Full pytest/mypy/ruff chưa chạy vì interpreter bắt buộc thiếu.
+- Viec tiep theo de xuat: Khi interpreter tồn tại, chạy A1; không lặp lại candle input guard.
+
 ## Chu ky 70 — chan snapshot indicator shape
 - Trang thai: DONE
 - File da sua: web/app.js; PROGRESS.md

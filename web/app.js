@@ -209,9 +209,10 @@ function renderSnapshotMetrics(snapshot) {
 function snapshotCandles(snapshot, price) {
   const source = snapshotSource(snapshot);
   const configured = source.candles ?? snapshot?.candles ?? source.ohlcv;
-  const input = Array.isArray(configured)
+  const configuredInput = Array.isArray(configured)
     ? configured
-    : configured?.[SNAPSHOT_TIMEFRAME] || [];
+    : configured?.[SNAPSHOT_TIMEFRAME];
+  const input = Array.isArray(configuredInput) ? configuredInput : [];
   const candles = input
     .map((candle) => ({
       open: Number(candle.open),

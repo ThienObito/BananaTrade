@@ -390,3 +390,16 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Indicator thiếu hoặc sai shape hiển thị `—` qua `formatMetric`; không tạo giá trị kỹ thuật mặc định.
+
+## Chu kỳ 71 — validate snapshot candle input [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): candle config sai shape có thể bị gọi `.map` trực tiếp và làm hỏng render chart.
+- Requirement -> test:
+  - Candle input cuối cùng luôn là array trước `.map`: kiểm tra tĩnh xác nhận `Array.isArray(configuredInput)` — pass.
+  - Candle config non-array fallback về mảng rỗng để dùng one-price candle path: kiểm tra tĩnh — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Không tạo candle lịch sử giả; input rỗng dùng fallback chart đã có với canonical snapshot price.
