@@ -611,6 +611,21 @@
 - Rui ro con lai: `safeNumber` la boundary duy nhat con dung `Number(value)` noi bo; can ghi ro de tranh static scan nham va kiem tra cac call site khong coercion ngoai.
 - Viec tiep theo de xuat: Quet toan bo call sites va xac nhan chi safeNumber duoc phep dung Number noi bo.
 
+## Chu ky 141 — bo qua Phase A bi chan, bao toan trade history khi backend loi doc lap
+- Trang thai: FAILED
+- File da sua: BLOCKED.md; PROGRESS.md
+- Kiem chung blocker: Interpreter bat buoc `E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe` van `MISSING`; khong the chay pytest/mypy/ruff.
+- Nguyen nhan viec truoc: Phase A van bi chan boi moi truong Python thieu.
+- Rui ro con lai: `renderState` xoa `state.trades` va `localStorage` khi paper-state request loi, lam mat lich su PnL local do backend tam thoi unavailable.
+- Viec tiep theo de xuat: Giu local trade history va state snapshot khi backend fail; chi danh dau backend unavailable tren UI.
+
+## Chu ky 142 — bao toan local trade history khi backend loi
+- Trang thai: DONE
+- File da sua: web/app.js; PROGRESS.md
+- Kiem chung: `node --check web/app.js` — pass; quet tĩnh xác nhận renderState không xóa trades/localStorage khi backend lỗi, vẫn đánh dấu backendState null — pass.
+- Rui ro con lai: Full pytest/mypy/ruff chưa chạy vì interpreter bắt buộc thiếu.
+- Viec tiep theo de xuat: Khi interpreter tồn tại, chạy A1; không lặp lại trade-history preservation guard.
+
 ## Chu ky 140 — ra soat numeric coercion boundary
 - Trang thai: DONE
 - File da sua: web/app.js; PROGRESS.md

@@ -858,3 +858,17 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Sửa safeNumber để trim string trước conversion; giữ numeric string hỗ trợ nhưng reject whitespace-only.
+
+## Chu kỳ 141 — bảo toàn local trade history khi backend lỗi [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): `renderState` xóa `state.trades` và localStorage khi `/api/paper/state` lỗi, khiến mất lịch sử PnL local trong outage tạm thời.
+- Requirement -> test:
+  - Backend failure không xóa `state.trades`: kiểm tra tĩnh xác nhận — pass.
+  - Backend failure không gọi `clearStoredState`: kiểm tra tĩnh xác nhận — pass.
+  - UI vẫn nhận biết backend unavailable qua `backendState = null`: review branch xác nhận — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Backend vẫn authoritative cho cash/equity/position hiện tại; local closed-trade history được giữ để không mất dữ liệu khi request tạm lỗi.
