@@ -831,3 +831,16 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Không đổi contract timestamp; chỉ làm deterministic fallback trong mỗi lần normalize.
+
+## Chu kỳ 137 — chuẩn hóa snapshot price conversion [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): `snapshotPrice` dùng `Number(value)` riêng sau các type checks, không nhất quán với safeNumber boundary dùng cho các numeric leaf khác.
+- Requirement -> test:
+  - Snapshot price đi qua `safeNumber` và vẫn yêu cầu positive: kiểm tra tĩnh xác nhận — pass.
+  - Không còn `Number(value)` trực tiếp trong snapshotPrice: quét tĩnh xác nhận — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Numeric string hợp lệ tiếp tục được hỗ trợ; null/boolean/object/array/whitespace/non-finite hoặc non-positive trả null.

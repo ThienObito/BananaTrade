@@ -595,6 +595,21 @@
 - Rui ro con lai: `normalizeTimestamp` lap lai `new Date().toISOString()` o nhieu nhanh, kho kiem soat mot fallback duy nhat va co the tao ket qua khac nhau trong cung lan goi.
 - Viec tiep theo de xuat: Tạo `fallback` một lần ở đầu hàm và dùng chung cho mọi nhánh.
 
+## Chu ky 137 — bo qua Phase A bi chan, validate snapshot price conversion doc lap
+- Trang thai: FAILED
+- File da sua: BLOCKED.md; PROGRESS.md
+- Kiem chung blocker: Interpreter bat buoc `E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe` van `MISSING`; khong the chay pytest/mypy/ruff.
+- Nguyen nhan viec truoc: Phase A van bi chan boi moi truong Python thieu.
+- Rui ro con lai: `snapshotPrice` da reject boolean/object/whitespace nhung van dung `Number(value)` rieng, khong dung chung safeNumber boundary.
+- Viec tiep theo de xuat: Dung safeNumber cho snapshot price va giu positive-price guard.
+
+## Chu ky 138 — chuan hoa snapshot price conversion
+- Trang thai: DONE
+- File da sua: web/app.js; PROGRESS.md
+- Kiem chung: `node --check web/app.js` — pass; quet tĩnh xác nhận snapshotPrice dùng safeNumber, giữ positive guard và không còn Number(value) trực tiếp — pass.
+- Rui ro con lai: Full pytest/mypy/ruff chưa chạy vì interpreter bắt buộc thiếu.
+- Viec tiep theo de xuat: Khi interpreter tồn tại, chạy A1; không lặp lại snapshot price conversion guard.
+
 ## Chu ky 136 — don gian hoa timestamp fallback
 - Trang thai: DONE
 - File da sua: web/app.js; PROGRESS.md
