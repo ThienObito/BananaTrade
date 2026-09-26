@@ -1310,3 +1310,15 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Indicator malformed bị bỏ qua hoàn toàn thay vì render placeholder; không đổi dữ liệu backend.
+
+## Chu kỳ 211 — harden empty snapshot indicator fallback [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): Candidate indicator object rỗng ở source có thể chặn summary indicator hợp lệ vì chỉ kiểm tra shape.
+- Requirement -> test:
+  - Candidate chỉ được chọn khi có ít nhất một numeric value hợp lệ: kiểm tra tĩnh xác nhận — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Empty hoặc all-malformed source sẽ fallback sang summary; nếu cả hai không hợp lệ trả map rỗng.

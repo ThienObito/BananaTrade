@@ -236,7 +236,10 @@ function snapshotIndicators(snapshot) {
   const source = snapshotSource(snapshot);
   const summary = snapshotSummary(snapshot);
   const candidates = [source.indicators, summary.indicators];
-  const indicators = candidates.find((candidate) => candidate && typeof candidate === 'object' && !Array.isArray(candidate));
+  const indicators = candidates.find((candidate) => (
+    candidate && typeof candidate === 'object' && !Array.isArray(candidate)
+    && Object.values(candidate).some((value) => safeNumber(value) !== null)
+  ));
   if (!indicators) return {};
   const normalized = Object.create(null);
   Object.entries(indicators).forEach(([key, value]) => {

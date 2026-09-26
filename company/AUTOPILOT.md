@@ -891,6 +891,21 @@
 - Rui ro con lai: snapshotIndicators giữ null cho value malformed, nhưng render map vẫn coi key tồn tại và có thể hiển thị placeholder không phân biệt dữ liệu hợp lệ.
 - Viec tiep theo de xuat: Bỏ indicator entry có value không phải số finite.
 
+## Chu ky 211 — bo qua Phase A bi chan, harden empty snapshot indicator fallback doc lap
+- Trang thai: FAILED
+- File da sua: BLOCKED.md; PROGRESS.md
+- Kiem chung blocker: Interpreter bat buoc `E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe` van `MISSING`; khong the chay pytest/mypy/ruff.
+- Nguyen nhan viec truoc: Phase A van bi chan boi moi truong Python thieu.
+- Rui ro con lai: Candidate indicator object rỗng ở source có thể chặn summary indicator hợp lệ vì chỉ kiểm tra shape.
+- Viec tiep theo de xuat: Chỉ chọn candidate có ít nhất một entry numeric hợp lệ.
+
+## Chu ky 212 — harden empty snapshot indicator fallback
+- Trang thai: DONE
+- File da sua: web/app.js; PROGRESS.md
+- Kiem chung: `node --check web/app.js` — pass; quet tĩnh xác nhận empty/all-malformed source fallback sang candidate numeric hợp lệ — pass.
+- Rui ro con lai: Full pytest/mypy/ruff chưa chạy vì interpreter bắt buộc thiếu.
+- Viec tiep theo de xuat: Khi interpreter tồn tại, chạy A1; không lặp lại empty indicator fallback guard.
+
 ## Chu ky 210 — harden snapshot indicator values
 - Trang thai: DONE
 - File da sua: web/app.js; PROGRESS.md
