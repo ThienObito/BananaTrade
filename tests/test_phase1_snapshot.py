@@ -98,6 +98,16 @@ def test_compact_dict_has_no_nan_or_inf() -> None:
     json.dumps(compact, allow_nan=False)
 
 
+def test_orderbook_ignores_empty_levels() -> None:
+    result = build_snapshot("BTC/USDT", {"1h": bars().iloc[:30]}, {"bids": [[], [100, 2]], "asks": [[101, 2]]}, 0.0, datetime.now(UTC))
+    assert result.orderbook_imbalance == 0.0
+
+
+def test_orderbook_rejects_non_list_sides() -> None:
+    with pytest.raises(ValueError, match="sides must be lists"):
+        build_snapshot("BTC/USDT", {"1h": bars().iloc[:30]}, {"bids": {}, "asks": []}, 0.0, datetime.now(UTC))
+
+
 def test_orderbook_rejects_negative_prices() -> None:
     with pytest.raises(ValueError, match="prices cannot be negative"):
         build_snapshot("BTC/USDT", {"1h": bars().iloc[:30]}, {"bids": [[-100, 1]], "asks": []}, 0.0, datetime.now(UTC))

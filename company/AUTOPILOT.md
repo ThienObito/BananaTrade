@@ -67,3 +67,10 @@
 - Kiem chung: `E:\Trade-AI\BananaTrade\.venv\Scripts\python.exe -m pytest -q -p no:cacheprovider --basetemp=.pytest-tmp` — 161 passed; `python -m ruff check src tests` — All checks passed.
 - Rui ro con lai: Chua xu ly level rong hoac orderbook khong phai list.
 - Viec tiep theo de xuat: Them validation cau truc orderbook va bo qua level rong an toan.
+
+## Chu ky 11 — validate cau truc orderbook
+- Trang thai: DONE
+- File da sua: src/bananatrade/data/snapshot.py; tests/test_phase1_snapshot.py
+- Kiem chung: `E:\Trade-AI\BananaTrade\.venv\Scripts\python.exe -m pytest -q -p no:cacheprovider --basetemp=.pytest-tmp` — 163 passed; `python -m ruff check src tests` — All checks passed.
+- Rui ro con lai: Chua validate orderbook co du cap price/size trong moi level sau khi loc level rong.
+- Viec tiep theo de xuat: Them test level chi co mot phan tu va thong bao loi nhat quan.
