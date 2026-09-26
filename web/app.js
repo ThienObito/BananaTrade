@@ -21,7 +21,7 @@ function normalizeStoredState(stored) {
   if (Number.isFinite(Number(stored.cash))) normalized.cash = Number(stored.cash);
   if (Number.isFinite(Number(stored.equity))) normalized.equity = Number(stored.equity);
   if (Array.isArray(stored.trades)) normalized.trades = stored.trades.filter((trade) => (
-    trade && typeof trade === 'object'
+    trade && typeof trade === 'object' && !Array.isArray(trade)
     && Number.isFinite(Number(trade.entry))
     && Number.isFinite(Number(trade.exit))
     && Number.isFinite(Number(trade.pnl))
@@ -32,7 +32,7 @@ function normalizeStoredState(stored) {
     pnl: Number(trade.pnl),
     closed: normalizeTimestamp(trade.closed),
   }));
-  if (stored.position && typeof stored.position === 'object') {
+  if (stored.position && typeof stored.position === 'object' && !Array.isArray(stored.position)) {
     const position = stored.position;
     const entry = Number(position.entry);
     const qty = Number(position.qty);

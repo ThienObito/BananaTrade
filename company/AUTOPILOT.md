@@ -427,6 +427,21 @@
 - Rui ro con lai: `normalizeAnalysis` chi loc report theo agent string nhung giu report object nguyen ven; null, array, primitive leaf fields co the lam notification doc sai hoac UI render khong an toan.
 - Viec tiep theo de xuat: Chuan hoa report object toi thieu voi agent string va leaf string/number hop le.
 
+## Chu ky 93 — bo qua Phase A bi chan, validate stored paper state shapes doc lap
+- Trang thai: FAILED
+- File da sua: BLOCKED.md; PROGRESS.md
+- Kiem chung blocker: Interpreter bat buoc `E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe` van `MISSING`; khong the chay pytest/mypy/ruff.
+- Nguyen nhan viec truoc: Phase A van bi chan boi moi truong Python thieu.
+- Rui ro con lai: `normalizeStoredState` chi kiem tra trade object va position object, nhung array co the lot qua guard va duoc doc fields; local storage payload cung co the ke thua object prototype khong mong muon.
+- Viec tiep theo de xuat: Reject arrays cho trade/position truoc khi doc leaf fields.
+
+## Chu ky 94 — validate stored paper state shapes
+- Trang thai: DONE
+- File da sua: web/app.js; PROGRESS.md
+- Kiem chung: `node --check web/app.js` — pass; quet tĩnh xác nhận local trade/position array bị loại trước field access — pass.
+- Rui ro con lai: Full pytest/mypy/ruff chưa chạy vì interpreter bắt buộc thiếu.
+- Viec tiep theo de xuat: Khi interpreter tồn tại, chạy A1; không lặp lại stored state shape guard.
+
 ## Chu ky 92 — validate analysis report shape
 - Trang thai: DONE
 - File da sua: web/app.js; PROGRESS.md

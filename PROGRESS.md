@@ -537,3 +537,16 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Report thiếu leaf tùy chọn được chuẩn hóa thành `null`; không suy đoán bias/confidence mặc định.
+
+## Chu kỳ 93 — validate stored paper state shapes [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): `normalizeStoredState` chưa loại rõ array cho trade/position trước khi đọc leaf fields từ localStorage payload.
+- Requirement -> test:
+  - Stored trade phải là object không phải array: kiểm tra tĩnh xác nhận — pass.
+  - Stored position phải là object không phải array: kiểm tra tĩnh xác nhận — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Local state sai shape bị loại; backend vẫn authoritative cho paper cash/equity/positions.
