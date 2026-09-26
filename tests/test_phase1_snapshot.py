@@ -98,6 +98,11 @@ def test_compact_dict_has_no_nan_or_inf() -> None:
     json.dumps(compact, allow_nan=False)
 
 
+def test_orderbook_rejects_non_sequence_levels() -> None:
+    with pytest.raises(ValueError, match="price and size"):
+        build_snapshot("BTC/USDT", {"1h": bars().iloc[:30]}, {"bids": [{"price": 100, "size": 1}], "asks": []}, 0.0, datetime.now(UTC))
+
+
 def test_orderbook_rejects_short_levels() -> None:
     with pytest.raises(ValueError, match="price and size"):
         build_snapshot("BTC/USDT", {"1h": bars().iloc[:30]}, {"bids": [[100]], "asks": []}, 0.0, datetime.now(UTC))

@@ -81,3 +81,10 @@
 - Kiem chung: `E:\Trade-AI\BananaTrade\.venv\Scripts\python.exe -m pytest -q -p no:cacheprovider --basetemp=.pytest-tmp` — 164 passed; `python -m ruff check src tests` — All checks passed.
 - Rui ro con lai: Chua validate type cu the cua moi level ngoai list/tuple.
 - Viec tiep theo de xuat: Bo sung test level la dict/string va thong bao loi ro rang.
+
+## Chu ky 13 — reject orderbook level khong phai sequence
+- Trang thai: DONE
+- File da sua: tests/test_phase1_snapshot.py
+- Kiem chung: `E:\Trade-AI\BananaTrade\.venv\Scripts\python.exe -m pytest -q -p no:cacheprovider --basetemp=.pytest-tmp` — 165 passed; `python -m ruff check src tests` — All checks passed.
+- Rui ro con lai: Logic da bao ve level dict/string bang validation cap price/size.
+- Viec tiep theo de xuat: Chuyen sang kiem tra cac module gateway va xu ly loi mang.
