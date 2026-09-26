@@ -778,3 +778,16 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Numeric string từ input DOM vẫn được hỗ trợ; null/boolean/object/array/non-finite bị reject trước request.
+
+## Chu kỳ 129 — chuẩn hóa snapshot indicator conversion [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): `snapshotIndicators` còn dùng `Number(value)` cho leaf, không nhất quán với safeNumber strict đã dùng ở các boundary khác.
+- Requirement -> test:
+  - Indicator leaves đi qua `safeNumber`: kiểm tra tĩnh xác nhận — pass.
+  - Indicator sai type/whitespace không bị coercion ngoài contract: quét tĩnh xác nhận — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Indicator finite number và numeric string vẫn giữ hành vi hiển thị; leaf khác type thành null.

@@ -227,11 +227,7 @@ function snapshotIndicators(snapshot) {
   const summary = snapshotSummary(snapshot);
   const indicators = source.indicators || summary.indicators;
   if (!indicators || typeof indicators !== 'object' || Array.isArray(indicators)) return {};
-  return Object.fromEntries(Object.entries(indicators).map(([key, value]) => {
-    if (typeof value === 'boolean' || (value && typeof value === 'object')) return [key, null];
-    const number = Number(value);
-    return [key, Number.isFinite(number) ? number : null];
-  }));
+  return Object.fromEntries(Object.entries(indicators).map(([key, value]) => [key, safeNumber(value)]));
 }
 
 function snapshotMetadata(snapshot) {
