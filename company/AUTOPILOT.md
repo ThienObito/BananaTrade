@@ -1662,6 +1662,21 @@
 - Rui ro con lai: Phase A–C, test count va runtime dashboard chua co them bang chung trong phien nay.
 - Viec tiep theo de xuat: Khoi dong lai khi file interpreter ton tai; khi do chay A1 va tiep tuc Phase B/C.
 
+## Chu ky 224 — bo qua blocker Python, chon viec doc lap
+- Trang thai: FAILED
+- File da sua: company/AUTOPILOT.md; PROGRESS.md
+- Kiem chung blocker: Interpreter bat buoc `E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe` van `MISSING`; khong the chay pytest/mypy/ruff.
+- Nguyen nhan viec bi chan: Moi truong thieu interpreter, khong duoc dung interpreter thay the.
+- Viec doc lap duoc chon: Kiem tra va sua frontend giu state paper trong loi backend tam thoi.
+- Rui ro con lai: Can full Python suite khi interpreter duoc khoi phuc.
+
+## Chu ky 225 — giu paper state khi backend tam thoi loi
+- Trang thai: DONE
+- File da sua: web/app.js; PROGRESS.md; company/AUTOPILOT.md
+- Kiem chung: `node --check web/app.js` — pass; static scan xác nhận catch không xóa state paper cuối cùng — pass.
+- Rui ro con lai: Full pytest/mypy/ruff chưa chạy vì interpreter bắt buộc thiếu.
+- Viec tiep theo de xuat: Khi interpreter tồn tại, chạy A1; giữ regression test cho transient backend failure.
+
 ## TONG KET PHIEN
 - Da lam duoc: Hoan tat 18 chu ky hardening; sua breakout theo prior range, RSI flat market, validation OHLCV (cot, so, bounds, timestamp), orderbook (cau truc, price/size, am), va quota ledger/check inputs.
 - So lieu that: Test cuoi `E:\Trade-AI\BananaTrade\.venv\Scripts\python.exe -m pytest -q -p no:cacheprovider --basetemp=.pytest-tmp` — 175 passed in 4.81s.

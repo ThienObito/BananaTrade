@@ -1395,3 +1395,15 @@
 - Blocker: `Test-Path -LiteralPath 'E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe'` trả về `MISSING`.
 - Phase A, forbidden-pattern scan và test-count verification không thể thực hiện theo hard rule.
 - Không thực hiện thêm code change không liên quan; phiên dừng để tránh tạo busywork.
+
+## Chu kỳ 224 — giữ paper state khi backend tạm thời lỗi [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không chạy; interpreter bắt buộc không tồn tại.
+- Checks: ruff=na mypy=na pytest=na; `node --check web/app.js` — pass.
+- Root cause (Phase A only): `renderState()` xóa position/cash/equity local ngay khi một lần gọi backend thất bại, làm dashboard nhấp nháy mất dữ liệu dù lỗi có thể chỉ tạm thời.
+- Requirement -> test:
+  - Giữ state cuối cùng khi fetch paper state lỗi: static scan xác nhận không reset `state.position`, `state.cash`, `state.equity` trong catch — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Backend thành công vẫn ghi đè state như trước; chỉ thay đổi transient failure behavior.

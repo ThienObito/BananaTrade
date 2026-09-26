@@ -526,10 +526,9 @@ async function renderState() {
     state.equity = backendState.equity;
     save();
   } catch (error) {
+    // Keep the last known paper state visible during a transient backend failure.
+    // A successful backend response remains authoritative and replaces it above.
     backendState = null;
-    state.position = null;
-    state.cash = null;
-    state.equity = null;
   }
   const equityElement = $('#paper-equity');
   const paperState = $('#paper-state');
