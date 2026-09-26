@@ -311,3 +311,17 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Không bịa dữ liệu giao dịch; fallback chỉ áp dụng cho metadata thời gian hiển thị.
+
+## Chu kỳ 59 — fail-closed paper state [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): khi `/api/paper/state` lỗi hoặc payload malformed, UI có thể giữ position/equity/trades cũ trong memory và hiển thị dữ liệu stale.
+- Requirement -> test:
+  - Backend state không khả dụng phải xóa position/cash/equity/trades local: quét tĩnh xác nhận catch fail-closed — pass.
+  - Stored paper state phải bị xóa khi backend state lỗi: kiểm tra tĩnh xác nhận `clearStoredState()` — pass.
+  - UI phải hiện waiting thay vì flat/state cũ: kiểm tra tĩnh xác nhận `backendState = null` và waiting branch — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Backend vẫn là nguồn authoritative; lỗi state không được che bằng dữ liệu local cũ.

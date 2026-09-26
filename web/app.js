@@ -404,7 +404,12 @@ async function renderState() {
       save();
     }
   } catch (error) {
-    // The paper panel stays empty until its backend source is available.
+    backendState = null;
+    state.position = null;
+    state.cash = null;
+    state.equity = null;
+    state.trades = [];
+    clearStoredState();
   }
   const equityElement = $('#paper-equity');
   const paperState = $('#paper-state');

@@ -291,6 +291,21 @@
 - Rui ro con lai: `normalizePosition` van chap nhan timestamp `opened` bat ky; gia tri date malformed co the hien thi `Invalid Date` trong positions view.
 - Viec tiep theo de xuat: Chuan hoa timestamp `opened`/`closed`, khong de date malformed di vao UI.
 
+## Chu ky 59 — bo qua Phase A bi chan, fail-closed paper state doc lap
+- Trang thai: FAILED
+- File da sua: BLOCKED.md; PROGRESS.md
+- Kiem chung blocker: Interpreter bat buoc `E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe` van `MISSING`; khong the chay pytest/mypy/ruff.
+- Nguyen nhan viec truoc: Phase A van bi chan boi moi truong Python thieu.
+- Rui ro con lai: khi `/api/paper/state` tra HTTP loi hoac payload khong hop le, UI giu state cu trong memory va van co the hien thi position/equity stale.
+- Viec tiep theo de xuat: Xoa paper state local khi backend state khong kha dung, hien thi waiting thay vi du lieu cu.
+
+## Chu ky 60 — fail-closed paper state
+- Trang thai: DONE
+- File da sua: web/app.js; PROGRESS.md
+- Kiem chung: `node --check web/app.js` — pass; quet tĩnh xác nhận state local bị reset và storage bị clear khi `/api/paper/state` lỗi — pass.
+- Rui ro con lai: Full pytest/mypy/ruff chưa chạy vì interpreter bắt buộc thiếu.
+- Viec tiep theo de xuat: Khi interpreter tồn tại, chạy A1; không lặp lại fail-closed paper state.
+
 ## Chu ky 58 — chuan hoa timestamp paper state
 - Trang thai: DONE
 - File da sua: web/app.js; PROGRESS.md
