@@ -1407,3 +1407,16 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Backend thành công vẫn ghi đè state như trước; chỉ thay đổi transient failure behavior.
+
+## Chu kỳ 226 — giữ snapshot cuối và đánh dấu stale [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không chạy; interpreter bắt buộc không tồn tại.
+- Checks: ruff=na mypy=na pytest=na; `node --check web/app.js` — pass.
+- Root cause (Phase A only): Snapshot request lỗi tạm thời xóa ngay snapshot cuối, khiến giá và chart biến mất dù dữ liệu cũ vẫn có thể hiển thị an toàn với cờ stale.
+- Requirement -> test:
+  - Có snapshot cuối hợp lệ thì giữ lại và đặt `stale: true`: static scan xác nhận — pass.
+  - Chỉ reset khi chưa có snapshot hợp lệ: static scan xác nhận — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Không sửa payload backend; snapshot thành công tiếp theo thay thế stale snapshot.

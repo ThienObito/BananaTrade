@@ -1654,6 +1654,21 @@
 - Rui ro con lai: Full pytest/mypy/ruff van chua chay duoc vi interpreter bat buoc bi thieu; merge fallout Phase A chua duoc xu ly.
 - Viec tiep theo de xuat: Khi interpreter ton tai, chay A1; khong lap lai viec sua request snapshot.
 
+## Chu ky 226 — bo qua blocker Python, chon viec frontend doc lap
+- Trang thai: FAILED
+- File da sua: BLOCKED.md; PROGRESS.md
+- Kiem chung blocker: Interpreter bat buoc `E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe` van `MISSING`; khong the chay pytest/mypy/ruff.
+- Nguyen nhan viec bi chan: Moi truong thieu interpreter, khong duoc dung interpreter thay the.
+- Viec doc lap duoc chon: Giữ snapshot cuối và đánh dấu stale khi request snapshot tạm thời lỗi.
+- Rui ro con lai: Cần full Python suite khi interpreter được khôi phục.
+
+## Chu ky 227 — giu snapshot cu va danh dau stale
+- Trang thai: DONE
+- File da sua: web/app.js; PROGRESS.md; company/AUTOPILOT.md
+- Kiem chung: `node --check web/app.js` — pass; static scan xác nhận giữ snapshot hợp lệ và đặt stale khi request tạm thời lỗi — pass.
+- Rui ro con lai: Full pytest/mypy/ruff chưa chạy vì interpreter bắt buộc thiếu.
+- Viec tiep theo de xuat: Khi interpreter tồn tại, chạy A1; giữ regression test cho snapshot stale fallback.
+
 ## Chu ky 223 — dung vi interpreter bat buoc thieu
 - Trang thai: BLOCKED
 - File da sua: BLOCKED.md; PROGRESS.md; company/AUTOPILOT.md
