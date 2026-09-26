@@ -145,7 +145,9 @@ function normalizeAnalysis(payload) {
 
 function readOrderId(payload) {
   const orderId = payload?.order?.order_id;
-  return typeof orderId === 'string' && orderId ? orderId : null;
+  if (typeof orderId !== 'string') return null;
+  const normalized = orderId.trim();
+  return normalized || null;
 }
 
 function requireOrderId(payload, close = false) {

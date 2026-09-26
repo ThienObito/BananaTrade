@@ -564,3 +564,16 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: PnL có thể âm hợp lệ; chỉ loại PnL non-finite và giá entry/exit không dương.
+
+## Chu kỳ 97 — validate order id shape [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): `readOrderId` chấp nhận chuỗi whitespace và trả nguyên văn order id chưa chuẩn hóa, có thể làm order response giả được coi là thành công.
+- Requirement -> test:
+  - Order id phải là string sau trim và không rỗng: kiểm tra tĩnh xác nhận — pass.
+  - Giá trị trả về được trim trước state mutation/notification: quét tĩnh xác nhận — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Không tạo order id thay thế; id sai shape tiếp tục bị reject bởi `requireOrderId`.
