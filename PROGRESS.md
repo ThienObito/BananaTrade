@@ -456,3 +456,16 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Timeframe sai shape bị coi là thiếu dữ liệu, không tạo summary hoặc candle giả.
+
+## Chu kỳ 81 — chặn snapshot summary shape [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): timeframe summary primitive/array vẫn có thể được optional-chain đọc như object, không bảo đảm semantic contract.
+- Requirement -> test:
+  - Summary chỉ là plain object không phải array: kiểm tra tĩnh xác nhận `snapshotSummary` — pass.
+  - Price/indicators/candles dùng summary đã chuẩn hóa: quét tĩnh xác nhận ba call site — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Summary sai shape bị fallback object rỗng; không tạo giá hoặc indicators/candles mặc định.
