@@ -117,7 +117,7 @@ function normalizePaperState(payload) {
 }
 
 function normalizePosition(payload) {
-  if (!payload || typeof payload !== 'object') return null;
+  if (!payload || typeof payload !== 'object' || Array.isArray(payload)) return null;
   const quantity = Number(payload.quantity);
   const averagePrice = Number(payload.average_price);
   if (!Number.isFinite(quantity) || quantity === 0 || !Number.isFinite(averagePrice) || averagePrice <= 0) return null;

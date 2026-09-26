@@ -510,3 +510,16 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Paper backend vẫn là nguồn dữ liệu authoritative; không tạo positions/cash/equity mặc định khi payload sai.
+
+## Chu kỳ 89 — validate position payload shape [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): `normalizePosition` chỉ kiểm tra object nên array có thể được đọc như position payload và tiếp tục vào UI.
+- Requirement -> test:
+  - Position payload phải là object không phải array: kiểm tra tĩnh xác nhận guard — pass.
+  - Chỉ đọc quantity/average price sau khi shape guard: quét tĩnh xác nhận — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Position array hoặc primitive bị loại; position hợp lệ vẫn phải có quantity khác zero và average price dương.
