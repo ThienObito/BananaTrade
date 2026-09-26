@@ -195,6 +195,21 @@
 - Rui ro con lai: `localStorage.getItem` co the nem SecurityError trong che do private/quyen bi chan, van lam crash loader truoc khi fallback JSON.
 - Viec tiep theo de xuat: Bao boc ca thao tac localStorage trong try/catch va tiep tuc voi state rong.
 
+## Chu ky 35 — bo qua Phase A bi chan, bao ve reset storage doc lap
+- Trang thai: FAILED
+- File da sua: BLOCKED.md; PROGRESS.md
+- Kiem chung blocker: Interpreter bat buoc `E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe` van `MISSING`; khong the chay pytest/mypy/ruff.
+- Nguyen nhan viec truoc: Phase A van bi chan boi moi truong Python thieu.
+- Rui ro con lai: Nut reset goi truc tiep `localStorage.removeItem`; khi storage bi chan, thao tac nay co the lam crash handler va khong reload sach.
+- Viec tiep theo de xuat: Tao helper xoa storage co try/catch va dung no cho nut reset.
+
+## Chu ky 36 — bao ve reset khi localStorage unavailable
+- Trang thai: DONE
+- File da sua: web/app.js; PROGRESS.md
+- Kiem chung: `node --check web/app.js` — pass; quet tĩnh xác nhận `removeItem` chỉ nằm trong helper `clearStoredState` có try/catch — pass.
+- Rui ro con lai: Full pytest/mypy/ruff chưa chạy vì interpreter bắt buộc thiếu.
+- Viec tiep theo de xuat: Khi interpreter tồn tại, chạy A1; không lặp lại reset storage guard.
+
 ## Chu ky 34 — bao ve localStorage unavailable
 - Trang thai: DONE
 - File da sua: web/app.js; PROGRESS.md

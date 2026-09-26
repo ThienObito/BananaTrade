@@ -151,3 +151,16 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Dashboard không phụ thuộc localStorage; backend vẫn là nguồn dữ liệu paper authoritative.
+
+## Chu kỳ 35 — bảo vệ reset khi localStorage unavailable [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): nút reset gọi trực tiếp `localStorage.removeItem`, có thể ném lỗi khi browser storage bị chặn.
+- Requirement -> test:
+  - Reset paper không crash khi storage unavailable: kiểm tra tĩnh xác nhận `clearStoredState()` bao quanh `removeItem` bằng try/catch — pass.
+  - Không còn thao tác removeItem trực tiếp ngoài helper: quét tĩnh đếm một lần gọi — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Reload vẫn làm mới UI; backend account không bị xóa bởi thao tác localStorage này.

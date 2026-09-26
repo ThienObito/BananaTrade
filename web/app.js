@@ -18,6 +18,14 @@ function persistState(payload) {
   }
 }
 
+function clearStoredState() {
+  try {
+    localStorage.removeItem('banana-paper-state');
+  } catch (error) {
+    // Reload still resets in-memory UI when browser storage is unavailable.
+  }
+}
+
 const storedState = loadStoredState();
 const state = {
   cash: null,
@@ -395,7 +403,7 @@ function bind() {
   $('#paper-sell')?.addEventListener('click', () => openPaper('SHORT'));
   $('#paper-close')?.addEventListener('click', closePaper);
   $('#reset-paper')?.addEventListener('click', () => {
-    localStorage.removeItem('banana-paper-state');
+    clearStoredState();
     location.reload();
   });
 }
