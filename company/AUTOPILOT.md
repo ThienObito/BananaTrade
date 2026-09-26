@@ -851,6 +851,21 @@
 - Rui ro con lai: Hai symbol key khác casing/whitespace có thể ghi đè position sau canonicalization mà không có quy tắc rõ ràng.
 - Viec tiep theo de xuat: Giữ record đầu tiên cho mỗi canonical symbol, tránh overwrite không xác định.
 
+## Chu ky 201 — bo qua Phase A bi chan, stabilize renderState position selection doc lap
+- Trang thai: FAILED
+- File da sua: BLOCKED.md; PROGRESS.md
+- Kiem chung blocker: Interpreter bat buoc `E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe` van `MISSING`; khong the chay pytest/mypy/ruff.
+- Nguyen nhan viec truoc: Phase A van bi chan boi moi truong Python thieu.
+- Rui ro con lai: renderState chọn position đầu tiên theo Object.values, phụ thuộc thứ tự payload và có thể thay đổi khi backend trả nhiều symbol.
+- Viec tiep theo de xuat: Chọn position theo symbol snapshot hiện tại trước khi fallback vị trí đầu tiên.
+
+## Chu ky 202 — stabilize renderState position selection
+- Trang thai: DONE
+- File da sua: web/app.js; PROGRESS.md
+- Kiem chung: `node --check web/app.js` — pass; quet tĩnh xác nhận snapshot symbol được ưu tiên và fallback vẫn deterministic — pass.
+- Rui ro con lai: Full pytest/mypy/ruff chưa chạy vì interpreter bắt buộc thiếu.
+- Viec tiep theo de xuat: Khi interpreter tồn tại, chạy A1; không lặp lại render position selection guard.
+
 ## Chu ky 200 — harden duplicate paper-state symbols
 - Trang thai: DONE
 - File da sua: web/app.js; PROGRESS.md

@@ -1247,3 +1247,15 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Duy trì thứ tự Object.entries; không thay đổi backend payload.
+
+## Chu kỳ 201 — ổn định renderState position selection [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): renderState chọn position đầu tiên theo Object.values, phụ thuộc thứ tự payload khi backend trả nhiều symbol.
+- Requirement -> test:
+  - Position của `SNAPSHOT_SYMBOL` được ưu tiên trước fallback: kiểm tra tĩnh xác nhận — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Giữ fallback position đầu tiên nếu snapshot symbol không có position; không đổi backend payload.

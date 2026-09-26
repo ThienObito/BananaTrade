@@ -491,10 +491,12 @@ async function renderState() {
     if (!response.ok) throw new Error('paper state unavailable');
     backendState = normalizePaperState(await readJson(response));
     if (!backendState) throw new Error('paper state has invalid shape');
-    const positions = Object.values(backendState.positions)
-      .map((position) => normalizePosition(position))
-      .filter((position) => position !== null);
-    state.position = positions[0] || null;
+    const positions = Object.entries(backendState.positions)
+      .map(([symbol, position]) => ({ symbol, position: normalizePosition(position) }))
+      .filter((item) => item.position !== null);
+    const preferredSymbol = SNAPSHOT_SYMBOL.toUpperCase();
+    const preferred = positions.find((item) => item.symbol === preferredSymbol);
+    state.position = (preferred || positions[0])?.position || null;
     // The backend currently exposes fills, not closed-trade PnL. Preserve
     // locally recorded closed trades until the backend exposes an audit trail.
     state.cash = backendState.cash;
