@@ -539,6 +539,21 @@
 - Rui ro con lai: State object khai bao `equity` hai lan, lan sau null ghi de gia tri normalize; cash/equity state contract kho doc va co the lam mat du lieu local hop le.
 - Viec tiep theo de xuat: Xoa duplicate equity key va giu state merge minh bach.
 
+## Chu ky 121 — bo qua Phase A bi chan, ngan snapshot state vao localStorage doc lap
+- Trang thai: FAILED
+- File da sua: BLOCKED.md; PROGRESS.md
+- Kiem chung blocker: Interpreter bat buoc `E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe` van `MISSING`; khong the chay pytest/mypy/ruff.
+- Nguyen nhan viec truoc: Phase A van bi chan boi moi truong Python thieu.
+- Rui ro con lai: `save()` ghi state cash/position/trades sau snapshot refresh, nhung contract localStorage khong nen luu market snapshot; viec doc lai stored payload co the lam local state tron giua backend va market data.
+- Viec tiep theo de xuat: Giu persistState chi cho paper fields va khong cho snapshot/price vao storage path.
+
+## Chu ky 122 — tach snapshot khoi localStorage
+- Trang thai: DONE
+- File da sua: web/app.js; PROGRESS.md
+- Kiem chung: `node --check web/app.js` — pass; quet tĩnh xác nhận updateSnapshot vẫn cập nhật state nhưng không save market snapshot vào localStorage — pass.
+- Rui ro con lai: Full pytest/mypy/ruff chưa chạy vì interpreter bắt buộc thiếu.
+- Viec tiep theo de xuat: Khi interpreter tồn tại, chạy A1; không lặp lại snapshot persistence guard.
+
 ## Chu ky 120 — loai bo duplicate equity state
 - Trang thai: DONE
 - File da sua: web/app.js; PROGRESS.md

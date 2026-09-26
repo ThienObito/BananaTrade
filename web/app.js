@@ -457,7 +457,6 @@ async function updateSnapshot() {
     if (price === null) throw new Error('snapshot has no last price');
     state.snapshot = snapshot;
     state.price = price;
-    save();
     renderSnapshotViews();
     renderState();
     notify('Market snapshot refreshed');

@@ -725,3 +725,16 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: `state.equity` vẫn mặc định null khi chưa có backend; stored state merge tiếp tục giữ nguyên.
+
+## Chu kỳ 121 — tách snapshot khỏi localStorage [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): `updateSnapshot` gọi `save()` sau khi nhận market snapshot, dù localStorage chỉ nên chứa paper state; snapshot/price có thể bị trộn với local state qua persistence path.
+- Requirement -> test:
+  - Snapshot refresh vẫn gán `state.snapshot` và `state.price`: kiểm tra tĩnh xác nhận — pass.
+  - Snapshot refresh không gọi `save()`: quét tĩnh xác nhận — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Backend snapshot là nguồn dữ liệu phiên hiện tại; localStorage chỉ giữ cash/position/trades qua `save()`.
