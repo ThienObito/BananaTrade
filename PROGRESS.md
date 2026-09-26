@@ -699,3 +699,16 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Numeric string hợp lệ vẫn được hỗ trợ thống nhất với stored state; payload sai shape fail-closed.
+
+## Chu kỳ 117 — loại bỏ coercion renderState [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): `renderState` đã nhận paper state qua `normalizePaperState` nhưng lại gọi `Number()` cash/equity lần hai, mở rộng contract không cần thiết.
+- Requirement -> test:
+  - State cash/equity được gán trực tiếp sau normalize: kiểm tra tĩnh xác nhận — pass.
+  - Không còn `Number()` coercion trên `backendState.cash/equity`: quét tĩnh xác nhận — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: `normalizePaperState` là boundary duy nhất cho backend numeric state; không thay đổi hành vi hiển thị.

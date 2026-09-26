@@ -523,6 +523,21 @@
 - Rui ro con lai: `normalizePaperState` va `normalizePosition` van dung `Number()` truc tiep, cho phep boolean/null/object/array coercion vao paper state.
 - Viec tiep theo de xuat: Tai su dung safeNumber cho backend cash/equity va position quantity/average price.
 
+## Chu ky 117 — bo qua Phase A bi chan, loai bo coercion renderState doc lap
+- Trang thai: FAILED
+- File da sua: BLOCKED.md; PROGRESS.md
+- Kiem chung blocker: Interpreter bat buoc `E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe` van `MISSING`; khong the chay pytest/mypy/ruff.
+- Nguyen nhan viec truoc: Phase A van bi chan boi moi truong Python thieu.
+- Rui ro con lai: `renderState` da nhan `normalizePaperState` nhung lai Number() cash/equity lan hai; contract numeric leaf bi mo rong khong can thiet.
+- Viec tiep theo de xuat: Gan truc tiep gia tri da normalize tu backendState.
+
+## Chu ky 118 — loai bo coercion renderState
+- Trang thai: DONE
+- File da sua: web/app.js; PROGRESS.md
+- Kiem chung: `node --check web/app.js` — pass; quet tĩnh xác nhận renderState dùng trực tiếp cash/equity đã normalize, không Number coercion lần hai — pass.
+- Rui ro con lai: Full pytest/mypy/ruff chưa chạy vì interpreter bắt buộc thiếu.
+- Viec tiep theo de xuat: Khi interpreter tồn tại, chạy A1; không lặp lại renderState coercion guard.
+
 ## Chu ky 116 — chuan hoa backend paper numeric leaves
 - Trang thai: DONE
 - File da sua: web/app.js; PROGRESS.md
