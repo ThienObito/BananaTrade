@@ -174,6 +174,11 @@ function snapshotIndicators(snapshot) {
   return source.indicators || source.timeframes?.[SNAPSHOT_TIMEFRAME]?.indicators || {};
 }
 
+function snapshotRegime(snapshot) {
+  const regime = snapshotSource(snapshot).regime;
+  return typeof regime === 'string' && regime.trim() ? regime.trim().toUpperCase() : '—';
+}
+
 function formatMetric(value, digits = 2) {
   const number = Number(value);
   return Number.isFinite(number) ? number.toLocaleString(undefined, { maximumFractionDigits: digits }) : '—';
@@ -184,7 +189,7 @@ function renderSnapshotMetrics(snapshot) {
   const marketBias = $('#market-bias');
   const confidence = $('#market-confidence');
   const chartFooter = document.querySelector('.chart-footer');
-  if (marketBias) marketBias.textContent = snapshotSource(snapshot).regime?.toUpperCase() || '—';
+  if (marketBias) marketBias.textContent = snapshotRegime(snapshot);
   if (confidence) confidence.textContent = snapshotSource(snapshot).stale ? 'stale snapshot' : 'snapshot source';
   if (chartFooter) {
     chartFooter.innerHTML = [

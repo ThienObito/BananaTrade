@@ -315,6 +315,21 @@
 - Rui ro con lai: moi lan `/api/paper/state` thanh cong deu gan `state.trades = []`, lam mat lich su trade da dong va metric PnL sau khi refresh.
 - Viec tiep theo de xuat: Khong reset trades khi state backend hop le; chi reset khi backend state fail-closed.
 
+## Chu ky 65 — bo qua Phase A bi chan, chuan hoa snapshot regime doc lap
+- Trang thai: FAILED
+- File da sua: BLOCKED.md; PROGRESS.md
+- Kiem chung blocker: Interpreter bat buoc `E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe` van `MISSING`; khong the chay pytest/mypy/ruff.
+- Nguyen nhan viec truoc: Phase A van bi chan boi moi truong Python thieu.
+- Rui ro con lai: snapshot response co `regime` khong phai string van co the lam `renderSnapshotMetrics` goi `.toUpperCase()` tren gia tri sai kieu.
+- Viec tiep theo de xuat: Them helper chuan hoa regime, chi render text uppercase khi payload la string non-empty.
+
+## Chu ky 66 — chuan hoa snapshot regime
+- Trang thai: DONE
+- File da sua: web/app.js; PROGRESS.md
+- Kiem chung: `node --check web/app.js` — pass; quet tĩnh xác nhận regime non-string/empty bị thay bằng `—`, không crash render — pass.
+- Rui ro con lai: Full pytest/mypy/ruff chưa chạy vì interpreter bắt buộc thiếu.
+- Viec tiep theo de xuat: Khi interpreter tồn tại, chạy A1; không lặp lại snapshot regime guard.
+
 ## Chu ky 64 — giu lich su PnL local khi sync state
 - Trang thai: DONE
 - File da sua: web/app.js; PROGRESS.md

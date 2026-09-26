@@ -351,3 +351,16 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Chỉ giữ các trade do client paper flow ghi nhận; không suy diễn PnL từ backend fills.
+
+## Chu kỳ 65 — chuẩn hóa snapshot regime [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): snapshot `regime` sai kiểu có thể làm render gọi `.toUpperCase()` trên non-string và phá UI.
+- Requirement -> test:
+  - Chỉ render regime là string non-empty sau trim/uppercase: kiểm tra tĩnh xác nhận `snapshotRegime` — pass.
+  - Không còn truy cập `.toUpperCase()` trực tiếp trên payload: quét tĩnh — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Regime không hợp lệ hiển thị `—`; không tạo bias mặc định.
