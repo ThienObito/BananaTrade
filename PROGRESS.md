@@ -1171,3 +1171,15 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Chỉ cải thiện toast traceability; request và backend order semantics không đổi.
+
+## Chu kỳ 189 — làm rõ submit-order risk gate [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): Submit-order toast ghi “filled” nhưng thiếu ngữ cảnh paper/risk-gated đã thể hiện trong UI contract.
+- Requirement -> test:
+  - Toast hiển thị canonical side, risk-gated context và order id: kiểm tra tĩnh xác nhận — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Chỉ thay presentation; không thay đổi backend request hoặc fill semantics.
