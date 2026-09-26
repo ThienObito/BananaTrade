@@ -818,3 +818,16 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Không thay đổi format ISO output; timestamp sai type tiếp tục dùng fallback hiện tại.
+
+## Chu kỳ 135 — đơn giản hóa timestamp fallback [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): `normalizeTimestamp` lặp lại `new Date().toISOString()` ở nhiều nhánh, không có một fallback duy nhất trong cùng lần gọi.
+- Requirement -> test:
+  - Fallback ISO được tạo một lần và dùng cho input sai/invalid: kiểm tra tĩnh xác nhận — pass.
+  - Timestamp hợp lệ vẫn trả ISO parsed value: review branch xác nhận — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Không đổi contract timestamp; chỉ làm deterministic fallback trong mỗi lần normalize.

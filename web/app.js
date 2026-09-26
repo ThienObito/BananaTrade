@@ -11,9 +11,10 @@ function loadStoredState() {
 }
 
 function normalizeTimestamp(value) {
-  if (typeof value !== 'string' || !value.trim()) return new Date().toISOString();
+  const fallback = new Date().toISOString();
+  if (typeof value !== 'string' || !value.trim()) return fallback;
   const parsed = new Date(value.trim());
-  return Number.isFinite(parsed.getTime()) ? parsed.toISOString() : new Date().toISOString();
+  return Number.isFinite(parsed.getTime()) ? parsed.toISOString() : fallback;
 }
 
 function safeNumber(value) {

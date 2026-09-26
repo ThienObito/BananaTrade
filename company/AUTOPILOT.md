@@ -587,6 +587,21 @@
 - Rui ro con lai: `normalizeTimestamp` chi kiem tra string nhung `new Date(value)` boundary can contract ro rang; timestamp object/number phai fallback ma khong tao implicit date.
 - Viec tiep theo de xuat: Giữ string timestamp בלבד, trim va reject whitespace truoc parse.
 
+## Chu ky 135 — bo qua Phase A bi chan, don gian hoa timestamp fallback doc lap
+- Trang thai: FAILED
+- File da sua: BLOCKED.md; PROGRESS.md
+- Kiem chung blocker: Interpreter bat buoc `E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe` van `MISSING`; khong the chay pytest/mypy/ruff.
+- Nguyen nhan viec truoc: Phase A van bi chan boi moi truong Python thieu.
+- Rui ro con lai: `normalizeTimestamp` lap lai `new Date().toISOString()` o nhieu nhanh, kho kiem soat mot fallback duy nhat va co the tao ket qua khac nhau trong cung lan goi.
+- Viec tiep theo de xuat: Tạo `fallback` một lần ở đầu hàm và dùng chung cho mọi nhánh.
+
+## Chu ky 136 — don gian hoa timestamp fallback
+- Trang thai: DONE
+- File da sua: web/app.js; PROGRESS.md
+- Kiem chung: `node --check web/app.js` — pass; quet tĩnh xác nhận fallback ISO chỉ khởi tạo một lần trong normalizeTimestamp và dùng chung cho invalid branches — pass.
+- Rui ro con lai: Full pytest/mypy/ruff chưa chạy vì interpreter bắt buộc thiếu.
+- Viec tiep theo de xuat: Khi interpreter tồn tại, chạy A1; không lặp lại timestamp fallback guard.
+
 ## Chu ky 134 — chuan hoa timestamp leaf
 - Trang thai: DONE
 - File da sua: web/app.js; PROGRESS.md
