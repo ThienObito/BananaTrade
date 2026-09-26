@@ -331,6 +331,21 @@
 - Rui ro con lai: `stale` la string `"false"` van truthy, lam UI hien STALE sai; gia tri khac boolean cung co the bi dien giai sai.
 - Viec tiep theo de xuat: Them helper chi chap nhan boolean stale va dung chung cho confidence/badge.
 
+## Chu ky 69 — bo qua Phase A bi chan, chan snapshot indicator shape doc lap
+- Trang thai: FAILED
+- File da sua: BLOCKED.md; PROGRESS.md
+- Kiem chung blocker: Interpreter bat buoc `E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe` van `MISSING`; khong the chay pytest/mypy/ruff.
+- Nguyen nhan viec truoc: Phase A van bi chan boi moi truong Python thieu.
+- Rui ro con lai: `snapshotIndicators` tra ve array/string neu payload sai shape; `renderSnapshotMetrics` van doc `.ema`... va co the hien thi sai hoac crash neu helper tiep tuc mo rong.
+- Viec tiep theo de xuat: Chi chap nhan indicators la plain object, fallback object rong.
+
+## Chu ky 70 — chan snapshot indicator shape
+- Trang thai: DONE
+- File da sua: web/app.js; PROGRESS.md
+- Kiem chung: `node --check web/app.js` — pass; quet tĩnh xác nhận indicators array/string bị loại và fallback `{}` — pass.
+- Rui ro con lai: Full pytest/mypy/ruff chưa chạy vì interpreter bắt buộc thiếu.
+- Viec tiep theo de xuat: Khi interpreter tồn tại, chạy A1; không lặp lại indicator shape guard.
+
 ## Chu ky 68 — chuan hoa snapshot stale flag
 - Trang thai: DONE
 - File da sua: web/app.js; PROGRESS.md

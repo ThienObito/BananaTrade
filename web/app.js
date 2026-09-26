@@ -171,7 +171,8 @@ function snapshotPrice(snapshot) {
 
 function snapshotIndicators(snapshot) {
   const source = snapshotSource(snapshot);
-  return source.indicators || source.timeframes?.[SNAPSHOT_TIMEFRAME]?.indicators || {};
+  const indicators = source.indicators || source.timeframes?.[SNAPSHOT_TIMEFRAME]?.indicators;
+  return indicators && typeof indicators === 'object' && !Array.isArray(indicators) ? indicators : {};
 }
 
 function snapshotRegime(snapshot) {

@@ -377,3 +377,16 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Không diễn giải chuỗi hoặc số thành boolean; payload sai kiểu được coi là không stale.
+
+## Chu kỳ 69 — chặn snapshot indicator shape [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): `indicators` sai shape như array/string được truyền thẳng vào render, khiến field lookup không có contract rõ ràng.
+- Requirement -> test:
+  - Chỉ chấp nhận indicators là object không phải array: kiểm tra tĩnh xác nhận guard type/array — pass.
+  - Payload indicators sai shape fallback về object rỗng, không tạo số liệu — kiểm tra tĩnh — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Indicator thiếu hoặc sai shape hiển thị `—` qua `formatMetric`; không tạo giá trị kỹ thuật mặc định.
