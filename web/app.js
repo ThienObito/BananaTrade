@@ -10,6 +10,38 @@ function loadStoredState() {
   }
 }
 
+function normalizeStoredState(stored) {
+  const normalized = {};
+  if (Number.isFinite(Number(stored.cash))) normalized.cash = Number(stored.cash);
+  if (Number.isFinite(Number(stored.equity))) normalized.equity = Number(stored.equity);
+  if (Array.isArray(stored.trades)) normalized.trades = stored.trades.filter((trade) => (
+    trade && typeof trade === 'object'
+    && Number.isFinite(Number(trade.entry))
+    && Number.isFinite(Number(trade.exit))
+    && Number.isFinite(Number(trade.pnl))
+  )).map((trade) => ({
+    side: trade.side === 'SHORT' ? 'SHORT' : 'LONG',
+    entry: Number(trade.entry),
+    exit: Number(trade.exit),
+    pnl: Number(trade.pnl),
+    closed: typeof trade.closed === 'string' ? trade.closed : new Date().toISOString(),
+  }));
+  if (stored.position && typeof stored.position === 'object') {
+    const position = stored.position;
+    const entry = Number(position.entry);
+    const qty = Number(position.qty);
+    if (Number.isFinite(entry) && entry > 0 && Number.isFinite(qty) && qty > 0) {
+      normalized.position = {
+        side: position.side === 'SHORT' ? 'SHORT' : 'LONG',
+        entry,
+        qty,
+        opened: typeof position.opened === 'string' ? position.opened : new Date().toISOString(),
+      };
+    }
+  }
+  return normalized;
+}
+
 function persistState(payload) {
   try {
     localStorage.setItem('banana-paper-state', JSON.stringify(payload));
@@ -26,7 +58,7 @@ function clearStoredState() {
   }
 }
 
-const storedState = loadStoredState();
+const storedState = normalizeStoredState(loadStoredState());
 const state = {
   cash: null,
   equity: null,

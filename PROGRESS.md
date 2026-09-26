@@ -177,3 +177,17 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Backend response schema không thay đổi; frontend chỉ thêm lớp bảo vệ parse lỗi.
+
+## Chu kỳ 39 — chuẩn hóa local state [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): dữ liệu localStorage có thể chứa số/string/array/object sai schema, gây lỗi render hoặc phép tính sau khi spread vào runtime state.
+- Requirement -> test:
+  - Chỉ nhận cash/equity hữu hạn: kiểm tra tĩnh xác nhận `Number.isFinite(Number(...))` — pass.
+  - Chỉ nhận trades/position đúng shape và số dương: kiểm tra tĩnh xác nhận filter/map normalization — pass.
+  - Runtime dùng state đã normalize: kiểm tra tĩnh xác nhận `normalizeStoredState(loadStoredState())` — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Backend paper state vẫn ghi đè position/cash/equity khi endpoint trả dữ liệu; normalization chỉ bảo vệ fallback localStorage.

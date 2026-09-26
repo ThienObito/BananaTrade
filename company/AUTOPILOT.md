@@ -211,6 +211,21 @@
 - Rui ro con lai: cac lenh `response.json()` co the nem exception voi body HTML/rong/JSON sai, lam luong dashboard ket thuc truoc khi hien thi loi typed.
 - Viec tiep theo de xuat: Dung helper parse response JSON an toan cho snapshot, paper state, order va analysis.
 
+## Chu ky 39 — bo qua Phase A bi chan, chuan hoa local state doc lap
+- Trang thai: FAILED
+- File da sua: BLOCKED.md; PROGRESS.md
+- Kiem chung blocker: Interpreter bat buoc `E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe` van `MISSING`; khong the chay pytest/mypy/ruff.
+- Nguyen nhan viec truoc: Phase A van bi chan boi moi truong Python thieu.
+- Rui ro con lai: state merge tu localStorage co the nhan `position`, `trades`, `cash` sai kieu; cac ham render co the goi `.toFixed`, `.length` hoac phep tinh tren du lieu khong hop le.
+- Viec tiep theo de xuat: Loc va chuan hoa local state truoc khi gan vao state runtime.
+
+## Chu ky 40 — chuan hoa local state
+- Trang thai: DONE
+- File da sua: web/app.js; PROGRESS.md
+- Kiem chung: `node --check web/app.js` — pass; quet tĩnh xác nhận cash/equity/trades/position được normalize trước khi spread vào runtime — pass.
+- Rui ro con lai: Full pytest/mypy/ruff chưa chạy vì interpreter bắt buộc thiếu.
+- Viec tiep theo de xuat: Khi interpreter tồn tại, chạy A1; không lặp lại state normalization.
+
 ## Chu ky 38 — parse response API an toan
 - Trang thai: DONE
 - File da sua: web/app.js; PROGRESS.md
