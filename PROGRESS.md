@@ -751,3 +751,16 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Candle sai leaf thành null và bị filter; fallback candle vẫn dùng canonical snapshot price đã validate.
+
+## Chu kỳ 125 — chuẩn hóa formatMetric leaf [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): `formatMetric` dùng `Number(value)` trực tiếp, có thể coercion boolean/null/object từ caller khác dù indicator đã normalize.
+- Requirement -> test:
+  - `formatMetric` dùng `safeNumber` strict trước locale formatting: kiểm tra tĩnh xác nhận — pass.
+  - Không còn `Number(value)` trong formatMetric: quét tĩnh xác nhận — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Giá trị không hợp lệ hiển thị placeholder `—`; numeric string hợp lệ vẫn được format như trước.

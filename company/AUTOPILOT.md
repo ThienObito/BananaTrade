@@ -555,6 +555,21 @@
 - Rui ro con lai: `snapshotCandles` dung `Number()` truc tiep cho OHLC, cho phep boolean/null/object/array coercion thanh candle hop le.
 - Viec tiep theo de xuat: Dung `safeNumber` cho OHLC va reject leaf sai type truoc khi kiem tra positive/range.
 
+## Chu ky 125 — bo qua Phase A bi chan, validate formatMetric leaf doc lap
+- Trang thai: FAILED
+- File da sua: BLOCKED.md; PROGRESS.md
+- Kiem chung blocker: Interpreter bat buoc `E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe` van `MISSING`; khong the chay pytest/mypy/ruff.
+- Nguyen nhan viec truoc: Phase A van bi chan boi moi truong Python thieu.
+- Rui ro con lai: `formatMetric` dung `Number(value)` truc tiep; indicator da normalize nhung helper dung chung van co the nhan boolean/null/object tu caller khac va hien thi gia tri coercion.
+- Viec tiep theo de xuat: Dung numeric helper strict cho formatMetric truoc locale formatting.
+
+## Chu ky 126 — chuan hoa formatMetric leaf
+- Trang thai: DONE
+- File da sua: web/app.js; PROGRESS.md
+- Kiem chung: `node --check web/app.js` — pass; quet tĩnh xác nhận formatMetric dùng safeNumber strict và không Number coercion trực tiếp — pass.
+- Rui ro con lai: Full pytest/mypy/ruff chưa chạy vì interpreter bắt buộc thiếu.
+- Viec tiep theo de xuat: Khi interpreter tồn tại, chạy A1; không lặp lại formatMetric guard.
+
 ## Chu ky 124 — chuan hoa candle numeric leaves
 - Trang thai: DONE
 - File da sua: web/app.js; PROGRESS.md

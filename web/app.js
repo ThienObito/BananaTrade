@@ -251,8 +251,8 @@ function snapshotIsStale(snapshot) {
 }
 
 function formatMetric(value, digits = 2) {
-  const number = Number(value);
-  return Number.isFinite(number) ? number.toLocaleString(undefined, { maximumFractionDigits: digits }) : '—';
+  const number = safeNumber(value);
+  return number !== null ? number.toLocaleString(undefined, { maximumFractionDigits: digits }) : '—';
 }
 
 function renderSnapshotMetrics(snapshot) {
