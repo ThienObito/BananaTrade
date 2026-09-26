@@ -23,3 +23,10 @@
 - Theo hard rule, không được chạy full pytest/mypy, không được dùng interpreter khác và phải dừng ngay.
 - Vì chưa thể chẩn đoán A1 hoặc hoàn thành Phase A, chưa thể thực hiện Phase B/C hay tạo `docs/DASHBOARD_API.md` dựa trên endpoint đã kiểm chứng.
 - Không sửa code/test và không suy đoán endpoint, response shape hoặc số liệu kiểm thử.
+
+## Goal round 1 — xác nhận blocker vẫn tồn tại
+- Thư mục thực tế: `E:\\Trade-AI\\BananaTrade`.
+- Lệnh kiểm tra: `Test-Path -LiteralPath 'E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe'`.
+- Kết quả thực tế: `MISSING E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe`.
+- Không chạy pytest, mypy, ruff hoặc Python thay thế; hard rule yêu cầu dừng khi interpreter này thiếu.
+- Hạng mục tài liệu API độc lập trước đó đã hoàn tất; không có hạng mục code/test nào hợp lệ để làm tiếp khi môi trường bắt buộc chưa tồn tại.

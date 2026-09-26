@@ -38,3 +38,11 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Đây là hạng mục độc lập chỉ đọc source, không thêm endpoint hoặc số liệu giả vào code. Các response mẫu phản ánh shape do handler/module hiện tại định nghĩa; cần chạy full suite sau khi khôi phục interpreter.
+
+## Goal round 1 — kiểm tra lại môi trường [BLOCKED]
+- Đã đọc lại `PROGRESS.md` trước khi thực hiện bước.
+- Thư mục thực tế: `E:\\Trade-AI\\BananaTrade`.
+- Interpreter duy nhất được phép: `E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe`.
+- Kết quả thực tế: `MISSING`.
+- Không chạy pytest/mypy/ruff và không dùng Python thay thế; không sửa code/test vì sẽ vi phạm hard rule.
+- Hành động: dừng round này và chờ interpreter đúng đường dẫn được khôi phục.
