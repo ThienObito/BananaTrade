@@ -55,8 +55,15 @@ def evaluate_triggers(symbol: str, ohlcv_by_tf: dict[str, pd.DataFrame], funding
             continue
         period = int(thresholds.get("range_periods", 20))
         price = float(frame.iloc[-1]["close"])
-        high = float(range_high(frame["high"], period).iloc[-1])
-        low = float(range_low(frame["low"], period).iloc[-1])
+        # Compare the closed candle with the preceding range. Including the
+        # current candle makes an upside breakout impossible unless its close
+        # equals its own high (and similarly for downside breakouts).
+        prior_high = range_high(frame["high"].shift(1), period)
+        prior_low = range_low(frame["low"].shift(1), period)
+        high = float(prior_high.iloc[-1])
+        low = float(prior_low.iloc[-1])
+        if pd.isna(high) or pd.isna(low):
+            continue
         breakout = range_breakout(symbol, timeframe, price, high, low)
         if breakout is not None:
             result.append(breakout)

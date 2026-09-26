@@ -46,6 +46,13 @@ def test_funding_none_no_trigger() -> None:
     assert funding_extreme("BTC/USDT", "1h", None, 0.002) is None
 
 
+def test_breakout_uses_prior_range() -> None:
+    frame = pd.DataFrame({"timestamp_ms": [0, 3_600_000, 7_200_000], "open": [95, 95, 95], "high": [100, 100, 101], "low": [90, 90, 89], "close": [95, 95, 100.5], "volume": [100, 100, 100]})
+    as_of = datetime.fromtimestamp(10_800_000 / 1000, UTC)
+    triggers = evaluate_triggers("BTC/USDT", {"1h": frame}, None, as_of, {"range_periods": 2, "funding_extreme": 99.0})
+    assert any(item.name == "range_breakout" and item.direction == "up" for item in triggers)
+
+
 @pytest.mark.parametrize("trigger_name", ["range_breakout", "volume_zscore", "atr_expansion"])
 def test_trigger_ignores_forming_candle(trigger_name: str) -> None:
     frame = pd.DataFrame({"timestamp_ms": [0, 3_600_000, 7_200_000], "open": [95, 95, 95], "high": [100, 100, 110], "low": [90, 90, 89], "close": [95, 95, 110], "volume": [100, 100, 500]})
