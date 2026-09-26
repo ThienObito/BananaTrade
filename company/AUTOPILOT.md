@@ -467,6 +467,21 @@
 - Rui ro con lai: Cac catch order dung `error.message` truc tiep; backend error payload hoac thrown value khong phai Error co the tao notification `undefined`/object string khong on dinh.
 - Viec tiep theo de xuat: Them helper chuan hoa error message an toan cho order/close/analysis.
 
+## Chu ky 103 — bo qua Phase A bi chan, validate backend error payload doc lap
+- Trang thai: FAILED
+- File da sua: BLOCKED.md; PROGRESS.md
+- Kiem chung blocker: Interpreter bat buoc `E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe` van `MISSING`; khong the chay pytest/mypy/ruff.
+- Nguyen nhan viec truoc: Phase A van bi chan boi moi truong Python thieu.
+- Rui ro con lai: `new Error(data.error || fallback)` chap nhan object/array truthy va tao message `[object Object]`; backend error payload sai type van duoc dua vao notification.
+- Viec tiep theo de xuat: Chuan hoa backend error chi la trimmed string truoc khi throw.
+
+## Chu ky 104 — validate backend error payload
+- Trang thai: DONE
+- File da sua: web/app.js; PROGRESS.md
+- Kiem chung: `node --check web/app.js` — pass; quet tĩnh xác nhận backend error object/array không còn đi vào `new Error`, bốn luồng lỗi dùng fallback — pass.
+- Rui ro con lai: Full pytest/mypy/ruff chưa chạy vì interpreter bắt buộc thiếu.
+- Viec tiep theo de xuat: Khi interpreter tồn tại, chạy A1; không lặp lại backend error guard.
+
 ## Chu ky 102 — chuan hoa error message cho order/analysis
 - Trang thai: DONE
 - File da sua: web/app.js; PROGRESS.md

@@ -604,3 +604,16 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Không hiển thị object/undefined thô cho người dùng; fallback chỉ mô tả lỗi thao tác, không che response thành công.
+
+## Chu kỳ 103 — validate backend error payload [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): Backend error field object/array truthy có thể đi vào `new Error` và tạo message `[object Object]` thay vì lỗi có nghĩa.
+- Requirement -> test:
+  - Backend error chỉ nhận trimmed string không rỗng: kiểm tra tĩnh xác nhận `backendError` — pass.
+  - Risk, analysis, open và close order đều dùng helper trước khi throw: quét tĩnh xác nhận — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Error payload sai type dùng fallback thao tác; không biến response lỗi thành thành công.

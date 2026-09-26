@@ -94,6 +94,11 @@ function errorMessage(error, fallback = 'Request failed') {
   return fallback;
 }
 
+function backendError(payload, fallback) {
+  const value = payload?.error;
+  return typeof value === 'string' && value.trim() ? value.trim() : fallback;
+}
+
 function notify(message) {
   if (!toast) return;
   toast.textContent = message;
@@ -523,7 +528,7 @@ function bind() {
         body: JSON.stringify(body),
       });
       const data = await readJson(response);
-      if (!response.ok) throw new Error(data.error || 'risk rejected');
+      if (!response.ok) throw new Error(backendError(data, 'risk rejected'));
       const orderId = requireOrderId(data);
       notify('Paper order filled · ' + orderId);
     } catch (error) {
@@ -535,7 +540,7 @@ function bind() {
     try {
       const response = await fetch('/api/analysis/run');
       const data = normalizeAnalysis(await readJson(response));
-      if (!response.ok) throw new Error(data?.error || 'analysis failed');
+      if (!response.ok) throw new Error(backendError(data, 'analysis failed'));
       if (!data) throw new Error('Backend returned invalid analysis');
       const report = data.reports.find((item) => item.agent === 'technical_analyst');
       notify(report ? 'AI bias: ' + (report.bias || '—') + ' · confidence ' + (report.confidence || '—') : 'AI analysis completed');
@@ -564,7 +569,7 @@ async function openPaper(side) {
       body: JSON.stringify({ symbol: SNAPSHOT_SYMBOL, side: side === 'LONG' ? 'buy' : 'sell', quantity, price: state.price }),
     });
     const data = await readJson(response);
-    if (!response.ok) throw new Error(data.error || 'order rejected');
+    if (!response.ok) throw new Error(backendError(data, 'order rejected'));
     requireOrderId(data);
     state.position = { side, entry: state.price, qty: quantity, opened: new Date().toISOString() };
     save();
@@ -592,7 +597,7 @@ async function closePaper() {
       }),
     });
     const data = await readJson(response);
-    if (!response.ok) throw new Error(data.error || 'close rejected');
+    if (!response.ok) throw new Error(backendError(data, 'close rejected'));
     requireOrderId(data, true);
     const pnl = state.position.side === 'LONG'
       ? (state.price - state.position.entry) * state.position.qty
