@@ -11,8 +11,8 @@ function loadStoredState() {
 }
 
 function normalizeTimestamp(value) {
-  if (typeof value !== 'string') return new Date().toISOString();
-  const parsed = new Date(value);
+  if (typeof value !== 'string' || !value.trim()) return new Date().toISOString();
+  const parsed = new Date(value.trim());
   return Number.isFinite(parsed.getTime()) ? parsed.toISOString() : new Date().toISOString();
 }
 

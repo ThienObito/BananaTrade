@@ -804,3 +804,17 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Giữ non-numeric confidence string để UI có thể hiển thị dữ liệu backend, nhưng không coercion sai type.
+
+## Chu kỳ 133 — chuẩn hóa timestamp leaf [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): `normalizeTimestamp` cần contract rõ cho timestamp input; object/number/whitespace không nên đi vào date parser implicit.
+- Requirement -> test:
+  - Chỉ string không whitespace được parse: kiểm tra tĩnh xác nhận — pass.
+  - Timestamp được trim trước `new Date`: quét tĩnh xác nhận — pass.
+  - Input invalid fallback về current ISO string: review branch xác nhận — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Không thay đổi format ISO output; timestamp sai type tiếp tục dùng fallback hiện tại.
