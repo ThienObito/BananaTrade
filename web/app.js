@@ -3,13 +3,15 @@ const $$ = (selector) => document.querySelectorAll(selector);
 
 const storedState = JSON.parse(localStorage.getItem('banana-paper-state') || '{}');
 const state = {
-  cash: 10000,
+  cash: null,
+  equity: null,
   position: null,
   trades: [],
   ...storedState,
   // A price is valid only after it has been received from /api/snapshot.
   price: null,
   snapshot: null,
+  equity: null,
 };
 
 const SNAPSHOT_SYMBOL = 'BTC/USDT';
@@ -44,10 +46,37 @@ function snapshotSource(snapshot) {
 
 function snapshotPrice(snapshot) {
   const source = snapshotSource(snapshot);
-  const summary = source.timeframes?.['1h'];
+  const summary = source.timeframes?.[SNAPSHOT_TIMEFRAME];
   const value = source.last_price ?? summary?.last_price;
   const price = Number(value);
   return Number.isFinite(price) ? price : null;
+}
+
+function snapshotIndicators(snapshot) {
+  const source = snapshotSource(snapshot);
+  return source.indicators || source.timeframes?.[SNAPSHOT_TIMEFRAME]?.indicators || {};
+}
+
+function formatMetric(value, digits = 2) {
+  const number = Number(value);
+  return Number.isFinite(number) ? number.toLocaleString(undefined, { maximumFractionDigits: digits }) : '—';
+}
+
+function renderSnapshotMetrics(snapshot) {
+  const indicators = snapshotIndicators(snapshot);
+  const marketBias = $('#market-bias');
+  const confidence = $('#market-confidence');
+  const chartFooter = document.querySelector('.chart-footer');
+  if (marketBias) marketBias.textContent = snapshotSource(snapshot).regime?.toUpperCase() || '—';
+  if (confidence) confidence.textContent = snapshotSource(snapshot).stale ? 'stale snapshot' : 'snapshot source';
+  if (chartFooter) {
+    chartFooter.innerHTML = [
+      ['EMA', indicators.ema],
+      ['RSI', indicators.rsi],
+      ['ATR', indicators.atr],
+      ['VOL Z', indicators.volume_zscore],
+    ].map(([label, value]) => `<span>${label} <b>${formatMetric(value)}</b></span>`).join('');
+  }
 }
 
 function snapshotCandles(snapshot, price) {
@@ -55,7 +84,7 @@ function snapshotCandles(snapshot, price) {
   const configured = source.candles ?? snapshot?.candles ?? source.ohlcv;
   const input = Array.isArray(configured)
     ? configured
-    : configured?.['1h'] || [];
+    : configured?.[SNAPSHOT_TIMEFRAME] || [];
   const candles = input
     .map((candle) => ({
       open: Number(candle.open),
@@ -203,12 +232,14 @@ function renderSnapshotViews() {
   if (price === null) {
     if (priceElement) priceElement.textContent = '—';
     if (orderPrice) orderPrice.value = '';
+    renderSnapshotMetrics(state.snapshot);
     setStaleBadge(false);
     return;
   }
   if (priceElement) priceElement.textContent = '$' + price.toFixed(2);
   if (orderPrice) orderPrice.value = price.toFixed(2);
   setStaleBadge(Boolean(snapshotSource(state.snapshot).stale ?? state.snapshot.stale));
+  renderSnapshotMetrics(state.snapshot);
   renderCandles(state.snapshot);
 }
 
@@ -235,11 +266,12 @@ async function updateSnapshot() {
 }
 
 async function renderState() {
+  let backendState = null;
   try {
     const response = await fetch('/api/paper/state');
     if (response.ok) {
-      const data = await response.json();
-      const positions = Object.values(data.positions || {}).filter((position) => position.quantity);
+      backendState = await response.json();
+      const positions = Object.values(backendState.positions || {}).filter((position) => position.quantity);
       if (positions.length && !state.position) {
         const position = positions[0];
         state.position = {
@@ -250,18 +282,18 @@ async function renderState() {
         };
       }
       if (!positions.length) state.position = null;
-      state.cash = data.cash;
+      state.cash = Number.isFinite(Number(backendState.cash)) ? Number(backendState.cash) : null;
+      state.equity = Number.isFinite(Number(backendState.equity)) ? Number(backendState.equity) : null;
     }
   } catch (error) {
-    // Paper state is local UI state when the optional backend is unavailable.
+    // The paper panel stays empty until its backend source is available.
   }
-  const equity = state.cash + (state.position && state.price !== null ? state.position.qty * state.price : 0);
   const equityElement = $('#paper-equity');
   const paperState = $('#paper-state');
-  if (equityElement) equityElement.textContent = '$' + equity.toFixed(2);
+  if (equityElement) equityElement.textContent = Number.isFinite(state.equity) ? '$' + state.equity.toFixed(2) : '—';
   if (paperState) {
-    paperState.textContent = state.position ? '● ' + state.position.side : '● flat';
-    paperState.className = state.position ? 'cyan' : 'up';
+    paperState.textContent = state.position ? '● ' + state.position.side : backendState ? '● flat' : '● waiting for backend';
+    paperState.className = state.position ? 'cyan' : backendState ? 'up' : 'muted';
   }
   renderSnapshotViews();
 }
@@ -340,15 +372,17 @@ function bind() {
 async function openPaper(side) {
   if (state.position) return notify('Đã có position đang mở');
   if (state.price === null) return notify('Market snapshot chưa sẵn sàng');
+  const quantity = Number($('#order-qty')?.value);
+  if (!Number.isFinite(quantity) || quantity <= 0) return notify('Nhập quantity hợp lệ trong order ticket');
   try {
     const response = await fetch('/api/paper/order', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ symbol: 'BTC/USDT', side: side === 'LONG' ? 'buy' : 'sell', quantity: 1000 / state.price, price: state.price }),
+      body: JSON.stringify({ symbol: SNAPSHOT_SYMBOL, side: side === 'LONG' ? 'buy' : 'sell', quantity, price: state.price }),
     });
     const data = await response.json();
     if (!response.ok) throw new Error(data.error || 'order rejected');
-    state.position = { side, entry: state.price, qty: 1000 / state.price, opened: new Date().toISOString() };
+    state.position = { side, entry: state.price, qty: quantity, opened: new Date().toISOString() };
     save();
     notify('Backend paper ' + side + ' opened');
     $('.content').innerHTML = views.positions;
@@ -366,7 +400,7 @@ async function closePaper() {
     const response = await fetch('/api/paper/close', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ symbol: 'BTC/USDT', price: state.price }),
+      body: JSON.stringify({ symbol: SNAPSHOT_SYMBOL, price: state.price }),
     });
     const data = await response.json();
     if (!response.ok) throw new Error(data.error || 'close rejected');
@@ -388,8 +422,8 @@ async function closePaper() {
 const base = $('.content')?.innerHTML || '';
 const views = {
   overview: base,
-  council: `<div class="hero"><div><p class="eyebrow">AI COUNCIL <span>ONLINE</span></p><h1>Decision intelligence<span class="cursor">_</span></h1><p class="sub">Phân tích AI và decision gate cho paper trading.</p></div></div><div class="grid"><article class="panel signal-panel"><div class="panel-head"><b>COUNCIL CONSENSUS</b><span class="badge">2 / 4 ONLINE</span></div><div class="signal-main"><div class="orb"><div class="orb-core">68<small>%</small></div></div><div><small class="muted">CURRENT BIAS</small><h2>NEUTRAL<span class="cyan">+</span></h2><p>Chờ xác nhận động lượng</p></div></div><div class="agent"><span class="agent-icon cyan-bg">⌁</span><div><b>Sentiment Agent</b><small>Long positioning mildly crowded</small></div><strong class="up">0.60</strong></div><button class="primary run-analysis">RUN FULL ANALYSIS <span>→</span></button></article><article class="panel positions"><div class="panel-head"><b>DECISION GATE</b><span class="badge">SAFE MODE</span></div><div class="empty-state"><div class="empty-icon">◇</div><b>No trade approved</b><span>Risk gate chưa phê duyệt lệnh.</span></div></article></div>`,
-  positions: `<div class="hero"><div><p class="eyebrow">PAPER TRADING <span>SIMULATION</span></p><h1>Positions & execution<span class="cursor">_</span></h1><p class="sub">Mô phỏng cục bộ, dữ liệu được lưu trong trình duyệt.</p></div></div><div class="ticker"><div><small>EQUITY</small><strong>$${(state.cash + (state.position ? 1000 : 0)).toFixed(2)}</strong><span>paper account</span></div><div><small>LAST PRICE</small><strong>${state.price === null ? '—' : '$' + state.price.toFixed(2)}</strong><span class="up">snapshot source</span></div><div><small>OPEN POSITIONS</small><strong>${state.position ? 1 : 0}</strong><span>${state.position ? state.position.side : 'flat'}</span></div><div><small>TRADES</small><strong>${state.trades.length}</strong><span>closed</span></div></div><article class="panel positions"><div class="panel-head"><b>EXECUTION CONSOLE</b><span class="badge">PAPER ONLY</span></div>${state.position ? `<div class="event"><time>${state.position.side}</time><span class="event-dot cyan-dot"></span><div><b>Entry $${state.position.entry.toFixed(2)}</b><small>Qty ${state.position.qty.toFixed(5)} BTC · opened ${new Date(state.position.opened).toLocaleTimeString()}</small></div><button class="primary" id="paper-close">CLOSE POSITION</button></div>` : `<div class="empty-state"><div class="empty-icon">◌</div><b>No open position</b><span>Chọn lệnh mô phỏng để kiểm tra execution và PnL.</span><div><button class="primary" id="paper-buy">PAPER BUY</button><button class="primary" id="paper-sell">PAPER SELL</button></div></div>`}</article><button class="primary" id="reset-paper">RESET PAPER ACCOUNT</button>`,
+  council: `<div class="hero"><div><p class="eyebrow">AI COUNCIL <span>OFFLINE UNTIL RUN</span></p><h1>Decision intelligence<span class="cursor">_</span></h1><p class="sub">Phân tích AI và decision gate cho paper trading.</p></div></div><div class="grid"><article class="panel signal-panel"><div class="panel-head"><b>COUNCIL CONSENSUS</b><span class="badge">NO RUN DATA</span></div><div class="signal-main"><div class="orb"><div class="orb-core">—<small></small></div></div><div><small class="muted">CURRENT BIAS</small><h2>—</h2><p>Chưa có dữ liệu phân tích từ backend.</p></div></div><div class="agent"><span class="agent-icon cyan-bg">⌁</span><div><b>Sentiment Agent</b><small>Waiting for analysis response</small></div><strong class="muted">—</strong></div><button class="primary run-analysis">RUN FULL ANALYSIS <span>→</span></button></article><article class="panel positions"><div class="panel-head"><b>DECISION GATE</b><span class="badge">NO RUN DATA</span></div><div class="empty-state"><div class="empty-icon">◇</div><b>No decision data</b><span>Chạy phân tích để nhận quyết định backend.</span></div></article></div>`,
+  positions: `<div class="hero"><div><p class="eyebrow">PAPER TRADING <span>SIMULATION</span></p><h1>Positions & execution<span class="cursor">_</span></h1><p class="sub">Mô phỏng cục bộ, dữ liệu được lưu trong trình duyệt.</p></div></div><div class="ticker"><div><small>EQUITY</small><strong>${Number.isFinite(state.equity) ? '$' + state.equity.toFixed(2) : '—'}</strong><span>paper backend</span></div><div><small>LAST PRICE</small><strong>${state.price === null ? '—' : '$' + state.price.toFixed(2)}</strong><span class="up">snapshot source</span></div><div><small>OPEN POSITIONS</small><strong>${state.position ? 1 : 0}</strong><span>${state.position ? state.position.side : 'flat'}</span></div><div><small>TRADES</small><strong>${state.trades.length}</strong><span>closed</span></div></div><article class="panel positions"><div class="panel-head"><b>EXECUTION CONSOLE</b><span class="badge">PAPER ONLY</span></div>${state.position ? `<div class="event"><time>${state.position.side}</time><span class="event-dot cyan-dot"></span><div><b>Entry $${state.position.entry.toFixed(2)}</b><small>Qty ${state.position.qty.toFixed(5)} BTC · opened ${new Date(state.position.opened).toLocaleTimeString()}</small></div><button class="primary" id="paper-close">CLOSE POSITION</button></div>` : `<div class="empty-state"><div class="empty-icon">◌</div><b>No open position</b><span>Chọn lệnh mô phỏng để kiểm tra execution và PnL.</span><div><button class="primary" id="paper-buy">PAPER BUY</button><button class="primary" id="paper-sell">PAPER SELL</button></div></div>`}</article><button class="primary" id="reset-paper">RESET PAPER ACCOUNT</button>`,
   performance: `<div class="hero"><div><p class="eyebrow">AI PERFORMANCE <span>REAL LOCAL DATA</span></p><h1>Hiệu quả AI trade<span class="cursor">_</span></h1><p class="sub">Metrics được tính từ paper trades đã đóng trên tài khoản này.</p></div></div><div class="ticker"><div><small>NET PNL</small><strong class="up">$${metrics().pnl.toFixed(2)}</strong><span>realized</span></div><div><small>WIN RATE</small><strong>${metrics().rate === null ? '—' : metrics().rate.toFixed(1) + '%'}</strong><span>${state.trades.length} closed trades</span></div><div><small>PROFIT FACTOR</small><strong>${metrics().pf === null ? '—' : metrics().pf.toFixed(2)}</strong><span>gross gain / loss</span></div><div><small>MAX DRAWDOWN</small><strong>—</strong><span>needs equity history</span></div></div><article class="panel activity"><div class="panel-head"><b>CLOSED TRADES</b><span class="badge">LOCAL PAPER DATA</span></div>${state.trades.length ? state.trades.slice().reverse().map((trade) => `<div class="event"><time>${trade.side}</time><span class="event-dot ${trade.pnl >= 0 ? 'green-dot' : 'cyan-dot'}"></span><div><b>${trade.pnl >= 0 ? '+' : ''}$${trade.pnl.toFixed(2)} PnL</b><small>Entry $${trade.entry.toFixed(2)} → Exit $${trade.exit.toFixed(2)}</small></div></div>`).join('') : `<div class="empty-state"><div class="empty-icon">◔</div><b>Chưa có trade đã đóng</b><span>Vào Positions để mở paper order và đo kết quả.</span></div>`}</article>`,
   journal: base,
 };

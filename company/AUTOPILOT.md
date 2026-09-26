@@ -147,6 +147,21 @@
 - Rui ro con lai: Merge fallout chua duoc chuan doan; thay doi doc lap frontend can kiem chung bang Node.
 - Viec tiep theo de xuat: Sua request `/api/snapshot` cua frontend de khop handler can `symbol` va `timeframe`, sau do chay `node --check`.
 
+## Chu ky 23 — bo qua merge fallout bi chan, loai bo so lieu placeholder
+- Trang thai: FAILED
+- File da sua: BLOCKED.md; PROGRESS.md
+- Kiem chung blocker: Interpreter bat buoc `E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe` van `MISSING`; khong the chay pytest/mypy/ruff.
+- Nguyen nhan viec truoc: Phase A van bi chan boi moi truong Python thieu; khong lap lai chuan doan merge fallout.
+- Rui ro con lai: Dashboard con nhieu gia tri HTML hard-code khong truy vet duoc ve backend; thay doi doc lap frontend se xu ly phan nay.
+- Viec tiep theo de xuat: Xoa placeholder dashboard va chi hien thi gia, chi so, equity tu snapshot/paper-state backend.
+
+## Chu ky 24 — loai bo so lieu placeholder khoi dashboard
+- Trang thai: DONE
+- File da sua: web/index.html; web/app.js; PROGRESS.md
+- Kiem chung: `node --check web/app.js` — pass; quet HTML khong con gia/indicator/council/equity/activity hard-code — pass; quet JavaScript khong con fallback equity/quantity gia — pass.
+- Rui ro con lai: Full pytest/mypy/ruff van chua chay duoc vi interpreter bat buoc thieu; backend chua duoc integration test.
+- Viec tiep theo de xuat: Khi interpreter ton tai, chay lai A1; khong lap lai viec loai placeholder.
+
 ## Chu ky 22 — sua request snapshot frontend
 - Trang thai: DONE
 - File da sua: web/app.js; PROGRESS.md

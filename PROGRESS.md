@@ -74,3 +74,16 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Đây là sửa frontend độc lập, không chạm backend, database, LLM hay exchange. Full suite phải chạy lại khi interpreter đúng đường dẫn được khôi phục.
+
+## Chu kỳ 23 — loại bỏ số liệu placeholder khỏi dashboard [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): Phase A vẫn bị chặn bởi interpreter bắt buộc; HTML dashboard chứa giá, chỉ báo, council, equity và hoạt động hard-code không truy vết backend.
+- Requirement -> test:
+  - Không hiển thị số liệu market/equity/council giả trước dữ liệu backend: quét placeholder HTML — pass.
+  - Chỉ dùng snapshot/paper-state cho metric: quét client loại bỏ fallback equity/quantity giả — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Frontend hiện hiển thị `—` khi chưa có dữ liệu, lấy giá/indicator từ `/api/snapshot`, equity từ `/api/paper/state`, và quantity từ order ticket. Không thay đổi backend hoặc test Python.
