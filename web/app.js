@@ -238,14 +238,18 @@ function snapshotIndicators(snapshot) {
   const candidates = [source.indicators, summary.indicators];
   const validCandidates = candidates
     .filter((candidate) => candidate && typeof candidate === 'object' && !Array.isArray(candidate))
-    .map((candidate) => ({
+    .map((candidate, index) => ({
       candidate,
       validCount: Object.values(candidate).filter((value) => safeNumber(value) !== null).length,
+      sourceRank: index === 0 ? 0 : 1,
     }))
     .filter(({ validCount }) => validCount > 0);
   if (!validCandidates.length) return Object.create(null);
   const indicators = validCandidates.reduce((best, current) => (
-    current.validCount > best.validCount ? current : best
+    current.validCount > best.validCount
+      || (current.validCount === best.validCount && current.sourceRank < best.sourceRank)
+      ? current
+      : best
   )).candidate;
   const normalized = Object.create(null);
   Object.entries(indicators).forEach(([key, value]) => {

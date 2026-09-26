@@ -915,6 +915,21 @@
 - Rui ro con lai: Source có ít value hợp lệ hơn summary nhưng vẫn được chọn, làm mất indicator hiển thị.
 - Viec tiep theo de xuat: Chọn candidate có số lượng numeric value hợp lệ cao nhất, ưu tiên source khi bằng nhau.
 
+## Chu ky 217 — bo qua Phase A bi chan, explicit snapshot indicator candidate tie doc lap
+- Trang thai: FAILED
+- File da sua: BLOCKED.md; PROGRESS.md
+- Kiem chung blocker: Interpreter bat buoc `E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe` van `MISSING`; khong the chay pytest/mypy/ruff.
+- Nguyen nhan viec truoc: Reduce hiện giữ candidate đầu tiên khi hòa nhưng quy tắc tie-break chưa biểu đạt rõ trong source.
+- Rui ro con lai: Thay đổi implementation sau này có thể vô tình làm mất source priority khi validCount bằng nhau.
+- Viec tiep theo de xuat: Gắn source rank và tie-break explicit trong reduce.
+
+## Chu ky 218 — explicit snapshot indicator candidate tie
+- Trang thai: DONE
+- File da sua: web/app.js; PROGRESS.md
+- Kiem chung: `node --check web/app.js` — pass; quet tĩnh xác nhận sourceRank tie-break explicit và source được ưu tiên khi hòa — pass.
+- Rui ro con lai: Full pytest/mypy/ruff chưa chạy vì interpreter bắt buộc thiếu.
+- Viec tiep theo de xuat: Khi interpreter tồn tại, chạy A1; không lặp lại indicator tie-break guard.
+
 ## Chu ky 216 — deterministic snapshot indicator fallback
 - Trang thai: DONE
 - File da sua: web/app.js; PROGRESS.md

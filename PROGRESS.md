@@ -1348,3 +1348,16 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Chỉ thay đổi lựa chọn UI source; không thay đổi snapshot payload.
+
+## Chu kỳ 217 — explicit snapshot indicator candidate tie [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): Reduce giữ candidate đầu tiên khi hòa nhưng quy tắc source priority chưa biểu đạt rõ trong source.
+- Requirement -> test:
+  - Candidate có numeric richness cao hơn vẫn thắng: kiểm tra tĩnh xác nhận — pass.
+  - Khi hòa, source candidate có `sourceRank` thấp hơn thắng: quét tĩnh xác nhận — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Source candidate rank 0, summary rank 1; không đổi snapshot payload.
