@@ -571,6 +571,21 @@
 - Rui ro con lai: `snapshotIndicators` da reject container/boolean/object nhung van dung `Number(value)` cho leaf null/whitespace/undefined, contract conversion khong dong nhat voi safeNumber.
 - Viec tiep theo de xuat: Dung safeNumber cho indicator leaves truoc khi render.
 
+## Chu ky 131 — bo qua Phase A bi chan, validate analysis confidence conversion doc lap
+- Trang thai: FAILED
+- File da sua: BLOCKED.md; PROGRESS.md
+- Kiem chung blocker: Interpreter bat buoc `E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe` van `MISSING`; khong the chay pytest/mypy/ruff.
+- Nguyen nhan viec truoc: Phase A van bi chan boi moi truong Python thieu.
+- Rui ro con lai: `normalizeAnalysis` dung Number/string branch rieng cho confidence, khong tai su dung safeNumber; null/boolean/object edge case chua co contract tap trung.
+- Viec tiep theo de xuat: Dung safeNumber cho confidence va giu string non-numeric neu can hien thi.
+
+## Chu ky 132 — chuan hoa analysis confidence conversion
+- Trang thai: DONE
+- File da sua: web/app.js; PROGRESS.md
+- Kiem chung: `node --check web/app.js` — pass; quet tĩnh xác nhận confidence numeric dùng safeNumber và string non-numeric được giữ trim, không coercion sai type — pass.
+- Rui ro con lai: Full pytest/mypy/ruff chưa chạy vì interpreter bắt buộc thiếu.
+- Viec tiep theo de xuat: Khi interpreter tồn tại, chạy A1; không lặp lại confidence conversion guard.
+
 ## Chu ky 130 — chuan hoa snapshot indicator conversion
 - Trang thai: DONE
 - File da sua: web/app.js; PROGRESS.md

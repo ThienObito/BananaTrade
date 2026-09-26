@@ -791,3 +791,16 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Indicator finite number và numeric string vẫn giữ hành vi hiển thị; leaf khác type thành null.
+
+## Chu kỳ 131 — chuẩn hóa analysis confidence conversion [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): `normalizeAnalysis` dùng branch Number/string riêng cho confidence, không nhất quán với safeNumber và contract leaf strict.
+- Requirement -> test:
+  - Confidence number/numeric string đi qua `safeNumber`: kiểm tra tĩnh xác nhận — pass.
+  - Confidence non-numeric string được trim giữ lại; null/boolean/object không bị coercion: quét tĩnh xác nhận — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Giữ non-numeric confidence string để UI có thể hiển thị dữ liệu backend, nhưng không coercion sai type.

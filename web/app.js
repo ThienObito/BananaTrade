@@ -159,12 +159,8 @@ function normalizeAnalysis(payload) {
       const agent = typeof report.agent === 'string' ? report.agent.trim() : '';
       const biasText = typeof report.bias === 'string' ? report.bias.trim() : '';
       const confidenceText = typeof report.confidence === 'string' ? report.confidence.trim() : '';
-      const confidenceNumber = confidenceText ? Number(confidenceText) : null;
-      const confidence = typeof report.confidence === 'number' && Number.isFinite(report.confidence)
-        ? report.confidence
-        : confidenceText
-          ? Number.isFinite(confidenceNumber) ? confidenceNumber : confidenceText
-          : null;
+      const confidenceNumber = safeNumber(report.confidence);
+      const confidence = confidenceNumber !== null ? confidenceNumber : confidenceText || null;
       return {
         agent,
         bias: biasText || null,
