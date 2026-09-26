@@ -747,6 +747,21 @@
 - Rui ro con lai: Performance view render `trade.side` raw; malformed local string co the xuat hien truc tiep trong UI.
 - Viec tiep theo de xuat: Normalize side label theo LONG/SHORT truoc render.
 
+## Chu ky 175 — bo qua Phase A bi chan, harden openPaper inputs doc lap
+- Trang thai: FAILED
+- File da sua: BLOCKED.md; PROGRESS.md
+- Kiem chung blocker: Interpreter bat buoc `E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe` van `MISSING`; khong the chay pytest/mypy/ruff.
+- Nguyen nhan viec truoc: Phase A van bi chan boi moi truong Python thieu.
+- Rui ro con lai: openPaper dùng `state.price` raw và tin `side` từ click handler; malformed boundary có thể gửi/request hoặc lưu position không nhất quán.
+- Viec tiep theo de xuat: Normalize side, price trước request và state mutation.
+
+## Chu ky 176 — harden openPaper inputs
+- Trang thai: DONE
+- File da sua: web/app.js; PROGRESS.md
+- Kiem chung: `node --check web/app.js` — pass; quet tĩnh xác nhận openPaper normalize side/price trước request và lưu normalized position — pass.
+- Rui ro con lai: Full pytest/mypy/ruff chưa chạy vì interpreter bắt buộc thiếu.
+- Viec tiep theo de xuat: Khi interpreter tồn tại, chạy A1; không lặp lại open-paper input guard.
+
 ## Chu ky 174 — normalize performance side label
 - Trang thai: DONE
 - File da sua: web/app.js; PROGRESS.md

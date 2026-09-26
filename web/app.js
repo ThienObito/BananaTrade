@@ -594,19 +594,21 @@ function bind() {
 
 async function openPaper(side) {
   if (state.position) return notify('Đã có position đang mở');
-  if (state.price === null) return notify('Market snapshot chưa sẵn sàng');
+  const normalizedSide = side === 'SHORT' ? 'SHORT' : 'LONG';
+  const price = safeNumber(state.price);
+  if (price === null || price <= 0) return notify('Market snapshot chưa sẵn sàng');
   const quantity = safeNumber($('#order-qty')?.value);
   if (quantity === null || quantity <= 0) return notify('Nhập quantity hợp lệ trong order ticket');
   try {
     const response = await fetch('/api/paper/order', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ symbol: SNAPSHOT_SYMBOL, side: side === 'LONG' ? 'buy' : 'sell', quantity, price: state.price }),
+      body: JSON.stringify({ symbol: SNAPSHOT_SYMBOL, side: normalizedSide === 'LONG' ? 'buy' : 'sell', quantity, price }),
     });
     const data = await readJson(response);
     if (!response.ok) throw new Error(backendError(data, 'order rejected'));
     requireOrderId(data);
-    state.position = { side, entry: state.price, qty: quantity, opened: new Date().toISOString() };
+    state.position = { side: normalizedSide, entry: price, qty: quantity, opened: new Date().toISOString() };
     save();
     notify('Backend paper ' + side + ' opened');
     $('.content').innerHTML = views.positions;

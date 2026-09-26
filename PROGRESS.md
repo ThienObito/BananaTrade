@@ -1081,3 +1081,16 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Unknown/malformed side fallback về LONG, nhất quán với normalizeStoredState.
+
+## Chu kỳ 175 — harden openPaper inputs [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): openPaper dùng raw `state.price` và side input trước request/mutation, không có boundary normalization cục bộ.
+- Requirement -> test:
+  - Side normalize về LONG/SHORT và price đi qua safeNumber trước request: kiểm tra tĩnh xác nhận — pass.
+  - Position lưu normalized side/entry: kiểm tra tĩnh xác nhận — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Click handlers hiện truyền side hợp lệ; fallback LONG bảo vệ cả caller malformed.
