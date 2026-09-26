@@ -1068,3 +1068,16 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Invalid entry/exit hiển thị `—`; PnL và dot class behavior không đổi.
+
+## Chu kỳ 173 — chuẩn hóa performance side label [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): Performance view render raw `trade.side`, cho phép local malformed string xuất hiện trực tiếp trong UI.
+- Requirement -> test:
+  - Side label chỉ là LONG hoặc SHORT trước render: kiểm tra tĩnh xác nhận — pass.
+  - Không còn render trực tiếp `${trade.side}`: quét tĩnh xác nhận — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Unknown/malformed side fallback về LONG, nhất quán với normalizeStoredState.

@@ -739,6 +739,21 @@
 - Rui ro con lai: Performance view truyền `trade.entry`/`trade.exit` raw vào formatter; local malformed leaves cần boundary nhất quán với PnL.
 - Viec tiep theo de xuat: Chuẩn hóa entry/exit numeric trước render closed trade.
 
+## Chu ky 173 — bo qua Phase A bi chan, normalize performance side label doc lap
+- Trang thai: FAILED
+- File da sua: BLOCKED.md; PROGRESS.md
+- Kiem chung blocker: Interpreter bat buoc `E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe` van `MISSING`; khong the chay pytest/mypy/ruff.
+- Nguyen nhan viec truoc: Phase A van bi chan boi moi truong Python thieu.
+- Rui ro con lai: Performance view render `trade.side` raw; malformed local string co the xuat hien truc tiep trong UI.
+- Viec tiep theo de xuat: Normalize side label theo LONG/SHORT truoc render.
+
+## Chu ky 174 — normalize performance side label
+- Trang thai: DONE
+- File da sua: web/app.js; PROGRESS.md
+- Kiem chung: `node --check web/app.js` — pass; quet tĩnh xác nhận performance side chỉ render LONG/SHORT chuẩn hóa, không còn raw trade.side — pass.
+- Rui ro con lai: Full pytest/mypy/ruff chưa chạy vì interpreter bắt buộc thiếu.
+- Viec tiep theo de xuat: Khi interpreter tồn tại, chạy A1; không lặp lại performance side guard.
+
 ## Chu ky 172 — normalize closed-trade entry exit
 - Trang thai: DONE
 - File da sua: web/app.js; PROGRESS.md
