@@ -1433,3 +1433,15 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Chỉ sửa vị trí stale flag nội bộ; không thay đổi backend response.
+
+## Chu kỳ 229 — kiểm chứng frontend độc lập [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không chạy; interpreter bắt buộc không tồn tại.
+- Checks: ruff=na mypy=na pytest=na; `node --check web/app.js` — pass; static scan transient guards — pass.
+- Root cause (Phase A only): Interpreter thiếu tiếp tục chặn Python suite; frontend guard hiện có cần được xác nhận không bị hỏng sau wrap.
+- Requirement -> test:
+  - Snapshot stale fallback và paper-state preservation vẫn tồn tại: static scan — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Không thay đổi code trong round; chỉ kiểm chứng độc lập.
