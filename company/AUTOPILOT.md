@@ -395,6 +395,21 @@
 - Rui ro con lai: `snapshotPrice` chap nhan so 0/am vi chi kiem tra finite; chart va order form co the hien thi gia khong hop le.
 - Viec tiep theo de xuat: Chi chap nhan last price finite va lon hon 0.
 
+## Chu ky 85 — bo qua Phase A bi chan, chuan hoa snapshot metadata doc lap
+- Trang thai: FAILED
+- File da sua: BLOCKED.md; PROGRESS.md
+- Kiem chung blocker: Interpreter bat buoc `E:\\Trade-AI\\BananaTrade.venv\\Scripts\\python.exe` van `MISSING`; khong the chay pytest/mypy/ruff.
+- Nguyen nhan viec truoc: Phase A van bi chan boi moi truong Python thieu.
+- Rui ro con lai: `snapshotRegime` va `snapshotIsStale` doc truc tiep metadata tu source ma khong co helper contract rieng; payload metadata sai shape co the hien thi hoac danh dau sai.
+- Viec tiep theo de xuat: Them helper metadata plain object, chi chap nhan regime string va stale boolean.
+
+## Chu ky 86 — chuan hoa snapshot metadata
+- Trang thai: DONE
+- File da sua: web/app.js; PROGRESS.md
+- Kiem chung: `node --check web/app.js` — pass; quet tĩnh xác nhận metadata primitive/array và leaf sai type không làm sai regime/stale — pass.
+- Rui ro con lai: Full pytest/mypy/ruff chưa chạy vì interpreter bắt buộc thiếu.
+- Viec tiep theo de xuat: Khi interpreter tồn tại, chạy A1; không lặp lại metadata shape guard.
+
 ## Chu ky 84 — chan snapshot price khong duong
 - Trang thai: DONE
 - File da sua: web/app.js; PROGRESS.md

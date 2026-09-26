@@ -482,3 +482,17 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Không tạo giá thay thế; giá zero/âm được coi là snapshot unavailable.
+
+## Chu kỳ 85 — chuẩn hóa snapshot metadata [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): regime và stale metadata đọc trực tiếp từ source mà chưa có contract helper riêng cho metadata object và leaf types.
+- Requirement -> test:
+  - Metadata chỉ là plain object không phải array: kiểm tra tĩnh xác nhận `snapshotMetadata` — pass.
+  - Regime chỉ nhận string không rỗng: quét tĩnh xác nhận — pass.
+  - Stale chỉ nhận boolean `true`: quét tĩnh xác nhận — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Metadata sai shape hoặc leaf sai type hiển thị trạng thái trung tính, không suy đoán dữ liệu.

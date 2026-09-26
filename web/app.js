@@ -186,13 +186,20 @@ function snapshotIndicators(snapshot) {
   return indicators && typeof indicators === 'object' && !Array.isArray(indicators) ? indicators : {};
 }
 
+function snapshotMetadata(snapshot) {
+  const source = snapshotSource(snapshot);
+  const metadata = source.metadata;
+  return metadata && typeof metadata === 'object' && !Array.isArray(metadata) ? metadata : {};
+}
+
 function snapshotRegime(snapshot) {
-  const regime = snapshotSource(snapshot).regime;
+  const regime = snapshotMetadata(snapshot).regime ?? snapshotSource(snapshot).regime;
   return typeof regime === 'string' && regime.trim() ? regime.trim().toUpperCase() : '—';
 }
 
 function snapshotIsStale(snapshot) {
-  return snapshotSource(snapshot).stale === true;
+  const stale = snapshotMetadata(snapshot).stale ?? snapshotSource(snapshot).stale;
+  return stale === true;
 }
 
 function formatMetric(value, digits = 2) {
