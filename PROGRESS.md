@@ -1107,3 +1107,16 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Chỉ thay label notification; request và state mutation đã normalize từ chu kỳ trước.
+
+## Chu kỳ 179 — chuẩn hóa closePaper side boundary [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): closePaper đọc raw `state.position.side` ở request, PnL formula và trade save.
+- Requirement -> test:
+  - Close side normalize về LONG/SHORT một lần trước side effect: kiểm tra tĩnh xác nhận — pass.
+  - Request, formula và trade history dùng side normalized: quét tĩnh xác nhận — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Unknown side fallback LONG, đồng nhất với các boundary side khác.

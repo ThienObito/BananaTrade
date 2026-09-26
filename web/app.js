@@ -621,6 +621,7 @@ async function openPaper(side) {
 
 async function closePaper() {
   if (!state.position) return notify('Không có position để đóng');
+  const side = state.position.side === 'SHORT' ? 'SHORT' : 'LONG';
   const entry = safeNumber(state.position.entry);
   const quantity = safeNumber(state.position.qty);
   const price = safeNumber(state.price);
@@ -633,7 +634,7 @@ async function closePaper() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         symbol: SNAPSHOT_SYMBOL,
-        side: state.position.side === 'LONG' ? 'sell' : 'buy',
+        side: side === 'LONG' ? 'sell' : 'buy',
         quantity,
         price,
       }),
@@ -641,10 +642,10 @@ async function closePaper() {
     const data = await readJson(response);
     if (!response.ok) throw new Error(backendError(data, 'close rejected'));
     requireOrderId(data, true);
-    const pnl = state.position.side === 'LONG'
+    const pnl = side === 'LONG'
       ? (price - entry) * quantity
       : (entry - price) * quantity;
-    state.trades.push({ side: state.position.side, entry, exit: price, pnl, closed: new Date().toISOString() });
+    state.trades.push({ side, entry, exit: price, pnl, closed: new Date().toISOString() });
     state.position = null;
     save();
     notify('Backend position closed · PnL $' + formatSignedMetric(pnl));
