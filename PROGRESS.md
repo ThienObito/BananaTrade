@@ -1055,3 +1055,16 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: PnL dương dùng green dot; zero, âm và invalid dùng cyan dot/placeholder an toàn.
+
+## Chu kỳ 171 — chuẩn hóa closed-trade entry/exit display [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): Performance view truyền raw `trade.entry` và `trade.exit` vào formatter, không có named numeric leaves trước render.
+- Requirement -> test:
+  - Closed-trade entry/exit đi qua `safeNumber` trước `formatMetric`: kiểm tra tĩnh xác nhận — pass.
+  - Không còn truyền raw entry/exit vào formatter: quét tĩnh xác nhận — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Invalid entry/exit hiển thị `—`; PnL và dot class behavior không đổi.
