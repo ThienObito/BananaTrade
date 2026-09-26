@@ -538,7 +538,9 @@ function bind() {
     notify('Timeframe changed to ' + button.textContent);
   });
   $('#submit-order')?.addEventListener('click', async () => {
-    const side = $('#order-side').value;
+    const sideValue = $('#order-side').value;
+    const normalizedSide = sideValue === 'sell' || sideValue === 'SHORT' ? 'SHORT' : 'LONG';
+    const orderSide = normalizedSide === 'LONG' ? 'buy' : 'sell';
     const quantity = safeNumber($('#order-qty').value);
     const price = safeNumber($('#order-price').value);
     const stopLoss = safeNumber($('#order-stop').value);
@@ -550,7 +552,7 @@ function bind() {
     }
     const body = {
       symbol: SNAPSHOT_SYMBOL,
-      side,
+      side: orderSide,
       quantity,
       price,
       stop_loss: stopLoss,

@@ -1145,3 +1145,16 @@
 - Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
 - Spec or test weakened? no
 - Notes / assumptions: Không đổi request hoặc state; chỉ bổ sung backend order id vào toast.
+
+## Chu kỳ 185 — chuẩn hóa submit-order side [DONE]
+- Commit: chờ commit sau khi hoàn tất journal.
+- Tests: không thay đổi; full pytest không thể chạy vì interpreter bắt buộc thiếu.
+- Checks: ruff=na mypy=na pytest=na node=0.
+- Root cause (Phase A only): Submit-order path gửi raw select value và không có canonical LONG/SHORT boundary trước khi chuyển thành backend buy/sell.
+- Requirement -> test:
+  - Select value `buy`/`sell` và legacy `SHORT` được normalize trước request: kiểm tra tĩnh xác nhận — pass.
+  - Request dùng backend side `buy` hoặc `sell` từ side đã normalize: kiểm tra tĩnh xác nhận — pass.
+  - JavaScript hợp lệ: `node --check web/app.js` — pass.
+- Forbidden-pattern scan: chưa chạy vì interpreter Python bắt buộc thiếu.
+- Spec or test weakened? no
+- Notes / assumptions: Unknown select value fallback về LONG/buy; không đổi quantity, price hoặc risk fields.
