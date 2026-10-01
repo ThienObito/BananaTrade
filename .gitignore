@@ -6,3 +6,11 @@ __pycache__/
 .ruff_cache/
 .mypy_cache/
 *.egg-info/
+
+# added by protect_and_verify.ps1
+*.pyc
+.pytest-tmp*/
+.hypothesis/
+tmpx/
+trades/
+.orig_for_commit_a/

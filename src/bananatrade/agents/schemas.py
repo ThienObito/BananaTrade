@@ -3,6 +3,8 @@ from typing import Literal
 
 from pydantic import BaseModel, Field
 
+type Bias = Literal["LONG", "SHORT", "NEUTRAL"]
+
 
 class Invalidation(BaseModel):
     level: float
@@ -32,7 +34,7 @@ class AnalysisReport(BaseModel):
     agent: str
     symbol: str
     as_of: datetime
-    bias: Literal["LONG", "SHORT", "NEUTRAL"]
+    bias: Bias
     thesis: str = Field(max_length=600)
     key_levels: KeyLevels
     invalidation: Invalidation | None

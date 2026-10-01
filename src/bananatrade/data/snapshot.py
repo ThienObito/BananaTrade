@@ -6,6 +6,31 @@ from pydantic import BaseModel, ConfigDict, Field
 
 from .indicators import atr, ema, range_high, range_low, regime, rsi, volume_zscore, vwap
 
+TIMEFRAME_DURATIONS = {
+    "15m": timedelta(minutes=15),
+    "1h": timedelta(hours=1),
+    "4h": timedelta(hours=4),
+    "1d": timedelta(days=1),
+}
+
+
+def _utc(value: datetime) -> datetime:
+    return value if value.tzinfo is not None else value.replace(tzinfo=UTC)
+
+
+def is_stale(frame: pd.DataFrame, timeframe: str, as_of: datetime, max_age_bars: int = 2) -> bool:
+    """Return whether the newest closed candle is more than ``max_age_bars`` old."""
+    if timeframe not in TIMEFRAME_DURATIONS:
+        raise ValueError(f"Unsupported timeframe {timeframe!r}")
+    if frame.empty:
+        return True
+    latest_open = pd.to_datetime(frame.iloc[-1]["timestamp_ms"], unit="ms", utc=True).to_pydatetime()
+    latest_close = latest_open + TIMEFRAME_DURATIONS[timeframe]
+    age = _utc(as_of) - latest_close
+    age_seconds = age.total_seconds()
+    threshold_seconds = TIMEFRAME_DURATIONS[timeframe].total_seconds() * max_age_bars
+    return bool(float(age_seconds) > float(threshold_seconds))
+
 
 class TimeframeSummary(BaseModel):
     model_config = ConfigDict(frozen=True)
@@ -22,6 +47,7 @@ class MarketSnapshot(BaseModel):
     orderbook_imbalance: float | None = None
     funding: float | None = None
     data_missing: list[str] = Field(default_factory=list)
+    stale: bool = False
 
     def to_compact_dict(self, precision: int = 6) -> dict[str, Any]:
         data = self.model_dump(mode="json", exclude_none=True)
@@ -36,7 +62,7 @@ class MarketSnapshot(BaseModel):
 
 
 def closed_candles(frame: pd.DataFrame, timeframe: str, as_of: datetime) -> pd.DataFrame:
-    durations = {"15m": timedelta(minutes=15), "1h": timedelta(hours=1), "4h": timedelta(hours=4), "1d": timedelta(days=1)}
+    durations = TIMEFRAME_DURATIONS
     if timeframe not in durations:
         supported = ", ".join(durations)
         raise ValueError(f"Unsupported timeframe {timeframe!r}; expected one of: {supported}")
@@ -72,8 +98,11 @@ def _number(value: Any) -> float | None:
 def build_snapshot(symbol: str, ohlcv_by_tf: dict[str, pd.DataFrame], orderbook: dict[str, Any] | None, funding: float | None, as_of: datetime) -> MarketSnapshot:
     summaries: dict[str, TimeframeSummary] = {}
     missing: list[str] = []
+    stale = True
     for timeframe, frame in ohlcv_by_tf.items():
         closed = closed_candles(frame, timeframe, as_of)
+        if timeframe == "1h":
+            stale = is_stale(closed, timeframe, as_of)
         if closed.empty:
             missing.append(f"ohlcv:{timeframe}")
             continue
@@ -117,4 +146,4 @@ def build_snapshot(symbol: str, ohlcv_by_tf: dict[str, pd.DataFrame], orderbook:
         imbalance = (bids - asks) / (bids + asks) if bids + asks else None
     if funding is None:
         missing.append("funding")
-    return MarketSnapshot(symbol=symbol, timestamp=as_of, timeframes=summaries, orderbook_imbalance=imbalance, funding=funding, data_missing=missing)
+    return MarketSnapshot(symbol=symbol, timestamp=as_of, timeframes=summaries, orderbook_imbalance=imbalance, funding=funding, data_missing=missing, stale=stale)

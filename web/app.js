@@ -83,9 +83,9 @@ const state = {
   position: null,
   trades: [],
   ...storedState,
-  // A price is valid only after it has been received from /api/snapshot.
-  price: null,
+  // Price exists only inside latest /api/snapshot response.
   snapshot: null,
+  realtimePrice: null,
 };
 
 const SNAPSHOT_SYMBOL = 'BTC/USDT';
@@ -127,7 +127,7 @@ async function readJson(response) {
 
 function normalizePaperState(payload) {
   if (!payload || typeof payload !== 'object' || Array.isArray(payload)) return null;
-  if (!payload.positions || typeof payload.positions !== 'object' || Array.isArray(payload.positions)) return null;
+  if (!payload.positions || (typeof payload.positions !== 'object' && !Array.isArray(payload.positions))) return null;
   const positions = Object.create(null);
   Object.entries(payload.positions).forEach(([symbol, position]) => {
     const normalizedSymbol = symbol.trim().toUpperCase();
@@ -179,7 +179,7 @@ function normalizeAnalysis(payload) {
       const confidence = confidenceNumber !== null ? confidenceNumber : confidenceText || null;
       return {
         agent,
-        bias: biasText || null,
+        bias: ['LONG', 'SHORT', 'NEUTRAL'].includes(biasText.toUpperCase()) ? biasText.toUpperCase() : null,
         confidence,
       };
     })
@@ -225,9 +225,11 @@ function snapshotSummary(snapshot) {
 }
 
 function snapshotPrice(snapshot) {
+  if (state.realtimePrice !== null && state.realtimePrice > 0) {
+    return state.realtimePrice;
+  }
   const source = snapshotSource(snapshot);
-  const summary = snapshotSummary(snapshot);
-  const value = source.last_price ?? summary.last_price;
+  const value = source.last_price;
   const price = safeNumber(value);
   return price !== null && price > 0 ? price : null;
 }
@@ -271,7 +273,8 @@ function snapshotMetadata(snapshot) {
 
 function snapshotRegime(snapshot) {
   const regime = snapshotMetadata(snapshot).regime ?? snapshotSource(snapshot).regime;
-  return typeof regime === 'string' && regime.trim() ? regime.trim().toUpperCase() : '—';
+  const normalized = typeof regime === 'string' ? regime.trim().toUpperCase() : '';
+  return ['LONG', 'SHORT', 'NEUTRAL'].includes(normalized) ? normalized : '—';
 }
 
 function snapshotIsStale(snapshot) {
@@ -313,14 +316,8 @@ function isPositiveFinite(value) {
 
 function snapshotCandles(snapshot, price) {
   const source = snapshotSource(snapshot);
-  const summary = snapshotSummary(snapshot);
-  const configured = source.candles ?? snapshot?.candles ?? source.ohlcv ?? summary.candles ?? summary.ohlcv;
-  const configuredInput = Array.isArray(configured)
-    ? configured
-    : configured && typeof configured === 'object' && !Array.isArray(configured)
-      ? configured[SNAPSHOT_TIMEFRAME]
-      : undefined;
-  const input = Array.isArray(configuredInput) ? configuredInput : [];
+  const configured = source.candles;
+  const input = Array.isArray(configured) ? configured : [];
   const candles = input
     .filter((candle) => candle && typeof candle === 'object' && !Array.isArray(candle))
     .map((candle) => ({
@@ -337,14 +334,6 @@ function snapshotCandles(snapshot, price) {
   if (!candles.length) {
     return [{ open: price, high: price, low: price, close: price }];
   }
-
-  // The snapshot's canonical last price is the chart's final close as well.
-  candles[candles.length - 1] = {
-    ...candles[candles.length - 1],
-    close: price,
-    high: Math.max(candles[candles.length - 1].high, price),
-    low: Math.min(candles[candles.length - 1].low, price),
-  };
   return candles;
 }
 
@@ -461,6 +450,26 @@ function renderCandles(snapshot) {
   svg.dataset.lastPrice = String(price);
 }
 
+function signalBias(signal) {
+  const bias = signal && typeof signal.bias === 'string' ? signal.bias.trim().toUpperCase() : '';
+  return ['LONG', 'SHORT'].includes(bias) ? bias : null;
+}
+
+async function prefillFromSignal() {
+  try {
+    const params = new URLSearchParams({ symbol: SNAPSHOT_SYMBOL, timeframe: SNAPSHOT_TIMEFRAME });
+    const response = await fetch('/api/signal?' + params.toString());
+    const signal = await readJson(response);
+    if (!response.ok) throw new Error(backendError(signal, 'signal unavailable'));
+    const bias = signalBias(signal);
+    if (!bias) return;
+    const side = $('#order-side');
+    if (side) side.value = bias === 'LONG' ? 'buy' : 'sell';
+  } catch (error) {
+    notify('Signal unavailable: ' + errorMessage(error, 'signal unavailable'));
+  }
+}
+
 function renderSnapshotViews() {
   const price = snapshotPrice(state.snapshot);
   const chart = $('#live-candles');
@@ -483,6 +492,54 @@ function renderSnapshotViews() {
   renderCandles(state.snapshot);
 }
 
+async function updateRealtimePrice(tick) {
+  if (!tick || typeof tick !== 'object') return;
+  const price = safeNumber(tick.price);
+  if (price === null || price <= 0) return;
+  const previous = snapshotPrice(state.snapshot);
+  state.realtimePrice = price;
+  state.snapshot = {
+    ...(state.snapshot && typeof state.snapshot === 'object' ? state.snapshot : {}),
+    last_price: price,
+    symbol: typeof tick.symbol === 'string' ? tick.symbol : SNAPSHOT_SYMBOL,
+    timestamp: tick.timestamp,
+  };
+  const priceElement = $('#market-price');
+  if (priceElement) {
+    priceElement.textContent = '$' + formatMetric(price);
+    priceElement.classList.remove('price-flash-up', 'price-flash-down');
+    void priceElement.offsetWidth;
+    if (previous !== null && price !== previous) {
+      priceElement.classList.add(price > previous ? 'price-flash-up' : 'price-flash-down');
+    }
+  }
+  const orderPrice = $('#order-price');
+  if (orderPrice) orderPrice.value = formatMetric(price);
+  if (previous !== null && price !== previous) {
+    const change = $('#market-change');
+    if (change) {
+      change.textContent = (price > previous ? '▲ ' : '▼ ') + formatMetric(Math.abs(price - previous));
+      change.className = price > previous ? 'up' : 'down';
+    }
+  }
+}
+
+function connectRealtimeFeed() {
+  if (!window.WebSocket) return;
+  const protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+  const feedUrl = window.BANANATRADE_WS_URL || (location.hostname === 'localhost' ? 'ws://localhost:8000/ws' : protocol + '//' + location.host + '/ws');
+  const socket = new WebSocket(feedUrl);
+  socket.onmessage = (event) => {
+    try {
+      updateRealtimePrice(JSON.parse(event.data));
+    } catch (error) {
+      // Ignore malformed feed frames; snapshot remains fallback source.
+    }
+  };
+  socket.onclose = () => setTimeout(connectRealtimeFeed, 1000);
+  socket.onerror = () => socket.close();
+}
+
 async function updateSnapshot() {
   try {
     const params = new URLSearchParams({
@@ -495,9 +552,9 @@ async function updateSnapshot() {
     const price = snapshotPrice(snapshot);
     if (price === null) throw new Error('snapshot has no last price');
     state.snapshot = snapshot;
-    state.price = price;
     renderSnapshotViews();
     renderState();
+    prefillFromSignal();
     notify('Market snapshot refreshed');
   } catch (error) {
     if (state.snapshot && snapshotPrice(state.snapshot) !== null) {
@@ -505,13 +562,11 @@ async function updateSnapshot() {
         ? { ...state.snapshot, snapshot: { ...state.snapshot.snapshot, stale: true } }
         : { ...state.snapshot, stale: true };
       state.snapshot = staleSnapshot;
-      state.price = snapshotPrice(staleSnapshot);
       renderSnapshotViews();
       notify('Market snapshot stale · using last known data');
       return;
     }
     state.snapshot = null;
-    state.price = null;
     renderSnapshotViews();
     notify('Market snapshot unavailable');
   }
@@ -567,6 +622,119 @@ function metrics() {
   return { pnl, wins, rate: trades.length ? (wins.length / trades.length) * 100 : null, pf: losses ? gains / losses : null };
 }
 
+function riskTone(value, warning, danger) {
+  if (value >= danger) return 'risk-red';
+  if (value >= warning) return 'risk-yellow';
+  return 'risk-green';
+}
+
+function renderRisk(data) {
+  if (!data || typeof data !== 'object') return;
+  const open = safeNumber(data.open_positions);
+  const pnl = safeNumber(data.daily_pnl);
+  const drawdown = safeNumber(data.drawdown_pct);
+  const openElement = $('#risk-open-positions');
+  const pnlElement = $('#risk-daily-pnl');
+  const drawdownElement = $('#risk-drawdown');
+  const statusElement = $('#risk-trading-status');
+  const badge = $('#risk-status');
+  if (openElement) {
+    openElement.textContent = open === null ? '—' : String(open);
+    openElement.className = riskTone(open || 0, 2, 3);
+  }
+  if (pnlElement) {
+    pnlElement.textContent = pnl === null ? '—' : '$' + formatSignedMetric(pnl);
+    pnlElement.className = pnl !== null && pnl < 0 ? riskTone(Math.abs(safeNumber(data.daily_pnl_pct) || 0), 0.01, 0.02) : 'risk-green';
+  }
+  if (drawdownElement) {
+    drawdownElement.textContent = drawdown === null ? '—' : formatMetric(drawdown * 100, 2) + '%';
+    drawdownElement.className = riskTone(drawdown || 0, 0.05, 0.10);
+  }
+  const halted = data.trading_halted === true;
+  if (statusElement) {
+    statusElement.textContent = halted ? 'HALTED' : 'ACTIVE';
+    statusElement.className = halted ? 'risk-red' : 'risk-green';
+  }
+  if (badge) {
+    badge.textContent = halted ? 'HALTED' : 'WITHIN LIMITS';
+    badge.className = halted ? 'badge risk-red' : 'badge risk-green';
+  }
+}
+
+function renderPerformance(data) {
+  if (!data || typeof data !== 'object') return;
+  const winRate = safeNumber(data.win_rate);
+  const profitFactor = safeNumber(data.profit_factor);
+  const expectancy = safeNumber(data.expectancy_r);
+  const maxDd = safeNumber(data.max_drawdown_pct);
+  const fields = [
+    ['#performance-win-rate', winRate === null ? '—' : formatMetric(winRate * 100, 1) + '%'],
+    ['#performance-profit-factor', profitFactor === null ? '—' : (Number.isFinite(profitFactor) ? formatMetric(profitFactor) : '∞')],
+    ['#performance-expectancy', expectancy === null ? '—' : formatMetric(expectancy, 2) + 'R'],
+    ['#performance-max-dd', maxDd === null ? '—' : formatMetric(maxDd, 2) + '%'],
+  ];
+  fields.forEach(([selector, value]) => {
+    const element = $(selector);
+    if (element) element.textContent = value;
+  });
+}
+
+async function updatePerformance() {
+  try {
+    const response = await fetch('/api/performance');
+    const data = await readJson(response);
+    if (!response.ok) throw new Error(backendError(data, 'performance unavailable'));
+    renderPerformance(data);
+  } catch (error) {
+    renderPerformance(null);
+  }
+}
+
+async function updateRisk() {
+  try {
+    const response = await fetch('/api/risk');
+    const data = await readJson(response);
+    if (!response.ok) throw new Error(backendError(data, 'risk unavailable'));
+    renderRisk(data);
+  } catch (error) {
+    const badge = $('#risk-status');
+    if (badge) badge.textContent = 'UNAVAILABLE';
+  }
+}
+
+function renderMt5Status(data) {
+  if (!data || typeof data !== 'object') return;
+  const connected = data.connected === true;
+  const mode = typeof data.account_mode === 'string' ? data.account_mode : 'UNKNOWN';
+  const enabled = data.execution_enabled === true;
+  const open = safeNumber(data.open_positions);
+  const pnl = safeNumber(data.today_pnl);
+  const status = $('#mt5-status');
+  const modeElement = $('#mt5-account-mode');
+  const enabledElement = $('#mt5-execution-enabled');
+  const positionsElement = $('#mt5-open-positions');
+  const pnlElement = $('#mt5-today-pnl');
+  if (status) {
+    status.textContent = connected ? (enabled ? 'ARMED' : 'DRY-RUN') : 'OFFLINE';
+    status.className = connected && mode === 'DEMO' ? 'badge risk-green' : 'badge risk-red';
+  }
+  if (modeElement) modeElement.textContent = mode;
+  if (enabledElement) enabledElement.textContent = enabled ? 'ENABLED' : 'DISABLED';
+  if (positionsElement) positionsElement.textContent = open === null ? '—' : String(open);
+  if (pnlElement) pnlElement.textContent = pnl === null ? '—' : '$' + formatSignedMetric(pnl);
+}
+
+async function updateMt5Status() {
+  try {
+    const response = await fetch('/api/mt5_status');
+    const data = await readJson(response);
+    if (!response.ok) throw new Error(backendError(data, 'MT5 status unavailable'));
+    renderMt5Status(data);
+  } catch (error) {
+    renderMt5Status({ connected: false, account_mode: 'UNKNOWN', execution_enabled: false, open_positions: 0, today_pnl: 0 });
+  }
+}
+
 function bind() {
   $$('.rail-btn').forEach((button) => {
     button.onclick = () => {
@@ -590,12 +758,12 @@ function bind() {
     const normalizedSide = sideValue === 'sell' || sideValue === 'SHORT' ? 'SHORT' : 'LONG';
     const orderSide = normalizedSide === 'LONG' ? 'buy' : 'sell';
     const quantity = safeNumber($('#order-qty').value);
-    const price = safeNumber($('#order-price').value);
+    const price = snapshotPrice(state.snapshot);
     const stopLoss = safeNumber($('#order-stop').value);
     const takeProfit = safeNumber($('#order-target').value);
     const values = [quantity, price, stopLoss, takeProfit];
     if (values.some((value) => value === null || value <= 0)) {
-      notify('Nhập quantity, entry, stop và target hợp lệ');
+      notify('Nhập quantity, stop và target hợp lệ; entry lấy từ snapshot');
       return;
     }
     const body = {
@@ -645,7 +813,7 @@ function bind() {
 async function openPaper(side) {
   if (state.position) return notify('Đã có position đang mở');
   const normalizedSide = side === 'SHORT' ? 'SHORT' : 'LONG';
-  const price = safeNumber(state.price);
+  const price = snapshotPrice(state.snapshot);
   if (price === null || price <= 0) return notify('Market snapshot chưa sẵn sàng');
   const quantity = safeNumber($('#order-qty')?.value);
   if (quantity === null || quantity <= 0) return notify('Nhập quantity hợp lệ trong order ticket');
@@ -674,7 +842,7 @@ async function closePaper() {
   const side = state.position.side === 'SHORT' ? 'SHORT' : 'LONG';
   const entry = safeNumber(state.position.entry);
   const quantity = safeNumber(state.position.qty);
-  const price = safeNumber(state.price);
+  const price = snapshotPrice(state.snapshot);
   if (entry === null || entry <= 0 || quantity === null || quantity <= 0 || price === null || price <= 0) {
     return notify('Position data chưa hợp lệ');
   }
@@ -711,7 +879,7 @@ const base = $('.content')?.innerHTML || '';
 const views = {
   overview: base,
   council: `<div class="hero"><div><p class="eyebrow">AI COUNCIL <span>OFFLINE UNTIL RUN</span></p><h1>Decision intelligence<span class="cursor">_</span></h1><p class="sub">Phân tích AI và decision gate cho paper trading.</p></div></div><div class="grid"><article class="panel signal-panel"><div class="panel-head"><b>COUNCIL CONSENSUS</b><span class="badge">NO RUN DATA</span></div><div class="signal-main"><div class="orb"><div class="orb-core">—<small></small></div></div><div><small class="muted">CURRENT BIAS</small><h2>—</h2><p>Chưa có dữ liệu phân tích từ backend.</p></div></div><div class="agent"><span class="agent-icon cyan-bg">⌁</span><div><b>Sentiment Agent</b><small>Waiting for analysis response</small></div><strong class="muted">—</strong></div><button class="primary run-analysis">RUN FULL ANALYSIS <span>→</span></button></article><article class="panel positions"><div class="panel-head"><b>DECISION GATE</b><span class="badge">NO RUN DATA</span></div><div class="empty-state"><div class="empty-icon">◇</div><b>No decision data</b><span>Chạy phân tích để nhận quyết định backend.</span></div></article></div>`,
-  positions: `<div class="hero"><div><p class="eyebrow">PAPER TRADING <span>SIMULATION</span></p><h1>Positions & execution<span class="cursor">_</span></h1><p class="sub">Mô phỏng cục bộ, dữ liệu được lưu trong trình duyệt.</p></div></div><div class="ticker"><div><small>EQUITY</small><strong>${formatMetric(state.equity)}</strong><span>paper backend</span></div><div><small>LAST PRICE</small><strong>${state.price === null ? '—' : '$' + formatMetric(state.price)}</strong><span class="up">snapshot source</span></div><div><small>OPEN POSITIONS</small><strong>${state.position ? 1 : 0}</strong><span>${state.position ? state.position.side : 'flat'}</span></div><div><small>TRADES</small><strong>${state.trades.length}</strong><span>closed</span></div></div><article class="panel positions"><div class="panel-head"><b>EXECUTION CONSOLE</b><span class="badge">PAPER ONLY</span></div>${state.position ? `<div class="event"><time>${state.position.side}</time><span class="event-dot cyan-dot"></span><div><b>Entry $${formatMetric(state.position.entry)}</b><small>Qty ${formatMetric(state.position.qty, 5)} BTC · opened ${new Date(normalizeTimestamp(state.position.opened)).toLocaleTimeString()}</small></div><button class="primary" id="paper-close">CLOSE POSITION</button></div>` : `<div class="empty-state"><div class="empty-icon">◌</div><b>No open position</b><span>Chọn lệnh mô phỏng để kiểm tra execution và PnL.</span><div><button class="primary" id="paper-buy">PAPER BUY</button><button class="primary" id="paper-sell">PAPER SELL</button></div></div>`}</article><button class="primary" id="reset-paper">RESET PAPER ACCOUNT</button>`,
+  positions: `<div class="hero"><div><p class="eyebrow">PAPER TRADING <span>SIMULATION</span></p><h1>Positions & execution<span class="cursor">_</span></h1><p class="sub">Mô phỏng cục bộ, dữ liệu được lưu trong trình duyệt.</p></div></div><div class="ticker"><div><small>EQUITY</small><strong>${formatMetric(state.equity)}</strong><span>paper backend</span></div><div><small>LAST PRICE</small><strong>${snapshotPrice(state.snapshot) === null ? '—' : '$' + formatMetric(snapshotPrice(state.snapshot))}</strong><span class="up">snapshot source</span></div><div><small>OPEN POSITIONS</small><strong>${state.position ? 1 : 0}</strong><span>${state.position ? state.position.side : 'flat'}</span></div><div><small>TRADES</small><strong>${state.trades.length}</strong><span>closed</span></div></div><article class="panel positions"><div class="panel-head"><b>EXECUTION CONSOLE</b><span class="badge">PAPER ONLY</span></div>${state.position ? `<div class="event"><time>${state.position.side}</time><span class="event-dot cyan-dot"></span><div><b>Entry $${formatMetric(state.position.entry)}</b><small>Qty ${formatMetric(state.position.qty, 5)} BTC · opened ${new Date(normalizeTimestamp(state.position.opened)).toLocaleTimeString()}</small></div><button class="primary" id="paper-close">CLOSE POSITION</button></div>` : `<div class="empty-state"><div class="empty-icon">◌</div><b>No open position</b><span>Chọn lệnh mô phỏng để kiểm tra execution và PnL.</span><div><button class="primary" id="paper-buy">PAPER BUY</button><button class="primary" id="paper-sell">PAPER SELL</button></div></div>`}</article><button class="primary" id="reset-paper">RESET PAPER ACCOUNT</button>`,
   performance: `<div class="hero"><div><p class="eyebrow">AI PERFORMANCE <span>REAL LOCAL DATA</span></p><h1>Hiệu quả AI trade<span class="cursor">_</span></h1><p class="sub">Metrics được tính từ paper trades đã đóng trên tài khoản này.</p></div></div><div class="ticker"><div><small>NET PNL</small><strong class="up">$${formatMetric(metrics().pnl)}</strong><span>realized</span></div><div><small>WIN RATE</small><strong>${metrics().rate === null ? '—' : formatMetric(metrics().rate, 1) + '%'}</strong><span>${state.trades.length} closed trades</span></div><div><small>PROFIT FACTOR</small><strong>${metrics().pf === null ? '—' : formatMetric(metrics().pf)}</strong><span>gross gain / loss</span></div><div><small>MAX DRAWDOWN</small><strong>—</strong><span>needs equity history</span></div></div><article class="panel activity"><div class="panel-head"><b>CLOSED TRADES</b><span class="badge">LOCAL PAPER DATA</span></div>${state.trades.length ? state.trades.slice().reverse().map((trade) => { const side = trade.side === 'SHORT' ? 'SHORT' : 'LONG'; const pnl = normalizeTradePnl(trade); const entry = safeNumber(trade.entry); const exit = safeNumber(trade.exit); return `<div class="event"><time>${side}</time><span class="event-dot ${pnl !== null && pnl > 0 ? 'green-dot' : 'cyan-dot'}"></span><div><b>$${formatSignedMetric(pnl)} PnL</b><small>Entry $${formatMetric(entry)} → Exit $${formatMetric(exit)}</small></div></div>`; }).join('') : `<div class="empty-state"><div class="empty-icon">◔</div><b>Chưa có trade đã đóng</b><span>Vào Positions để mở paper order và đo kết quả.</span></div>`}</article>`,
   journal: base,
 };
@@ -721,4 +889,12 @@ renderSnapshotViews();
 bind();
 renderState();
 updateSnapshot();
+prefillFromSignal();
+connectRealtimeFeed();
+updateRisk();
+updateMt5Status();
+updatePerformance();
 setInterval(updateSnapshot, 15000);
+setInterval(updateRisk, 5000);
+setInterval(updateMt5Status, 5000);
+setInterval(updatePerformance, 15000);

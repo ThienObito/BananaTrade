@@ -11,6 +11,13 @@ def initialize(path: Path) -> None:
         connection.execute("CREATE TABLE IF NOT EXISTS agent_outputs (run_id TEXT, agent TEXT, tier TEXT, model_actual TEXT, prompt_version TEXT, symbol TEXT, as_of TEXT, output_json TEXT, status TEXT, error TEXT, tokens INTEGER, cost REAL, created_at TEXT)")
 
 
+def save_runtime_result(path: Path, result: dict[str, Any]) -> None:
+    initialize(path)
+    with sqlite3.connect(path) as connection:
+        connection.execute("CREATE TABLE IF NOT EXISTS runtime_results (run_id TEXT PRIMARY KEY, symbol TEXT, as_of TEXT, result_json TEXT, created_at TEXT)")
+        connection.execute("INSERT OR REPLACE INTO runtime_results VALUES (?, ?, ?, ?, ?)", (result["run_id"], result["symbol"], result["as_of"], json.dumps(result), datetime.now(UTC).isoformat()))
+
+
 def save_agent_output(path: Path, *, run_id: str, agent: Any, result: Any, status: str, error: str | None = None, gateway_result: dict[str, Any] | None = None) -> None:
     initialize(path)
     report = result.model_dump(mode="json") if hasattr(result, "model_dump") else result
