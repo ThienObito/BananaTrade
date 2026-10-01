@@ -183,3 +183,37 @@ def test_invalid_costs_rejected() -> None:
 def test_limit_expiry_validation() -> None:
     with pytest.raises(ValueError, match="positive"):
         BacktestEngine(limit_expiry_bars=0)
+
+
+def test_quantity_step_allows_fractional_size_for_high_priced_assets() -> None:
+    from bananatrade.backtest.engine import BacktestEngine
+    from bananatrade.engine.strategy import SignalResult
+
+    class Once:
+        def __init__(self) -> None:
+            self.calls = 0
+
+        def generate_signal(self, candles: list[dict[str, object]]) -> SignalResult:
+            self.calls += 1
+            return SignalResult("LONG" if self.calls == 20 else "NEUTRAL", 0.9, "t")
+
+    bars = [
+        {"timestamp": i, "open": 60_000.0 + i, "high": 60_100.0 + i, "low": 59_900.0 + i, "close": 60_000.0 + i, "volume": 1.0}
+        for i in range(40)
+    ]
+    # Whole-unit default: a 60k asset cannot be bought with 10k equity -> no trade.
+    assert BacktestEngine().run(bars, Once()).total_trades == 0
+    fractional = BacktestEngine(quantity_step=0.00001).run(bars, Once())
+    assert fractional.total_trades == 1
+    qty = float(fractional.trades[0]["qty"])
+    assert 0 < qty < 1
+    assert abs(qty / 0.00001 - round(qty / 0.00001)) < 1e-6
+
+
+def test_quantity_step_must_be_positive() -> None:
+    import pytest
+
+    from bananatrade.backtest.engine import BacktestEngine
+
+    with pytest.raises(ValueError):
+        BacktestEngine(quantity_step=0.0)

@@ -61,6 +61,7 @@ class BacktestEngine:
         slippage_pct: float = 0.0002,
         limit_expiry_bars: int = 2,
         cost_model: MT5CostModel | None = None,
+        quantity_step: float = 1.0,
     ) -> None:
         if not isfinite(fee_rate) or fee_rate < 0:
             raise ValueError("fee_rate must be non-negative and finite")
@@ -68,9 +69,15 @@ class BacktestEngine:
             raise ValueError("slippage_pct must be non-negative and finite")
         if limit_expiry_bars <= 0:
             raise ValueError("limit_expiry_bars must be positive")
+        if not isfinite(quantity_step) or quantity_step <= 0:
+            raise ValueError("quantity_step must be positive and finite")
         self.fee_rate = float(fee_rate)
         self.slippage_pct = float(slippage_pct)
         self.limit_expiry_bars = limit_expiry_bars
+        # Smallest tradable size increment. 1.0 keeps the historical whole-unit sizing;
+        # crypto (e.g. BTCUSDT 0.00001) and MT5 lots (e.g. 0.01) need a fractional step,
+        # otherwise any instrument priced above equity rounds to 0 and never trades.
+        self.quantity_step = float(quantity_step)
         self.default_cost_model = cost_model
         self._fees_paid = 0.0
         self._slippage_paid = 0.0
@@ -267,10 +274,11 @@ class BacktestEngine:
             if not limit_fill:
                 per_lot_cost += self._cost_model.slippage_cost(1.0)
         risk_per_lot = abs(entry_fill - stop_loss) + per_lot_cost
-        risk_quantity = floor(equity * 0.01 / risk_per_lot)
-        affordability_quantity = floor(equity / (entry_fill * (1.0 + self.fee_rate) + per_lot_cost))
+        step = self.quantity_step
+        risk_quantity = floor(equity * 0.01 / risk_per_lot / step + 1e-9) * step
+        affordability_quantity = floor(equity / (entry_fill * (1.0 + self.fee_rate) + per_lot_cost) / step + 1e-9) * step
         quantity = float(min(risk_quantity, affordability_quantity))
-        if quantity < 1.0:
+        if quantity < step:
             return None
         cost_quantity = quantity
         entry_fee = entry_fill * quantity * self.fee_rate
