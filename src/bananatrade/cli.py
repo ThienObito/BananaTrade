@@ -17,6 +17,7 @@ from .config import Config
 from .data.ccxt_source import CCXTPublicSource
 from .data.snapshot import build_snapshot
 from .data.triggers import evaluate_triggers
+from .engine.entry_filter import EntryFilterConfig, OnnxEntryFilter
 from .engine.execution_model import ExecutionModel
 from .gateway.errors import GatewayError
 from .gateway.llm_client import ConfigError, LLMClient
@@ -164,6 +165,7 @@ def _run_mt5_once(config: Config, symbol: str) -> dict[str, object]:
     brain = Brain(
         execution_model=ExecutionModel(config.initial_equity, config.risk_pct),
         decision_log_path=ROOT / "trades" / "decisions.csv",
+        entry_filter=OnnxEntryFilter.from_config(EntryFilterConfig.from_yaml(ROOT / "config" / "risk.yaml"), ROOT),
     )
     decision = brain.decide(rates[:-1] if len(rates) > 1 else rates, vars(spec), account)
     executor = MT5Executor(config, client.mt5)

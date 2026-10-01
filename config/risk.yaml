@@ -5,3 +5,9 @@ max_drawdown_pct: 0.15
 min_reward_risk: 2.0
 max_trades_per_day: 5
 cooldown_losses: 3
+# Optional ONNX entry filter (veto-only). Disabled by default: behaviour is unchanged
+# until a model is trained (scripts/train_entry_filter.py) and this is set to true.
+entry_filter:
+  enabled: false
+  model_path: models/entry_filter.onnx
+  threshold: 0.55

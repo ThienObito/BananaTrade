@@ -1,0 +1,301 @@
+{
+  "features": [
+    "rsi14",
+    "ema_diff",
+    "adx14",
+    "body",
+    "side"
+  ],
+  "split": {
+    "train": "0-60%",
+    "validation": "60-80%",
+    "test": "80-100%",
+    "shuffle": false
+  },
+  "costs": {
+    "fee_rate_per_side": 0.001,
+    "slippage_pct_per_side": 0.0002
+  },
+  "train_samples": 1426,
+  "train_win_rate": 0.3822,
+  "train_auc": 0.5465,
+  "val_samples": 466,
+  "val_auc": 0.4947,
+  "threshold_curve_val": [
+    {
+      "threshold": 0.4,
+      "kept": 135,
+      "kept_net_pnl": -3801837.75
+    },
+    {
+      "threshold": 0.42,
+      "kept": 65,
+      "kept_net_pnl": -1235239.14
+    },
+    {
+      "threshold": 0.44,
+      "kept": 28,
+      "kept_net_pnl": -420231.59
+    },
+    {
+      "threshold": 0.46,
+      "kept": 12,
+      "kept_net_pnl": -408799.21
+    },
+    {
+      "threshold": 0.48,
+      "kept": 5,
+      "kept_net_pnl": -63766.01
+    },
+    {
+      "threshold": 0.5,
+      "kept": 1,
+      "kept_net_pnl": 132382.61
+    },
+    {
+      "threshold": 0.52,
+      "kept": 1,
+      "kept_net_pnl": 132382.61
+    },
+    {
+      "threshold": 0.54,
+      "kept": 0,
+      "kept_net_pnl": 0.0
+    },
+    {
+      "threshold": 0.56,
+      "kept": 0,
+      "kept_net_pnl": 0.0
+    },
+    {
+      "threshold": 0.58,
+      "kept": 0,
+      "kept_net_pnl": 0.0
+    },
+    {
+      "threshold": 0.6,
+      "kept": 0,
+      "kept_net_pnl": 0.0
+    },
+    {
+      "threshold": 0.62,
+      "kept": 0,
+      "kept_net_pnl": 0.0
+    },
+    {
+      "threshold": 0.64,
+      "kept": 0,
+      "kept_net_pnl": 0.0
+    },
+    {
+      "threshold": 0.66,
+      "kept": 0,
+      "kept_net_pnl": 0.0
+    },
+    {
+      "threshold": 0.68,
+      "kept": 0,
+      "kept_net_pnl": 0.0
+    },
+    {
+      "threshold": 0.7,
+      "kept": 0,
+      "kept_net_pnl": 0.0
+    }
+  ],
+  "chosen_threshold": 0.42,
+  "threshold_beats_unfiltered_on_val": true,
+  "onnx_parity_max_abs_diff": 5.960464477539063e-08,
+  "test": {
+    "BTCUSDT_15m": {
+      "test_start_ts": 1777911300000,
+      "unfiltered": {
+        "trades": 211,
+        "net_return_pct": -40.8466,
+        "net_sharpe": -0.642,
+        "net_max_dd_pct": 41.5787,
+        "win_rate": 0.3649,
+        "net_pnl_sum": -3989388.72
+      },
+      "filtered": {
+        "trades": 21,
+        "net_return_pct": -6.8074,
+        "net_sharpe": -0.2756,
+        "net_max_dd_pct": 8.7125,
+        "win_rate": 0.2381,
+        "net_pnl_sum": -680741.37
+      },
+      "filter_vetoes": 286,
+      "filter_keep_rate": 0.1146,
+      "random_veto_control_net_pnl": {
+        "min": -836130.53,
+        "median": -308380.91,
+        "max": 22294.24,
+        "runs": 20
+      },
+      "filtered_beats_random_veto_fraction": 0.25,
+      "filtered_trade_pnl_bootstrap_ci": [
+        -58657.08,
+        -3990.7
+      ],
+      "reference_entry_ablation_V2": {
+        "trades": 538,
+        "net_return_pct": -73.1635,
+        "net_sharpe": -0.938,
+        "net_max_dd_pct": 73.3866,
+        "win_rate": 0.3922,
+        "net_pnl_sum": -7134243.28
+      },
+      "walk_forward_3win": {
+        "unfiltered_avg_test_sharpe": -0.1613,
+        "filtered_avg_test_sharpe": -0.0729,
+        "unfiltered_stability": 0.3333333333333333,
+        "filtered_stability": 0.3333333333333333
+      }
+    },
+    "BTCUSDT_1h": {
+      "test_start_ts": 1777914000000,
+      "unfiltered": {
+        "trades": 41,
+        "net_return_pct": -6.5981,
+        "net_sharpe": -0.2422,
+        "net_max_dd_pct": 9.0421,
+        "win_rate": 0.4146,
+        "net_pnl_sum": -659805.71
+      },
+      "filtered": {
+        "trades": 6,
+        "net_return_pct": 3.0061,
+        "net_sharpe": 0.3042,
+        "net_max_dd_pct": 1.3072,
+        "win_rate": 0.6667,
+        "net_pnl_sum": 300609.5
+      },
+      "filter_vetoes": 54,
+      "filter_keep_rate": 0.1429,
+      "random_veto_control_net_pnl": {
+        "min": -491889.57,
+        "median": 7002.59,
+        "max": 669895.8,
+        "runs": 20
+      },
+      "filtered_beats_random_veto_fraction": 0.85,
+      "filtered_trade_pnl_bootstrap_ci": [
+        -30120.31,
+        127086.06
+      ],
+      "reference_entry_ablation_V2": {
+        "trades": 139,
+        "net_return_pct": -48.2475,
+        "net_sharpe": -1.2548,
+        "net_max_dd_pct": 48.7288,
+        "win_rate": 0.2878,
+        "net_pnl_sum": -4260326.87
+      },
+      "walk_forward_3win": {
+        "unfiltered_avg_test_sharpe": 0.4847,
+        "filtered_avg_test_sharpe": 0.6353,
+        "unfiltered_stability": 0.6666666666666666,
+        "filtered_stability": 1.0
+      }
+    },
+    "ETHUSDT_15m": {
+      "test_start_ts": 1777911300000,
+      "unfiltered": {
+        "trades": 214,
+        "net_return_pct": -52.5518,
+        "net_sharpe": -0.7793,
+        "net_max_dd_pct": 52.5518,
+        "win_rate": 0.3318,
+        "net_pnl_sum": -4929615.29
+      },
+      "filtered": {
+        "trades": 14,
+        "net_return_pct": -4.2894,
+        "net_sharpe": -0.1696,
+        "net_max_dd_pct": 5.3373,
+        "win_rate": 0.2857,
+        "net_pnl_sum": -428937.79
+      },
+      "filter_vetoes": 281,
+      "filter_keep_rate": 0.0994,
+      "random_veto_control_net_pnl": {
+        "min": -1132963.17,
+        "median": -310791.94,
+        "max": 80954.78,
+        "runs": 20
+      },
+      "filtered_beats_random_veto_fraction": 0.45,
+      "filtered_trade_pnl_bootstrap_ci": [
+        -69375.42,
+        12625.39
+      ],
+      "reference_entry_ablation_V2": {
+        "trades": 557,
+        "net_return_pct": -71.2695,
+        "net_sharpe": -0.7295,
+        "net_max_dd_pct": 71.7433,
+        "win_rate": 0.3932,
+        "net_pnl_sum": -6964519.36
+      },
+      "walk_forward_3win": {
+        "unfiltered_avg_test_sharpe": -0.3365,
+        "filtered_avg_test_sharpe": -0.0807,
+        "unfiltered_stability": 0.0,
+        "filtered_stability": 0.3333333333333333
+      }
+    },
+    "ETHUSDT_1h": {
+      "test_start_ts": 1777914000000,
+      "unfiltered": {
+        "trades": 46,
+        "net_return_pct": -4.1632,
+        "net_sharpe": -0.1271,
+        "net_max_dd_pct": 14.1506,
+        "win_rate": 0.4348,
+        "net_pnl_sum": -416318.41
+      },
+      "filtered": {
+        "trades": 9,
+        "net_return_pct": -0.3164,
+        "net_sharpe": -0.0183,
+        "net_max_dd_pct": 3.9924,
+        "win_rate": 0.4444,
+        "net_pnl_sum": -31640.31
+      },
+      "filter_vetoes": 61,
+      "filter_keep_rate": 0.1644,
+      "random_veto_control_net_pnl": {
+        "min": -585245.45,
+        "median": -92595.89,
+        "max": 477947.64,
+        "runs": 20
+      },
+      "filtered_beats_random_veto_fraction": 0.65,
+      "filtered_trade_pnl_bootstrap_ci": [
+        -85101.0,
+        79040.11
+      ],
+      "reference_entry_ablation_V2": {
+        "trades": 148,
+        "net_return_pct": -26.4326,
+        "net_sharpe": -0.5362,
+        "net_max_dd_pct": 28.2126,
+        "win_rate": 0.3919,
+        "net_pnl_sum": -2382378.95
+      },
+      "walk_forward_3win": {
+        "unfiltered_avg_test_sharpe": 0.1625,
+        "filtered_avg_test_sharpe": 0.1261,
+        "unfiltered_stability": 0.6666666666666666,
+        "filtered_stability": 0.3333333333333333
+      }
+    }
+  },
+  "test_total_net_pnl": {
+    "unfiltered": -9995128.13,
+    "filtered": -840709.97,
+    "random_veto_median": -704766.15
+  },
+  "verdict": "NO demonstrated skill: filtered test PnL is less negative than unfiltered, but it does not beat a same-rate random veto -> improvement is explained by trading less, not by picking better trades"
+}

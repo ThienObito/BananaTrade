@@ -129,6 +129,8 @@ def test_cli_run_accepts_config_option(monkeypatch: pytest.MonkeyPatch, tmp_path
         return {"status": "ok"}
 
     monkeypatch.setattr("bananatrade.cli.RuntimeService.run", fake_run)
+    # Hermetic: do not depend on a developer's real .env; the LLM client only checks presence.
+    monkeypatch.setenv("NINEROUTER_API_KEY", "test-dummy-key")
     path = tmp_path / "config.json"
     Config().save_to_file(path)
     result = CliRunner().invoke(app, ["run", "BTC/USDT", "--config", str(path)])

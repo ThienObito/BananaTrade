@@ -12,6 +12,7 @@ from typing import Literal
 
 from .engine.adaptive_trader import AdaptiveTrader
 from .engine.ensemble_signal import EnsembleSignal
+from .engine.entry_filter import OnnxEntryFilter
 from .engine.execution_model import ExecutionModel
 from .engine.regime_detector import Regime, RegimeDetector
 from .engine.strategy import SignalResult
@@ -94,6 +95,7 @@ class Brain:
         confidence_threshold: float = 0.65,
         max_spread: float | None = None,
         decision_log_path: str | Path = "trades/decisions.csv",
+        entry_filter: OnnxEntryFilter | None = None,
     ) -> None:
         if not 0.0 <= confidence_threshold <= 1.0:
             raise ValueError("confidence_threshold must be between 0 and 1")
@@ -105,6 +107,7 @@ class Brain:
         self.execution_model = execution_model or ExecutionModel()
         self.risk_manager = risk_manager or RiskManager()
         self.adaptive_trader = adaptive_trader
+        self.entry_filter = entry_filter
         self.confidence_threshold = confidence_threshold
         self.max_spread = max_spread
         self.decision_log_path = Path(decision_log_path)
@@ -128,6 +131,11 @@ class Brain:
         except (TypeError, ValueError, KeyError) as exc:
             reasons.append(f"signal calculation failed: {exc}")
             return self._finish(symbol, Decision("NONE", confidence, None, None, None, 0.0, reasons))
+        if self.entry_filter is not None and score.bias != "NEUTRAL":
+            # Veto-only probability gate; disabled (None) by default so behaviour is unchanged.
+            verdict = self.entry_filter.evaluate(records, score.bias)
+            if not verdict.allowed:
+                return self._finish(symbol, Decision("NONE", confidence, None, None, None, 0.0, [verdict.reason]))
 
         threshold = self._confidence_threshold()
         regime = self.regime_detector.last_regime
