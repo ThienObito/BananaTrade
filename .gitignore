@@ -14,3 +14,4 @@ __pycache__/
 tmpx/
 trades/
 .orig_for_commit_a/
+.claude_runner/

@@ -162,7 +162,10 @@ class MT5Executor:
     def _daily_loss_exceeded(self, today_pnl: float) -> bool:
         account = self._module().account_info()
         equity = float(getattr(account, "equity", 0.0))
-        return equity > 0 and today_pnl / equity <= -0.03
+        if not equity > 0:
+            # Fail closed: without equity the 3% daily-loss kill switch cannot be evaluated.
+            raise MT5OrderRefused("account equity unavailable; daily loss kill switch cannot be evaluated")
+        return today_pnl / equity <= -0.03
 
     def _positions_count(self, symbol: str | None = None) -> int:
         positions = self._module().positions_get() or ()

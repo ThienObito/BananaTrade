@@ -155,22 +155,34 @@ def run(
 
 def _run_mt5_once(config: Config, symbol: str) -> dict[str, object]:
     """Attach to logged-in MT5 terminal and process one closed-bar cycle."""
-    client = MT5Client()
+    client = MT5Client(cache_dir=ROOT / "data" / "history")
     client.connect()
-    resolved = client.resolve_symbol(symbol)
-    spec = client.symbol_spec(resolved)
-    rates = client.get_rates(resolved, config.mt5_timeframe, 100)
-    tick = client.get_tick(resolved)
-    account = {"equity": config.initial_equity, "daily_pnl": 0.0, **tick}
-    brain = Brain(
-        execution_model=ExecutionModel(config.initial_equity, config.risk_pct),
-        decision_log_path=ROOT / "trades" / "decisions.csv",
-        entry_filter=OnnxEntryFilter.from_config(EntryFilterConfig.from_yaml(ROOT / "config" / "risk.yaml"), ROOT),
-    )
-    decision = brain.decide(rates[:-1] if len(rates) > 1 else rates, vars(spec), account)
-    executor = MT5Executor(config, client.mt5)
-    result = executor.execute(resolved, decision, spec)
-    return {"broker": "mt5", "symbol": resolved, "decision": decision.as_dict(), "execution": vars(result)}
+    try:
+        resolved = client.resolve_symbol(symbol)
+        spec = client.symbol_spec(resolved)
+        rates = client.get_rates(resolved, config.mt5_timeframe, 101)
+        tick = client.get_tick(resolved)
+        # Real terminal equity / today's PnL / open positions -- never the config placeholder,
+        # so lot sizing and the 3% daily-loss kill switch see the actual account.
+        state = client.account_state(resolved)
+        account = {**state, **tick}
+        brain = Brain(
+            execution_model=ExecutionModel(float(state["equity"]), config.risk_pct),  # type: ignore[arg-type]
+            decision_log_path=ROOT / "trades" / "decisions.csv",
+            entry_filter=OnnxEntryFilter.from_config(EntryFilterConfig.from_yaml(ROOT / "config" / "risk.yaml"), ROOT),
+        )
+        decision = brain.decide(rates[:-1] if len(rates) > 1 else rates, vars(spec), account)
+        executor = MT5Executor(config, client.mt5)
+        result = executor.execute(resolved, decision, spec, today_pnl=float(state["daily_pnl"]))  # type: ignore[arg-type]
+    finally:
+        client.shutdown()
+    return {
+        "broker": "mt5",
+        "symbol": resolved,
+        "account": {"equity": state["equity"], "daily_pnl": state["daily_pnl"], "open_count": state["open_count"]},
+        "decision": decision.as_dict(),
+        "execution": vars(result),
+    }
 
 
 @app.command()
@@ -195,6 +207,7 @@ def build_parser() -> argparse.ArgumentParser:
     """Build standard argparse interface for core runtime commands."""
     parser = argparse.ArgumentParser(prog="bananatrade")
     parser.add_argument("command", choices=("run", "backtest", "serve", "version"))
+    parser.add_argument("symbol", nargs="?", default=None, help="symbol for run, e.g. EURUSD or XAUUSD")
     parser.add_argument("--config", default=None)
     parser.add_argument("--broker", choices=("paper", "mt5"), default="paper")
     return parser
@@ -213,7 +226,14 @@ def main() -> None:
         loaded = _load_runtime_config(args.config)
         print(json.dumps({"symbol": loaded.symbol, "timeframe": loaded.timeframe, "initial_equity": loaded.initial_equity}, separators=(",", ":")))
     else:
-        run(config=args.config, broker=args.broker)
+        loaded = _load_runtime_config(args.config)
+        # Pass a real string: the typer.Argument default object must never reach the broker.
+        try:
+            run(symbol=args.symbol or loaded.symbol, config=args.config, broker=args.broker)
+        except typer.Exit as exc:
+            # run() is a typer command called directly here: turn its Exit into a clean
+            # process exit code instead of a traceback (the error was already printed).
+            raise SystemExit(exc.exit_code) from None
 
 
 if __name__ == "__main__":

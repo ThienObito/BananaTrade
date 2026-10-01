@@ -101,8 +101,15 @@ class BotRunner:
             symbol = self.mt5_client.resolve_symbol(self.config.symbol)
             spec = self.mt5_client.symbol_spec(symbol)
             tick = self.mt5_client.get_tick(symbol)
-            daily_pnl = self._number(snapshot.get("daily_pnl", 0.0))
-            account_state: dict[str, object] = {"equity": self._number(snapshot.get("equity", 0.0)), "daily_pnl": daily_pnl, "open_count": 0, **tick}
+            account_state_fn = getattr(self.mt5_client, "account_state", None)
+            if "equity" not in snapshot and callable(account_state_fn):
+                # Live terminal values: real equity, today's PnL and open positions.
+                live = account_state_fn(symbol)
+                daily_pnl = self._number(live.get("daily_pnl", 0.0))
+                account_state: dict[str, object] = {**live, "daily_pnl": daily_pnl, **tick}
+            else:
+                daily_pnl = self._number(snapshot.get("daily_pnl", 0.0))
+                account_state = {"equity": self._number(snapshot.get("equity", 0.0)), "daily_pnl": daily_pnl, "open_count": 0, **tick}
             mt5_decision = self.brain.decide(self.bar_engine.candles, vars(spec), account_state)
             self.last_mt5_result = self.mt5_executor.execute(symbol, mt5_decision, spec, today_pnl=daily_pnl)
             return {"decision": mt5_decision.as_dict(), "mt5_result": self.last_mt5_result}

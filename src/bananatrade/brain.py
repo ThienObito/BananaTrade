@@ -174,8 +174,18 @@ class Brain:
         )
         if params is None:
             return self._finish(symbol, Decision("NONE", confidence, None, None, None, 0.0, ["execution model rejected signal"]))
-        volume = self._volume(params.qty, params.price, symbol_spec)
-        proposed_size = params.price * volume
+        lot_volume = self._risk_lots(equity, risk_pct, params.price, params.sl, symbol_spec)
+        if lot_volume is not None:
+            # MT5: size in lots from the risk budget via tick value (contract-size aware).
+            if lot_volume <= 0:
+                return self._finish(symbol, Decision("NONE", confidence, None, None, None, 0.0, ["risk budget below symbol minimum lot"]))
+            volume = lot_volume
+            margin = _number(_field(symbol_spec, "margin_per_lot", 0.0))
+            # Leveraged CFD: capital committed is margin, not notional.
+            proposed_size = volume * margin if margin > 0 else params.price * volume * _number(_field(symbol_spec, "contract_size", 1.0) or 1.0)
+        else:
+            volume = self._volume(params.qty, params.price, symbol_spec)
+            proposed_size = params.price * volume
         risk = self.risk_manager.check_can_open(
             equity,
             _number(_field(account_state, "daily_pnl", 0.0)),
@@ -249,6 +259,28 @@ class Brain:
             return max(0, int(_number(value)))
         positions = _field(account_state, "positions", ())
         return len(positions) if isinstance(positions, (list, tuple, set, frozenset, dict)) else 0
+
+    @staticmethod
+    def _risk_lots(
+        equity: float, risk_pct: float, entry: float, stop: float, symbol_spec: Mapping[str, object] | object
+    ) -> float | None:
+        """Lots such that hitting SL loses at most equity*risk_pct; None if spec lacks tick data.
+
+        Returns 0.0 when even the minimum lot would exceed the risk budget (never rounds up risk).
+        """
+        tick_value = _number(_field(symbol_spec, "tick_value", 0.0))
+        tick_size = _number(_field(symbol_spec, "tick_size", 0.0))
+        if tick_value <= 0 or tick_size <= 0:
+            return None
+        loss_per_lot = abs(entry - stop) / tick_size * tick_value
+        if loss_per_lot <= 0 or equity <= 0 or risk_pct <= 0:
+            return 0.0
+        minimum = max(0.0, _number(_field(symbol_spec, "volume_min", 0.0)))
+        step = _number(_field(symbol_spec, "volume_step", 0.0)) or minimum or 0.01
+        maximum = _number(_field(symbol_spec, "volume_max", 0.0)) or float("inf")
+        raw = min(equity * risk_pct / loss_per_lot, maximum)
+        lots = int(raw / step + 1e-9) * step
+        return round(lots, 8) if lots >= minimum and lots > 0 else 0.0
 
     @staticmethod
     def _volume(raw: float, price: float, symbol_spec: Mapping[str, object] | object) -> float:
