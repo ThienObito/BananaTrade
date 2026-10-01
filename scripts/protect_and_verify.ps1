@@ -25,7 +25,8 @@ function Run([string]$what, [scriptblock]$cmd) {
     Write-Host "==> $what" -ForegroundColor Cyan
     "==> $what" | Out-File $log -Append -Encoding utf8
     $prev = $ErrorActionPreference; $ErrorActionPreference = "Continue"  # pip/pytest write to stderr
-    & $cmd 2>&1 | ForEach-Object { "$_" } | Tee-Object -FilePath $log -Append
+    # Tee-Object -Append writes UTF-16 on Windows PowerShell 5.1; keep the log pure UTF-8.
+    & $cmd 2>&1 | ForEach-Object { $line = "$_"; Write-Host $line; Add-Content -Path $log -Value $line -Encoding utf8 }
     $ErrorActionPreference = $prev
     if ($LASTEXITCODE -ne 0) { throw "FAILED: $what (exit $LASTEXITCODE). See $log" }
 }
@@ -66,7 +67,7 @@ if ($current -ne $branch) {
 Get-ChildItem src, tests -Recurse -Directory -Filter __pycache__ -ErrorAction SilentlyContinue | Remove-Item -Recurse -Force
 Get-ChildItem src, tests -Recurse -File -Include *.pyc, *.pyc.* -ErrorAction SilentlyContinue | Remove-Item -Force
 $left = @(Get-ChildItem src, tests -Recurse -File -Include *.pyc, *.pyc.* -ErrorAction SilentlyContinue).Count
-"remaining .pyc files: $left" | Tee-Object -FilePath $log -Append
+"remaining .pyc files: $left" | Out-File $log -Append -Encoding utf8
 if ($left -ne 0) { throw "bytecode cleanup incomplete" }
 
 # ---------- 3. commit A (before tests: protection must not depend on test results) ----------
